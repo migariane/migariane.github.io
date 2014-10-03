@@ -7,8 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
-
     <title>Password Generator</title>
     <!-- Custom styles for this template -->
-    <link href="../css/bootstrap/docs/examples/starterd-template/starterd-template.css" rel="stylesheet">
+    <link href="../css/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
   </head>

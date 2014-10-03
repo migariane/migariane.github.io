@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
  
 <title>What time is it?</title>
  
-<link rel='stylesheet' href='styles.css' type='text/css'>
+<link rel='stylesheet' href='styles.css' type='css'>
 <?php require('logic.php'); ?>
 </head>
  

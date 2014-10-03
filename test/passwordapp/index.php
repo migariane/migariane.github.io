@@ -8,6 +8,7 @@ ini_set('display_errors', 1);
 	<?php include("header.php");?>
 <body>
 	<?php include("content.php");?>
+	<?php include("footer.php");?>
 </body>
     <script src="https://code.jquery.com/jquery.js"></script>
 </html>
