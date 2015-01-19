@@ -1,0 +1,4 @@
+
+composer create-project laravel/laravel foobooks --prefer-dist
+
+
