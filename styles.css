@@ -1,0 +1,24 @@
+body {
+	text-align:center;
+}
+
+h1,small {
+	color:white;
+	margin-bottom:5px;
+}
+
+.morning {
+	background-color:#865f86; /* lavendar */
+}
+
+.afternoon {
+	background-color:#2c87c8; /* royal blue */
+}
+
+.evening {
+	background-color:#c7b02f; /* yellowish mustard */
+}
+
+.night {
+	background-color:#180629; /* dark purple */
+}
