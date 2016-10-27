@@ -1,0 +1,112 @@
+---
+title: "Cross-Validation in Practice by Miguel Angel Luque Fernandez"
+output: html_notebook
+---
+
+###Cross-Validation is a data partitioning method that can be used to:
+* Assess the stability of parameter estimates
+* Assess the accuracy of classification algorithms
+* Assess the addequacy of a fitted model
+
+###Modelling the correct functional form
+```{r}
+library(DAAG);attach(ironslag);summary(chemical);summary(magnetic)
+
+a <- seq(10, 40, .1)    #sequence for plotting fits
+
+L1 <- lm(magnetic ~ chemical)
+yhat1 <- L1$coef[1] + L1$coef[2] * a
+
+L2 <- lm(magnetic ~ chemical + I(chemical^2))
+yhat2 <- L2$coef[1] + L2$coef[2] * a + L2$coef[3] * a^2
+
+L3 <- lm(log(magnetic) ~ chemical)
+logyhat3 <- L3$coef[1] + L3$coef[2] * a
+yhat3 <- exp(logyhat3)
+
+L4 <- lm(log(magnetic) ~ log(chemical))
+yhat4 <- L4$coef[1] + L4$coef[2] * log(a)
+
+par(mfrow = c(2, 2))    #layout for graphs
+plot(chemical, magnetic, main="Linear", pch=16)
+lines(a, yhat1, lwd=2)
+plot(chemical, magnetic, main="Quadratic", pch=16)
+lines(a, yhat2, lwd=2)
+plot(chemical, magnetic, main="Exponential", pch=16)
+lines(a, yhat3, lwd=2)
+plot(log(chemical), log(magnetic), main="Log-Log", pch=16)
+lines(log(a), yhat4, lwd=2)
+par(mfrow = c(1, 1))    #restore display
+```
+
+###Model selection (functional form): N-fold cross-validation with leave-one-out samples
+```{r}
+    n <- length(magnetic)   #in DAAG ironslag
+    e1 <- e2 <- e3 <- e4 <- numeric(n)
+
+    # for n-fold cross validation
+    # fit models on leave-one-out samples
+    for (k in 1:n) {
+        y <- magnetic[-k]
+        x <- chemical[-k]
+
+        J1 <- lm(y ~ x)
+        yhat1 <- J1$coef[1] + J1$coef[2] * chemical[k]
+        e1[k] <- magnetic[k] - yhat1
+
+        J2 <- lm(y ~ x + I(x^2))
+        yhat2 <- J2$coef[1] + J2$coef[2] * chemical[k] +
+                J2$coef[3] * chemical[k]^2
+        e2[k] <- magnetic[k] - yhat2
+
+        J3 <- lm(log(y) ~ x)
+        logyhat3 <- J3$coef[1] + J3$coef[2] * chemical[k]
+        yhat3 <- exp(logyhat3)
+        e3[k] <- magnetic[k] - yhat3
+
+        J4 <- lm(log(y) ~ log(x))
+        logyhat4 <- J4$coef[1] + J4$coef[2] * log(chemical[k])
+        yhat4 <- exp(logyhat4)
+        e4[k] <- magnetic[k] - yhat4
+    }
+```
+####Best model based on RMSE: quadratic model2 
+```{r}
+    c(mean(e1^2), mean(e2^2), mean(e3^2), mean(e4^2)) 
+```
+###Model selection (functional form): Leave-One-Out Cross-Validation (LOOC, library: boot)
+```{r}
+library(ISLR)
+library(boot)
+glm.fit=glm(mpg~horsepower, data=Auto)
+summary(glm.fit)
+cv.glm(Auto,glm.fit)$delta 
+
+##Faster implementation function using leverage residuals
+locv=function(fit){
+  h=lm.influence(fit)$h
+  mean((residuals(fit)/(1-h))^2)
+}
+##Now we try it out
+cv.error=rep(0,4)
+degree=1:4
+for(d in degree){
+  glm.fit=glm(mpg~poly(horsepower,d), data=Auto)
+  cv.error[d]=locv(glm.fit)
+}
+plot(degree,cv.error,type="b",col="blue")
+cv.error
+```
+##Model selection (functional form):k-fold ==> 10-fold CV
+```{r}
+degree=1:4
+cv.error10=rep(0,4)
+for(d in degree){
+  glm.fit=glm(mpg~poly(horsepower,d), data=Auto)
+  cv.error10[d]=cv.glm(Auto,glm.fit,K=10)$delta[1]
+}
+cv.error10
+plot(degree,cv.error,type="b",col="blue")
+lines(degree,cv.error10,type="b",col="red")
+```
+
