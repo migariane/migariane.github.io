@@ -219,7 +219,11 @@ m  <- glm(Y ~ A + w1 + w2 + w3 + w4, family=binomial, data=ObsData)
 Q  <- cbind(QAW = predict(m),
             Q1W = predict(m, newdata=data.frame(A = 1, w1, w2, w3, w4)),
             Q0W = predict(m, newdata=data.frame(A = 0, w1, w2, w3, w4)))
-Q0 <- as.data.frame(Q);mean(Q0$Q1W-Q0$Q0W)
+Q0 <- as.data.frame(Q)
+Y1<-Q0$Q1W 
+Y0<-Q0$Q0W
+#Inverse logit (probability scale)
+mean(exp(Y1)/(1+exp(Y1)) - exp(Y0)/(1+exp(Y0)))
 ```
 
 ##Step 2: $g_{0}(A,W)$
