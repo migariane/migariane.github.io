@@ -133,7 +133,7 @@ The Stable Unit Treatment Value Assumption (SUTVA) incorporates
 both this idea that **units do not interfere** with one another, and also the concept that for each unit there is only a **single version of each treatment level**.      
 
 #TMLE flow chart 
-![](Figures/tmle.png)
+![](Figures/steps.png)
 **Figure 2**. TMLE flow chart (Road map)  
 **Adapted from**: Mark van der Laan and Sherri Rose. Targeted learning: causal inference for observational and experimental dataSpringer Series in Statistics, 2011.  
 
@@ -493,9 +493,7 @@ $$ (Y \,-\, \bar Q(A, W))^{2}$$
 The **SL** algorithm first split the data into ten blocks and fits each of the selected algoriths on the training set (non-shaded blocks), then predicts the estimated probabilities of the outcome (Y) using the validation set (shaded block) for each algorithm, based on the corresponding training set. Afterwards, the **SL** estimates the the cross-validating risk for each algorithm averaging the risks across validation sets resulting in one estimated cross-validated risk for each algorithm. Finally, the **SL** selects the combination of Z that minimises the cross-validation risk, defined as the minimum mean square error for each of the selected algorithms using Y and Z. A weighted combination of the algorithms (ensemble learning) in Z is then used to predict the outcome (Y) (see Figure 5).  
 
 ![](Figures/SL.png)
-
 **Figure 5**: Flow Diagram for the Super-Learner algorithm.  
-**Adapted from**: Mark van der Laan and Sherri Rose. Targeted learning: causal inference for observational and experimental dataSpringer Series in Statistics, 2011. 
 
 #Abbreviations
 
