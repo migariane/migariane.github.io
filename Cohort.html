@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>Cohort.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  max-width: 800px;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<style>
+.stlog { color: #00FF00; background-color: #000000; }
+.stres { color: #FFFF00; }
+.stinp { color: #FFFFFF; }
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<html>
+<head>
+<title>AGE-STANDARDISED NET SURVIVAL BY DEPRIVATION COHORT APPROACH</title>
+</head>
+<body>
+<h2>TUTORIAL: AGE-STANDARDISED NET SURVIVAL BY DEPRIVATION</br>
+<p></p>
+COHORT APPROACH</br>
+<p></p>
+EASP-COURSE, GRANADA, 28-29 MARCH 2017</br>
+<p></p>
+Miguel Angel Luque Fernandez, BSc, MA, MPH, MSc, GStat(UK), PhD</br>
+Assistant Professor of Epidemiology</br>
+Cancer Survival Group, LSHTM, London, UK</br>
+<p></p>
+Rhea Harewood, BSc, MSc</br>
+Research Fellow in Epidemiology</br>
+Cancer Survival Group, LSHTM, London, UK</br>
+<p></p>
+</h2>
+<h2>Content</h4>
+<h3>I) Data consistency and setting time</br>
+<p></p>
+II) Net Survival Estimation</br>
+<p></p>
+III) Dealing with ICSS WEIGHTS</br>
+<p></p>
+IV) Age-Standardised Five-year Net Survival Estimation, chohort 1971</br>
+	 <p style="text-indent: 3em">-Life Table</p>
+	 <p style="text-indent: 3em">-STNS Stata command</p>
+V) Age-Standardised Five-year Net Survival Inference, chohort 1971</br>
+<p></p>
+VI) Age-Standardised Five-year Net Survival by Deprivation, cohort 1971</br></h3>
+<p></p>
+<p>Note: the data used in the tutorial has been modified from the original source for a teaching purpose and represent breast cancer incident cases between 1971 and 2001 in England</p>
+<p>Note: the interpretation of the results is not applicable to the real-world setting</p>
+
+<h3>I) Data consistency and setting time</h3>
+<p>Setting your path and working directory</p>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. clear</span>
+
+<span class="stinp">. set more off</span>
+
+<span class="stinp">. cd "/Users/MALF/Desktop"</span>
+<span class="stres">/Users/MALF/Desktop</span>
+</samp></pre>
+<p>Loading the data</p>
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">. use breast_stns.dta, clear</span>
+((All Cases 1971-2001, final datasets))
+
+<span class="stinp">. set more off</span>
+
+<span class="stinp">. //browse</span>
+</samp></pre>
+<p>Describing the data</p>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">. describe</span>
+
+Contains data from <span class="stres">breast_stns.dta</span>
+  obs:<span class="stres">       355,801                          (All Cases 1971-2001, final datasets)</span>
+ vars:<span class="stres">             7                          3 Mar 2017 14:30</span>
+ size:<span class="stres">     5,337,015                          </span>
+--------------------------------------------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+--------------------------------------------------------------------------------------------------------------------
+<span class="stres">sex            </span> byte    %8.0g      sexlb      <span class="stres">sex</span>
+<span class="stres">diagmdy        </span> int     %d                    <span class="stres">diagnosis date in days after 1-1-1960 for stns</span>
+<span class="stres">finmdy         </span> int     %d                    <span class="stres">date of last news- either date of death or date of last vital status</span>
+<span class="stres">agediag        </span> float   %9.0g                 <span class="stres">age at diagnosis in years</span>
+<span class="stres">ageout         </span> float   %9.0g                 <span class="stres">age at date of last news in years</span>
+<span class="stres">dead           </span> byte    %10.0g                <span class="stres">vital status at the date of last news</span>
+<span class="stres">dep            </span> byte    %13.0g     caquintlbl
+                                              <span class="stres">Deprivation quintile</span>
+--------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+<span class="stinp">. summarize</span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         sex |<span class="stres">    355,801           2           0          2          2</span>
+     diagmdy |<span class="stres">    355,801    10552.37    3174.377       4018      15340</span>
+      finmdy |<span class="stres">    355,801    13138.84    3391.848       4027      16070</span>
+     agediag |<span class="stres">    355,801    62.30587    14.32948   15.56194   98.99247</span>
+      ageout |<span class="stres">    355,801    69.38724    13.93029   17.64545   123.9945</span>
+-------------+---------------------------------------------------------
+        dead |<span class="stres">    355,801    .5961788    .4906631          0          1</span>
+         dep |<span class="stres">    355,801    3.079514    1.391326          1          5</span>
+</samp></pre>
+<p>Calendar year at diagnosis</p>
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">. gen year = year(diagmdy)</span>
+
+<span class="stinp">. labe var year "calendar year at diagnosis"</span>
+
+<span class="stinp">. tab year</span>
+
+   calendar |
+    year at |
+  diagnosis |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1971 |<span class="stres">      6,061        1.70        1.70</span>
+       1972 |<span class="stres">      6,436        1.81        3.51</span>
+       1973 |<span class="stres">      6,293        1.77        5.28</span>
+       1974 |<span class="stres">      8,527        2.40        7.68</span>
+       1975 |<span class="stres">      8,689        2.44       10.12</span>
+       1976 |<span class="stres">      8,667        2.44       12.56</span>
+       1977 |<span class="stres">      8,844        2.49       15.04</span>
+       1978 |<span class="stres">      8,881        2.50       17.54</span>
+       1979 |<span class="stres">      9,408        2.64       20.18</span>
+       1980 |<span class="stres">      9,463        2.66       22.84</span>
+       1981 |<span class="stres">      9,746        2.74       25.58</span>
+       1982 |<span class="stres">      9,954        2.80       28.38</span>
+       1983 |<span class="stres">      9,936        2.79       31.17</span>
+       1984 |<span class="stres">     10,183        2.86       34.03</span>
+       1985 |<span class="stres">     10,707        3.01       37.04</span>
+       1986 |<span class="stres">     10,801        3.04       40.08</span>
+       1987 |<span class="stres">     10,647        2.99       43.07</span>
+       1988 |<span class="stres">     11,141        3.13       46.20</span>
+       1989 |<span class="stres">     12,112        3.40       49.61</span>
+       1990 |<span class="stres">     12,721        3.58       53.18</span>
+       1991 |<span class="stres">     13,821        3.88       57.07</span>
+       1992 |<span class="stres">     14,241        4.00       61.07</span>
+       1993 |<span class="stres">     13,816        3.88       64.95</span>
+       1994 |<span class="stres">     14,032        3.94       68.89</span>
+       1995 |<span class="stres">     14,260        4.01       72.90</span>
+       1996 |<span class="stres">     14,952        4.20       77.10</span>
+       1997 |<span class="stres">     16,020        4.50       81.61</span>
+       1998 |<span class="stres">     15,857        4.46       86.06</span>
+       1999 |<span class="stres">     16,589        4.66       90.73</span>
+       2000 |<span class="stres">     16,553        4.65       95.38</span>
+       2001 |<span class="stres">     16,443        4.62      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">    355,801      100.00</span>
+</samp></pre>
+<p>Canlendar year at exit (last known vital status)</p>
+<p>Note that in Stata the 1st of January of 1960 = 0</p>
+<p>How you will check the consistency of the data?</p>
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. gen eyear = year(finmdy)</span>
+
+<span class="stinp">. labe var eyear "calendar year last follow-up"</span>
+
+<span class="stinp">. tab eyear dead</span>
+
+  calendar |  vital status at the
+ year last |   date of last news
+ follow-up |         0          1 |     Total
+-----------+----------------------+----------
+      1971 |<span class="stres">         0        848 </span>|<span class="stres">       848 </span>
+      1972 |<span class="stres">         3      1,557 </span>|<span class="stres">     1,560 </span>
+      1973 |<span class="stres">         4      2,330 </span>|<span class="stres">     2,334 </span>
+      1974 |<span class="stres">         8      2,901 </span>|<span class="stres">     2,909 </span>
+      1975 |<span class="stres">        11      3,662 </span>|<span class="stres">     3,673 </span>
+      1976 |<span class="stres">        10      4,086 </span>|<span class="stres">     4,096 </span>
+      1977 |<span class="stres">         9      4,628 </span>|<span class="stres">     4,637 </span>
+      1978 |<span class="stres">        14      4,980 </span>|<span class="stres">     4,994 </span>
+      1979 |<span class="stres">         9      5,326 </span>|<span class="stres">     5,335 </span>
+      1980 |<span class="stres">        17      5,469 </span>|<span class="stres">     5,486 </span>
+      1981 |<span class="stres">        14      5,714 </span>|<span class="stres">     5,728 </span>
+      1982 |<span class="stres">        32      5,999 </span>|<span class="stres">     6,031 </span>
+      1983 |<span class="stres">        20      6,135 </span>|<span class="stres">     6,155 </span>
+      1984 |<span class="stres">        16      6,114 </span>|<span class="stres">     6,130 </span>
+      1985 |<span class="stres">        19      6,640 </span>|<span class="stres">     6,659 </span>
+      1986 |<span class="stres">        14      6,959 </span>|<span class="stres">     6,973 </span>
+      1987 |<span class="stres">        14      7,060 </span>|<span class="stres">     7,074 </span>
+      1988 |<span class="stres">        25      7,068 </span>|<span class="stres">     7,093 </span>
+      1989 |<span class="stres">        17      7,490 </span>|<span class="stres">     7,507 </span>
+      1990 |<span class="stres">        14      7,376 </span>|<span class="stres">     7,390 </span>
+      1991 |<span class="stres">        17      7,931 </span>|<span class="stres">     7,948 </span>
+      1992 |<span class="stres">        38      8,003 </span>|<span class="stres">     8,041 </span>
+      1993 |<span class="stres">        17      8,438 </span>|<span class="stres">     8,455 </span>
+      1994 |<span class="stres">        23      8,343 </span>|<span class="stres">     8,366 </span>
+      1995 |<span class="stres">        21      8,334 </span>|<span class="stres">     8,355 </span>
+      1996 |<span class="stres">        30      8,396 </span>|<span class="stres">     8,426 </span>
+      1997 |<span class="stres">        36      8,701 </span>|<span class="stres">     8,737 </span>
+      1998 |<span class="stres">        38      8,684 </span>|<span class="stres">     8,722 </span>
+      1999 |<span class="stres">        35      8,899 </span>|<span class="stres">     8,934 </span>
+      2000 |<span class="stres">        67      9,028 </span>|<span class="stres">     9,095 </span>
+      2001 |<span class="stres">        59      9,091 </span>|<span class="stres">     9,150 </span>
+      2002 |<span class="stres">        65      8,302 </span>|<span class="stres">     8,367 </span>
+      2003 |<span class="stres">   142,964      7,629 </span>|<span class="stres">   150,593 </span>
+-----------+----------------------+----------
+     Total |<span class="stres">   143,680    212,121 </span>|<span class="stres">   355,801 </span>
+
+
+<span class="stinp">. sum dead finmdy if dead==1 &amp; (finmdy&gt;15705 &amp; finmdy&lt;=16070)</span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        dead |<span class="stres">      7,629           1           0          1          1</span>
+      finmdy |<span class="stres">      7,629    15888.17    106.3775      15706      16070</span>
+</samp></pre>
+<p>Five age groups are needed for standardisation </p>
+<pre id="stlog-6" class="stlog"><samp><span class="stinp">. sum agediag, det</span>
+
+                  age at diagnosis in years
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    <span class="stres"> 31.72074       15.56194</span>
+ 5%    <span class="stres">  39.0308       16.15058</span>
+10%    <span class="stres"> 43.49623       16.32307       </span>Obs         <span class="stres">    355,801</span>
+25%    <span class="stres"> 51.34839        16.5065       </span>Sum of Wgt. <span class="stres">    355,801</span>
+
+50%    <span class="stres"> 62.27515                      </span>Mean          <span class="stres"> 62.30587</span>
+<span class="stres">                        </span>Largest       Std. Dev.     <span class="stres"> 14.32948</span>
+75%    <span class="stres"> 73.30322       98.96236</span>
+90%    <span class="stres"> 81.42094       98.98152       </span>Variance      <span class="stres"> 205.3341</span>
+95%    <span class="stres"> 85.48939       98.98973       </span>Skewness      <span class="stres">-.0259262</span>
+99%    <span class="stres"> 91.62766       98.99247       </span>Kurtosis      <span class="stres"> 2.322189</span>
+
+<span class="stinp">. egen agegr =cut(agediag), at(0 45(10)75 100) icodes</span>
+
+<span class="stinp">. recode agegr 0=1 1=2 2=3 3=4 4=5</span>
+(agegr: 355801 changes made)
+
+<span class="stinp">. tabstat agediag, statistics( min max ) by(agegr)</span>
+
+Summary for variables: agediag
+     by categories of: agegr 
+
+   agegr |       min       max
+---------+--------------------
+       1 | <span class="stres"> 15.56194  44.99932</span>
+       2 | <span class="stres"> 45.00205  54.99795</span>
+       3 | <span class="stres"> 55.00068  64.99931</span>
+       4 | <span class="stres"> 65.00205  74.99795</span>
+       5 | <span class="stres"> 75.00069  98.99247</span>
+---------+--------------------
+   Total | <span class="stres"> 15.56194  98.99247</span>
+------------------------------
+
+<span class="stinp">. label var agegr "Five age groups for standardisation"</span>
+</samp></pre>
+<p>Setting time (note origin and entry)</p>
+<pre id="stlog-7" class="stlog"><samp><span class="stinp">. stset finmdy, fail(dead==1) origin(time diagmdy) enter(time diagmdy) </span>
+
+     failure event:  <span class="stres">dead == 1</span>
+obs. time interval:  <span class="stres">(origin, finmdy]</span>
+ enter on or after:  <span class="stres">time diagmdy</span>
+ exit on or before:  <span class="stres">failure</span>
+<span class="stres">    </span>t for analysis:  <span class="stres">(time-origin)</span>
+<span class="stres">            </span>origin:  <span class="stres">time diagmdy</span>
+
+------------------------------------------------------------------------------
+<span class="stres">     355801</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">     355801</span>  observations remaining, representing
+<span class="stres">     212121</span>  failures in single-record/single-failure data
+<span class="stres">  920269050</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres">    12052</span>
+</samp></pre>
+<p>Checking the assumptions of time (note _t0)</p>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. list diagmdy finmdy _t0 _t _d _st in 1/10</span>
+
+     +-----------------------------------------------+
+     | <span class="stres">  diagmdy      finmdy   _t0     _t   _d   _st </span>|
+     |-----------------------------------------------|
+  1. | <span class="stres">01jan2000   31dec2003     0   1460    1     1 </span>|
+  2. | <span class="stres">29jul1998   31dec2003     0   1981    0     1 </span>|
+  3. | <span class="stres">30jan1998   31dec2003     0   2161    0     1 </span>|
+  4. | <span class="stres">09jul1998   31dec2003     0   2001    0     1 </span>|
+  5. | <span class="stres">22dec1998   31dec2003     0   1835    0     1 </span>|
+     |-----------------------------------------------|
+  6. | <span class="stres">23jan1998   31dec2003     0   2168    0     1 </span>|
+  7. | <span class="stres">16jul1998   31dec2003     0   1994    0     1 </span>|
+  8. | <span class="stres">07jul1999   31dec2003     0   1638    0     1 </span>|
+  9. | <span class="stres">18aug1998   31dec2003     0   1961    0     1 </span>|
+ 10. | <span class="stres">01sep1999   01oct2003     0   1491    1     1 </span>|
+     +-----------------------------------------------+
+
+<span class="stinp">. scalar  _t = (finmdy - diagmdy) in 1</span>
+
+<span class="stinp">. display _t</span>
+<span class="stres">1460</span>
+</samp></pre>
+<h3>II) Net Survival Estimation: LIFE TABLE and STNS</h3>
+
+<p>The STRUCTURE OF THE LIFE TABLE (understanding it is really IMPORTANT)</p>
+<p>Note: the unit of _age. stns needs _age in days)</p>
+<pre id="stlog-9" class="stlog"><samp><span class="stinp">. preserve</span>
+
+<span class="stinp">. clear</span>
+
+<span class="stinp">. use Lifetable_stns.dta</span>
+
+<span class="stinp">. list in 1/10</span>
+
+     +----------------------------------------------------------------+
+     | <span class="stres">  sex   dep       rate   _year    rate_day     _age   yearin~s </span>|
+     |----------------------------------------------------------------|
+  1. | <span class="stres">Males     1   .0124367    1971   .00003405        0       4018 </span>|
+  2. | <span class="stres">Males     2   .0138573    1971   .00003794        0       4018 </span>|
+  3. | <span class="stres">Males     3   .0146276    1971   .00004005        0       4018 </span>|
+  4. | <span class="stres">Males     4    .017085    1971   .00004678        0       4018 </span>|
+  5. | <span class="stres">Males     5   .0193684    1971   .00005303        0       4018 </span>|
+     |----------------------------------------------------------------|
+  6. | <span class="stres">Males     1    .001033    1971   2.828e-06   365.25       4018 </span>|
+  7. | <span class="stres">Males     2   .0010931    1971   2.993e-06   365.25       4018 </span>|
+  8. | <span class="stres">Males     3   .0011213    1971   3.070e-06   365.25       4018 </span>|
+  9. | <span class="stres">Males     4   .0011925    1971   3.265e-06   365.25       4018 </span>|
+ 10. | <span class="stres">Males     5   .0012982    1971   3.554e-06   365.25       4018 </span>|
+     +----------------------------------------------------------------+
+
+<span class="stinp">. display 11*365.25</span>
+<span class="stres">4017.75</span>
+
+<span class="stinp">. restore </span>
+</samp></pre>
+<p>In the breast cancer incident dataset we have to generate age at diagnosis in days to merge it with the life table data (rate in days)</p>
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">. list diagmdy finmdy _t0 _t _d _st agediag in 1/10</span>
+
+     +----------------------------------------------------------+
+     | <span class="stres">  diagmdy      finmdy   _t0     _t   _d   _st    agediag </span>|
+     |----------------------------------------------------------|
+  1. | <span class="stres">01jan2000   31dec2003     0   1460    1     1   67.90417 </span>|
+  2. | <span class="stres">29jul1998   31dec2003     0   1981    0     1   76.79671 </span>|
+  3. | <span class="stres">30jan1998   31dec2003     0   2161    0     1   37.37166 </span>|
+  4. | <span class="stres">09jul1998   31dec2003     0   2001    0     1   52.20534 </span>|
+  5. | <span class="stres">22dec1998   31dec2003     0   1835    0     1   71.36482 </span>|
+     |----------------------------------------------------------|
+  6. | <span class="stres">23jan1998   31dec2003     0   2168    0     1   41.65914 </span>|
+  7. | <span class="stres">16jul1998   31dec2003     0   1994    0     1   65.86722 </span>|
+  8. | <span class="stres">07jul1999   31dec2003     0   1638    0     1    38.8063 </span>|
+  9. | <span class="stres">18aug1998   31dec2003     0   1961    0     1   61.37714 </span>|
+ 10. | <span class="stres">01sep1999   01oct2003     0   1491    1     1   82.03423 </span>|
+     +----------------------------------------------------------+
+
+<span class="stinp">. gen agediagindays = agediag*365.25</span>
+
+<span class="stinp">. label var agediagindays  "Age at diagnosis in days for Net Survival estimation"</span>
+
+<span class="stinp">. list diagmdy finmdy _t0 _t _d _st agediag agediagindays in 1/10</span>
+
+     +---------------------------------------------------------------------+
+     | <span class="stres">  diagmdy      finmdy   _t0     _t   _d   _st    agediag   agedia~s </span>|
+     |---------------------------------------------------------------------|
+  1. | <span class="stres">01jan2000   31dec2003     0   1460    1     1   67.90417      24802 </span>|
+  2. | <span class="stres">29jul1998   31dec2003     0   1981    0     1   76.79671      28050 </span>|
+  3. | <span class="stres">30jan1998   31dec2003     0   2161    0     1   37.37166      13650 </span>|
+  4. | <span class="stres">09jul1998   31dec2003     0   2001    0     1   52.20534      19068 </span>|
+  5. | <span class="stres">22dec1998   31dec2003     0   1835    0     1   71.36482      26066 </span>|
+     |---------------------------------------------------------------------|
+  6. | <span class="stres">23jan1998   31dec2003     0   2168    0     1   41.65914      15216 </span>|
+  7. | <span class="stres">16jul1998   31dec2003     0   1994    0     1   65.86722      24058 </span>|
+  8. | <span class="stres">07jul1999   31dec2003     0   1638    0     1    38.8063      14174 </span>|
+  9. | <span class="stres">18aug1998   31dec2003     0   1961    0     1   61.37714      22418 </span>|
+ 10. | <span class="stres">01sep1999   01oct2003     0   1491    1     1   82.03423      29963 </span>|
+     +---------------------------------------------------------------------+
+</samp></pre>
+<p>Net Survival Estimates at 1, 2, 3, 4, and 5 years after diagnosis</p>
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">. stns list using lifetable_stns.dta if year(diagmdy)==1971, <span class="stcmt">///</span>
+&gt;         age(agediagindays=_age) period(diagmdy=yearindays) <span class="stcmt">///</span>
+&gt;         strata(dep) rate(rate_day) <span class="stcmt">///</span>
+&gt;         at(1/4 5, scalefactor(365.25) unit(year)) end_followup(3625.5)  <span class="stcmt">///     </span>
+&gt;         saving(cohort, replace)</span>
+<span class="stres">type of estimate: kaplan-meier</span>
+
+<span class="stres">         </span>failure _d:  <span class="stres">dead == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">(finmdy-origin)</span>
+<span class="stres">             </span>origin:  <span class="stres">time diagmdy</span>
+  enter on or after:  <span class="stres">time diagmdy</span>
+
+<span class="stres">      </span>Time    Event    Beg.               Net             Net Surv.
+    (year)    Time     Total    Fail     Lost             Function     [95% Conf. Int.]
+---------------------------------------------------------------------------------------
+         1     365 <span class="stres">    6061     1318        1               0.8013     0.7906    0.8120 </span>
+         2     730 <span class="stres">    4742      724        1               0.6949     0.6823    0.7076 </span>
+         3    1095 <span class="stres">    4017      575        4               0.6102     0.5966    0.6239 </span>
+         4    1461 <span class="stres">    3438      423        2               0.5478     0.5335    0.5621 </span>
+         5    1826 <span class="stres">    3013      334        0               0.4992     0.4844    0.5139 </span>
+---------------------------------------------------------------------------------------
+</samp></pre>
+<p>Ploting net surival estimates</p>
+<pre id="stlog-12" class="stlog"><samp><span class="stinp">. preserve <span class="stcmt">//Preserve data to plot ten-years net survival</span></span>
+
+<span class="stinp">. clear</span>
+
+<span class="stinp">. use cohort</span>
+
+<span class="stinp">. drop if time &gt; 1826.25 <span class="stcmt">//Keep just five-year net survival estimates</span></span>
+(767 observations deleted)
+
+<span class="stinp">. gen year=time/365.25</span>
+
+<span class="stinp">. twoway (connected survival year, sort msymbol(none)), <span class="stcmt">///</span>
+&gt;         yscale(range(0 1)) ylabel(0(.2)1, labels angle(horizontal) format(%9.1g)) <span class="stcmt">///</span>
+&gt;         ytitle("Net survival") xscale(range(0 5)) xlabel(, val angle(horizontal)) <span class="stcmt">///</span>
+&gt;         xtitle("Years since diagnosis") </span>
+
+<span class="stinp">. rm cohort.dta</span>
+
+<span class="stinp">. restore</span>
+</samp></pre>
+<figure id="fig-12">
+<figcaption>Figure 1.Five Years Net Survival for the Cohort of Breast Cancer 1971</figcaption>
+<a href="Cohort_12.png"><img alt="Cohort_12.png" src="Cohort_12.png"/></a>
+</figure>
+<p>Net Survival for the cohort of cancer incident cases diagnosed in 1971 and followed-up for 5 years</p>
+<p>All what you have to know about STNS:</br>
+1. if year(diagmdy) == 1971</br>
+2. age and period (specification of the linking variables to merge 1:1 the life table and the incident cases)</br>
+3. strata and rate (stratified Net Survial by deprivation)</br> 
+4. at (years of follow up to compute the Net Survival)</br>
+5. scale factor and unit</br>
+6. For display end_follow up (in days) and by (agegr dep)</br>
+7. saving option (really important!)</br>
+8. Please: read carefully the Stata stns help file and the Stata <a href="http://www.stata-journal.com/article.html?article=st0326">Journal article</a></p>
+<pre id="stlog-13" class="stlog"><samp><span class="stinp">. stns list using lifetable_stns.dta if year(diagmdy)==1971, <span class="stcmt">///</span>
+&gt;         age(agediagindays=_age) period(diagmdy=yearindays) <span class="stcmt">///</span>
+&gt;         strata(dep) rate(rate_day) <span class="stcmt">///</span>
+&gt;         at(1 2 3 4 5, scalefactor(365.25) unit(year)) end_followup(5480) by(agegr dep) <span class="stcmt">///</span>
+&gt;         saving(ASNetcohort_1971, replace)</span>
+<span class="stres">type of estimate: kaplan-meier</span>
+
+<span class="stres">         </span>failure _d:  <span class="stres">dead == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">(finmdy-origin)</span>
+<span class="stres">             </span>origin:  <span class="stres">time diagmdy</span>
+  enter on or after:  <span class="stres">time diagmdy</span>
+
+<span class="stres">      </span>Time    Event    Beg.               Net             Net Surv.
+    (year)    Time     Total    Fail     Lost             Function     [95% Conf. Int.]
+---------------------------------------------------------------------------------------
+agegr=1 Most affluent 
+         1     336 <span class="stres">     190       18        0               0.9064     0.8649    0.9480 </span>
+         2     719 <span class="stres">     172       21        0               0.7970     0.7396    0.8544 </span>
+         3    1076 <span class="stres">     151       14        2               0.7239     0.6600    0.7878 </span>
+         4    1408 <span class="stres">     135       19        0               0.6230     0.5536    0.6925 </span>
+         5    1801 <span class="stres">     116       11        0               0.5652     0.4940    0.6363 </span>
+agegr=1 2 
+         1     347 <span class="stres">     150       23        0               0.8479     0.7905    0.9053 </span>
+         2     679 <span class="stres">     127       11        0               0.7756     0.7088    0.8425 </span>
+         3    1084 <span class="stres">     116       13        0               0.6901     0.6159    0.7643 </span>
+         4    1417 <span class="stres">     103        8        0               0.6377     0.5605    0.7149 </span>
+         5    1789 <span class="stres">      95       12        0               0.5584     0.4785    0.6382 </span>
+agegr=1 3 
+         1     352 <span class="stres">     138       17        0               0.8783     0.8236    0.9330 </span>
+         2     703 <span class="stres">     121       15        0               0.7708     0.7004    0.8411 </span>
+         3    1080 <span class="stres">     106       16        0               0.6559     0.5764    0.7354 </span>
+         4    1446 <span class="stres">      90        6        0               0.6136     0.5320    0.6953 </span>
+         5    1723 <span class="stres">      84        6        0               0.5708     0.4877    0.6539 </span>
+agegr=1 4 
+         1     331 <span class="stres">     144       13        0               0.9113     0.8645    0.9580 </span>
+         2     640 <span class="stres">     131       15        0               0.8083     0.7437    0.8729 </span>
+         3    1092 <span class="stres">     116       13        0               0.7197     0.6459    0.7935 </span>
+         4    1447 <span class="stres">     103        9        1               0.6582     0.5801    0.7363 </span>
+         5    1620 <span class="stres">      93        5        0               0.6235     0.5437    0.7034 </span>
+agegr=1 Most deprived 
+         1     357 <span class="stres">     126       25        0               0.8034     0.7339    0.8728 </span>
+         2     701 <span class="stres">     101       14        0               0.6936     0.6130    0.7743 </span>
+         3    1045 <span class="stres">      87       11        0               0.6074     0.5218    0.6929 </span>
+         4    1430 <span class="stres">      76        9        0               0.5372     0.4498    0.6247 </span>
+         5    1805 <span class="stres">      67        6        0               0.4907     0.4028    0.5786 </span>
+agegr=2 Most affluent 
+         1     365 <span class="stres">     293       35        0               0.8835     0.8463    0.9207 </span>
+         2     728 <span class="stres">     258       25        0               0.8008     0.7544    0.8473 </span>
+         3    1093 <span class="stres">     233       22        0               0.7282     0.6764    0.7801 </span>
+         4    1396 <span class="stres">     211       17        0               0.6721     0.6172    0.7269 </span>
+         5    1808 <span class="stres">     194       17        0               0.6165     0.5595    0.6734 </span>
+agegr=2 2 
+         1     352 <span class="stres">     231       31        0               0.8690     0.8250    0.9130 </span>
+         2     694 <span class="stres">     200       17        0               0.7982     0.7456    0.8508 </span>
+         3    1076 <span class="stres">     183       25        0               0.6925     0.6320    0.7530 </span>
+         4    1458 <span class="stres">     158       11        0               0.6476     0.5846    0.7105 </span>
+         5    1745 <span class="stres">     147       14        0               0.5882     0.5233    0.6532 </span>
+agegr=2 3 
+         1     362 <span class="stres">     245       33        0               0.8691     0.8263    0.9119 </span>
+         2     728 <span class="stres">     212       18        0               0.7992     0.7480    0.8503 </span>
+         3    1087 <span class="stres">     194       22        0               0.7121     0.6541    0.7700 </span>
+         4    1460 <span class="stres">     172       22        0               0.6244     0.5623    0.6865 </span>
+         5    1797 <span class="stres">     150       13        0               0.5737     0.5101    0.6373 </span>
+agegr=2 4 
+         1     353 <span class="stres">     229       39        0               0.8337     0.7849    0.8825 </span>
+         2     713 <span class="stres">     190       27        0               0.7190     0.6599    0.7781 </span>
+         3    1031 <span class="stres">     163       14        0               0.6605     0.5980    0.7231 </span>
+         4    1377 <span class="stres">     149       12        0               0.6106     0.5460    0.6753 </span>
+         5    1704 <span class="stres">     137       12        0               0.5604     0.4943    0.6264 </span>
+agegr=2 Most deprived 
+         1     356 <span class="stres">     219       32        0               0.8590     0.8120    0.9060 </span>
+         2     716 <span class="stres">     187       32        0               0.7166     0.6558    0.7775 </span>
+         3    1092 <span class="stres">     155       23        0               0.6146     0.5487    0.6805 </span>
+         4    1439 <span class="stres">     132       12        0               0.5626     0.4950    0.6301 </span>
+         5    1820 <span class="stres">     120       12        0               0.5107     0.4423    0.5790 </span>
+agegr=3 Most affluent 
+         1     351 <span class="stres">     308       48        0               0.8518     0.8110    0.8926 </span>
+         2     730 <span class="stres">     260       37        0               0.7382     0.6874    0.7890 </span>
+         3    1082 <span class="stres">     223       36        0               0.6256     0.5695    0.6817 </span>
+         4    1444 <span class="stres">     187       20        0               0.5658     0.5080    0.6236 </span>
+         5    1826 <span class="stres">     167       16        0               0.5187     0.4598    0.5775 </span>
+agegr=3 2 
+         1     363 <span class="stres">     332       47        0               0.8672     0.8294    0.9050 </span>
+         2     730 <span class="stres">     285       41        1               0.7506     0.7022    0.7990 </span>
+         3    1056 <span class="stres">     243       33        0               0.6555     0.6021    0.7089 </span>
+         4    1402 <span class="stres">     210       21        0               0.5972     0.5417    0.6527 </span>
+         5    1826 <span class="stres">     189       23        0               0.5328     0.4757    0.5899 </span>
+agegr=3 3 
+         1     343 <span class="stres">     345       65        0               0.8199     0.7783    0.8615 </span>
+         2     729 <span class="stres">     280       38        0               0.7174     0.6681    0.7667 </span>
+         3    1084 <span class="stres">     242       36        0               0.6178     0.5644    0.6713 </span>
+         4    1456 <span class="stres">     206       29        0               0.5381     0.4828    0.5933 </span>
+         5    1815 <span class="stres">     177       21        0               0.4807     0.4249    0.5365 </span>
+agegr=3 4 
+         1     362 <span class="stres">     338       66        0               0.8145     0.7718    0.8572 </span>
+         2     725 <span class="stres">     272       58        0               0.6491     0.5965    0.7017 </span>
+         3    1079 <span class="stres">     214       26        0               0.5779     0.5229    0.6328 </span>
+         4    1451 <span class="stres">     188       22        0               0.5184     0.4623    0.5745 </span>
+         5    1794 <span class="stres">     166       13        0               0.4853     0.4286    0.5420 </span>
+agegr=3 Most deprived 
+         1     333 <span class="stres">     261       42        0               0.8502     0.8051    0.8952 </span>
+         2     719 <span class="stres">     219       38        0               0.7142     0.6568    0.7717 </span>
+         3    1089 <span class="stres">     181       34        0               0.5900     0.5271    0.6528 </span>
+         4    1456 <span class="stres">     147       23        0               0.5069     0.4425    0.5713 </span>
+         5    1821 <span class="stres">     124       15        0               0.4542     0.3894    0.5191 </span>
+agegr=4 Most affluent 
+         1     364 <span class="stres">     270       39        0               0.8776     0.8346    0.9206 </span>
+         2     686 <span class="stres">     231       30        0               0.7828     0.7281    0.8375 </span>
+         3    1095 <span class="stres">     201       28        0               0.6963     0.6339    0.7588 </span>
+         4    1457 <span class="stres">     173       21        0               0.6325     0.5657    0.6992 </span>
+         5    1806 <span class="stres">     152       20        0               0.5701     0.5005    0.6397 </span>
+agegr=4 2 
+         1     361 <span class="stres">     310       70        0               0.7944     0.7467    0.8421 </span>
+         2     716 <span class="stres">     240       29        0               0.7181     0.6634    0.7728 </span>
+         3    1074 <span class="stres">     211       21        0               0.6675     0.6086    0.7264 </span>
+         4    1457 <span class="stres">     190       25        0               0.6007     0.5380    0.6634 </span>
+         5    1816 <span class="stres">     165       12        0               0.5786     0.5133    0.6439 </span>
+agegr=4 3 
+         1     365 <span class="stres">     329       77        1               0.7872     0.7403    0.8342 </span>
+         2     717 <span class="stres">     251       39        0               0.6849     0.6303    0.7395 </span>
+         3    1093 <span class="stres">     212       42        0               0.5678     0.5087    0.6270 </span>
+         4    1383 <span class="stres">     170       24        0               0.5019     0.4414    0.5625 </span>
+         5    1810 <span class="stres">     146       17        0               0.4658     0.4034    0.5281 </span>
+agegr=4 4 
+         1     365 <span class="stres">     298       67        0               0.7988     0.7500    0.8475 </span>
+         2     719 <span class="stres">     231       33        0               0.7066     0.6496    0.7636 </span>
+         3    1087 <span class="stres">     198       36        2               0.5984     0.5360    0.6608 </span>
+         4    1417 <span class="stres">     160       13        0               0.5700     0.5051    0.6349 </span>
+         5    1791 <span class="stres">     147       21        0               0.5115     0.4443    0.5786 </span>
+agegr=4 Most deprived 
+         1     363 <span class="stres">     213       66        0               0.7141     0.6502    0.7781 </span>
+         2     683 <span class="stres">     147       30        0               0.5871     0.5159    0.6583 </span>
+         3    1070 <span class="stres">     117       15        0               0.5351     0.4605    0.6096 </span>
+         4    1420 <span class="stres">     102       16        1               0.4704     0.3939    0.5470 </span>
+         5    1824 <span class="stres">      85       14        0               0.4157     0.3378    0.4937 </span>
+agegr=5 Most affluent 
+         1     361 <span class="stres">     228       90        0               0.6623     0.5927    0.7318 </span>
+         2     693 <span class="stres">     138       22        0               0.6058     0.5273    0.6843 </span>
+         3    1092 <span class="stres">     116       24        0               0.5344     0.4475    0.6212 </span>
+         4    1433 <span class="stres">      92       14        0               0.5025     0.4092    0.5957 </span>
+         5    1822 <span class="stres">      78       13        0               0.4602     0.3575    0.5629 </span>
+agegr=5 2 
+         1     358 <span class="stres">     240       96        0               0.6522     0.5844    0.7201 </span>
+         2     728 <span class="stres">     144       42        0               0.5078     0.4329    0.5827 </span>
+         3    1090 <span class="stres">     102       24        0               0.4249     0.3459    0.5039 </span>
+         4    1461 <span class="stres">      78       11        0               0.4015     0.3167    0.4863 </span>
+         5    1818 <span class="stres">      67       11        0               0.3733     0.2842    0.4624 </span>
+agegr=5 3 
+         1     364 <span class="stres">     244      102        0               0.6414     0.5733    0.7096 </span>
+         2     704 <span class="stres">     142       34        0               0.5329     0.4569    0.6090 </span>
+         3    1059 <span class="stres">     108       23        0               0.4628     0.3816    0.5440 </span>
+         4    1461 <span class="stres">      85       20        0               0.3992     0.3137    0.4846 </span>
+         5    1826 <span class="stres">      65       12        0               0.3636     0.2731    0.4541 </span>
+agegr=5 4 
+         1     349 <span class="stres">     213      102        0               0.5728     0.4991    0.6464 </span>
+         2     712 <span class="stres">     111       31        0               0.4586     0.3793    0.5379 </span>
+         3    1081 <span class="stres">      80       13        0               0.4293     0.3435    0.5151 </span>
+         4    1407 <span class="stres">      67       22        0               0.3243     0.2401    0.4085 </span>
+         5    1756 <span class="stres">      45        9        0               0.2873     0.1976    0.3770 </span>
+agegr=5 Most deprived 
+         1     358 <span class="stres">     167       75        0               0.6097     0.5261    0.6933 </span>
+         2     725 <span class="stres">      92       27        0               0.4818     0.3900    0.5737 </span>
+         3    1062 <span class="stres">      65       11        0               0.4491     0.3506    0.5476 </span>
+         4    1452 <span class="stres">      54       17        0               0.3390     0.2353    0.4427 </span>
+         5    1796 <span class="stres">      37        9        0               0.2818     0.1785    0.3850 </span>
+---------------------------------------------------------------------------------------
+</samp></pre>
+<p>Loading Net Survival estimates and checking consistency</p>
+<pre id="stlog-14" class="stlog"><samp><span class="stinp">. clear </span>
+
+<span class="stinp">. use ASNetcohort_1971.dta</span>
+((All Cases 1971-2001, final datasets))
+
+<span class="stinp">. list time if time==5480 &amp; dep==1 &amp; agegr==1 <span class="stcmt">//checking consistency</span></span>
+
+      +------+
+      | <span class="stres">time </span>|
+      |------|
+ 123. | <span class="stres">5480 </span>|
+      +------+
+</samp></pre>
+<p>Undesrtanding the results derived from STNS Stata command</p>
+<pre id="stlog-15" class="stlog"><samp><span class="stinp">. describe</span>
+
+Contains data from <span class="stres">ASNetcohort_1971.dta</span>
+  obs:<span class="stres">         4,677                          (All Cases 1971-2001, final datasets)</span>
+ vars:<span class="stres">            20                          28 Mar 2017 15:20</span>
+ size:<span class="stres">       612,687                          </span>
+--------------------------------------------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+--------------------------------------------------------------------------------------------------------------------
+<span class="stres">dep            </span> byte    %13.0g     caquintlbl
+                                              <span class="stres">Deprivation quintile</span>
+<span class="stres">agegr          </span> float   %9.0g                 <span class="stres">Five age groups for standardisation</span>
+<span class="stres">idgrp          </span> int     %8.0g                 
+<span class="stres">time           </span> double  %10.0g                <span class="stres">time of events</span>
+<span class="stres">survival       </span> double  %10.0g                <span class="stres">net survival estimate</span>
+<span class="stres">lower_bound    </span> double  %10.0g                <span class="stres">lower_bound of CI of net survival</span>
+<span class="stres">upper_bound    </span> double  %10.0g                <span class="stres">upper_bound of CI of net survival</span>
+<span class="stres">cum_hazard     </span> double  %10.0g                <span class="stres">net cumulative hazard estimate</span>
+<span class="stres">ch_lower_bound </span> double  %10.0g                <span class="stres">lower_bound of CI of the net cumulative hazard</span>
+<span class="stres">ch_upper_bound </span> double  %10.0g                <span class="stres">upper_bound of CI of the net cumulative hazard</span>
+<span class="stres">std_err        </span> double  %10.0g                <span class="stres">standard error of net cummulative hazard estimate</span>
+<span class="stres">n_risk         </span> long    %12.0g                <span class="stres">number at risk</span>
+<span class="stres">n_event        </span> long    %12.0g                <span class="stres">number of event</span>
+<span class="stres">n_censor       </span> long    %12.0g                <span class="stres">number censor</span>
+<span class="stres">dLw            </span> double  %10.0g                <span class="stres">increment excess net hazard estimate</span>
+<span class="stres">dstderr        </span> double  %10.0g                <span class="stres">standard error of increment excess net hazard estimate</span>
+<span class="stres">vnum1          </span> double  %10.0g                <span class="stres">weighted observed number of event</span>
+<span class="stres">vnum2          </span> double  %10.0g                <span class="stres">weighted expected number of event</span>
+<span class="stres">vnumerr        </span> double  %10.0g                <span class="stres">term for computation of standard error of excess net hazard estimate</span>
+                                                <span class="stres">(dstderr)</span>
+<span class="stres">vden           </span> double  %10.0g                <span class="stres">weighted number at risk</span>
+--------------------------------------------------------------------------------------------------------------------
+Sorted by: <span class="stres">agegr  dep  time</span>
+
+<span class="stinp">. list dep agegr time survival std_err lower_bound upper_bound in 1/10</span>
+
+     +------------------------------------------------------------------------------+
+     | <span class="stres">          dep   agegr   time    survival     std_err   lower_b~d   upper_b~d </span>|
+     |------------------------------------------------------------------------------|
+  1. | <span class="stres">Most affluent       1     30   .99484885   .00526325   .98458621   1.0051115 </span>|
+  2. | <span class="stres">Most affluent       1     42   .98962953   .00746324   .97515354   1.0041055 </span>|
+  3. | <span class="stres">Most affluent       1     71   .98447326   .00916471   .96678966   1.0021569 </span>|
+  4. | <span class="stres">Most affluent       1     81   .97924578   .01061076   .95888069   .99961086 </span>|
+  5. | <span class="stres">Most affluent       1    116    .9741107   .01189493   .95140065   .99682076 </span>|
+     |------------------------------------------------------------------------------|
+  6. | <span class="stres">Most affluent       1    151   .96897348   .01306597    .9441592   .99378777 </span>|
+  7. | <span class="stres">Most affluent       1    184   .96382891   .01415133   .93709605   .99056176 </span>|
+  8. | <span class="stres">Most affluent       1    216   .95868288   .01516873   .93018107   .98718468 </span>|
+  9. | <span class="stres">Most affluent       1    218   .95342578   .01613213   .92327998   .98357157 </span>|
+ 10. | <span class="stres">Most affluent       1    232   .94820779   .01705272   .91651611   .97989947 </span>|
+     +------------------------------------------------------------------------------+
+</samp></pre>
+<p>Keep results for just five-year Net Survival estimates</p>
+<p>Q: What do you have to make in order to get 10 years survival?</p>
+<p>A: drop if time > ???. Remember: 365.25 x Years (display 365.25*10)
+<pre id="stlog-16" class="stlog"><samp><span class="stinp">. display 365.25*10</span>
+<span class="stres">3652.5</span>
+
+<span class="stinp">. display 365.25*5</span>
+<span class="stres">1826.25</span>
+
+<span class="stinp">. drop if time &gt; 1826.25</span>
+(1,516 observations deleted)
+
+<span class="stinp">. bysort dep agegr (time): keep if _n == _N</span>
+(3,136 observations deleted)
+</samp></pre>
+<h3>III) Dealing with ICSS WEIGHTS</h3>
+<p>International Cancer Survival Standard (ICSS) weights </br> 
+(Corazziari I, Quinn M, Capocaccia R. Eur J Cancer. 2004; 40: 2307-16. Standard cancer patient population for age standardising survival ratios.)</p>
+<p>Q: Where do you can get the information of the weights for other cancer sites?</p>
+<p>A: Check out the Stata do file provide for the exercise and Corazziari et al. European Journal of Cancer. 2004</p>
+<pre id="stlog-17" class="stlog"><samp><span class="stinp">. gen weight=. </span>
+(25 missing values generated)
+
+<span class="stinp">. *Standard cancer population one (stomach, colon, rectum, liver, lung, breast, ovary, leukaemia)</span>
+<span class="stinp">. replace weight=.07 if agegr==1</span>
+(5 real changes made)
+
+<span class="stinp">. replace weight=.12 if agegr==2</span>
+(5 real changes made)
+
+<span class="stinp">. replace weight=.23 if agegr==3</span>
+(5 real changes made)
+
+<span class="stinp">. replace weight=.29 if agegr==4</span>
+(5 real changes made)
+
+<span class="stinp">. replace weight=.29 if agegr==5</span>
+(5 real changes made)
+</samp></pre>
+<h3>IV) Age-Standardised Net Survival estimation</h3>
+<p>Weighted NET SURVIVAL estimate: from Corazziari et al. European Journal of Cancer. 2004</p>
+<pre id="stlog-18" class="stlog"><samp><span class="stinp">. bysort <span class="stcmt">/*insert relevant variables*/</span> dep (agegr): gen s1ASN = (surv*weight)</span>
+
+<span class="stinp">. list agegr dep surv weight s1ASN</span>
+
+     +-------------------------------------------------------+
+     | <span class="stres">agegr             dep    survival   weight      s1ASN </span>|
+     |-------------------------------------------------------|
+  1. | <span class="stres">    1   Most affluent   .56518089      .07   .0395627 </span>|
+  2. | <span class="stres">    2   Most affluent   .61645123      .12   .0739741 </span>|
+  3. | <span class="stres">    3   Most affluent   .51865789      .23   .1192913 </span>|
+  4. | <span class="stres">    4   Most affluent   .57010041      .29   .1653291 </span>|
+  5. | <span class="stres">    5   Most affluent   .46020791      .29   .1334603 </span>|
+     |-------------------------------------------------------|
+  6. | <span class="stres">    1               2   .55835898      .07   .0390851 </span>|
+  7. | <span class="stres">    2               2   .58824453      .12   .0705893 </span>|
+  8. | <span class="stres">    3               2   .53280854      .23    .122546 </span>|
+  9. | <span class="stres">    4               2   .57861378      .29    .167798 </span>|
+ 10. | <span class="stres">    5               2   .37331449      .29   .1082612 </span>|
+     |-------------------------------------------------------|
+ 11. | <span class="stres">    1               3   .57082314      .07   .0399576 </span>|
+ 12. | <span class="stres">    2               3   .57370308      .12   .0688444 </span>|
+ 13. | <span class="stres">    3               3   .48073144      .23   .1105682 </span>|
+ 14. | <span class="stres">    4               3   .46575661      .29   .1350694 </span>|
+ 15. | <span class="stres">    5               3   .36356431      .29   .1054337 </span>|
+     |-------------------------------------------------------|
+ 16. | <span class="stres">    1               4    .6235172      .07   .0436462 </span>|
+ 17. | <span class="stres">    2               4   .56036181      .12   .0672434 </span>|
+ 18. | <span class="stres">    3               4   .48532551      .23   .1116249 </span>|
+ 19. | <span class="stres">    4               4   .51149627      .29   .1483339 </span>|
+ 20. | <span class="stres">    5               4   .28731031      .29     .08332 </span>|
+     |-------------------------------------------------------|
+ 21. | <span class="stres">    1   Most deprived   .49070655      .07   .0343495 </span>|
+ 22. | <span class="stres">    2   Most deprived   .51067644      .12   .0612812 </span>|
+ 23. | <span class="stres">    3   Most deprived   .45424791      .23    .104477 </span>|
+ 24. | <span class="stres">    4   Most deprived   .41574839      .29    .120567 </span>|
+ 25. | <span class="stres">    5   Most deprived   .28176033      .29   .0817105 </span>|
+     +-------------------------------------------------------+
+
+<span class="stinp">. display .70528846*.07</span>
+<span class="stres">.04937019</span>
+
+<span class="stinp">. bysort <span class="stcmt">/*insert relevant variables*/</span> dep (agegr): egen  ASNS = sum(s1ASN)</span>
+
+<span class="stinp">. list agegr dep surv weight s1ASN ASNS </span>
+
+     +------------------------------------------------------------------+
+     | <span class="stres">agegr             dep    survival   weight      s1ASN       ASNS </span>|
+     |------------------------------------------------------------------|
+  1. | <span class="stres">    1   Most affluent   .56518089      .07   .0395627   .5316175 </span>|
+  2. | <span class="stres">    2   Most affluent   .61645123      .12   .0739741   .5316175 </span>|
+  3. | <span class="stres">    3   Most affluent   .51865789      .23   .1192913   .5316175 </span>|
+  4. | <span class="stres">    4   Most affluent   .57010041      .29   .1653291   .5316175 </span>|
+  5. | <span class="stres">    5   Most affluent   .46020791      .29   .1334603   .5316175 </span>|
+     |------------------------------------------------------------------|
+  6. | <span class="stres">    1               2   .55835898      .07   .0390851   .5082796 </span>|
+  7. | <span class="stres">    2               2   .58824453      .12   .0705893   .5082796 </span>|
+  8. | <span class="stres">    3               2   .53280854      .23    .122546   .5082796 </span>|
+  9. | <span class="stres">    4               2   .57861378      .29    .167798   .5082796 </span>|
+ 10. | <span class="stres">    5               2   .37331449      .29   .1082612   .5082796 </span>|
+     |------------------------------------------------------------------|
+ 11. | <span class="stres">    1               3   .57082314      .07   .0399576   .4598733 </span>|
+ 12. | <span class="stres">    2               3   .57370308      .12   .0688444   .4598733 </span>|
+ 13. | <span class="stres">    3               3   .48073144      .23   .1105682   .4598733 </span>|
+ 14. | <span class="stres">    4               3   .46575661      .29   .1350694   .4598733 </span>|
+ 15. | <span class="stres">    5               3   .36356431      .29   .1054337   .4598733 </span>|
+     |------------------------------------------------------------------|
+ 16. | <span class="stres">    1               4    .6235172      .07   .0436462   .4541684 </span>|
+ 17. | <span class="stres">    2               4   .56036181      .12   .0672434   .4541684 </span>|
+ 18. | <span class="stres">    3               4   .48532551      .23   .1116249   .4541684 </span>|
+ 19. | <span class="stres">    4               4   .51149627      .29   .1483339   .4541684 </span>|
+ 20. | <span class="stres">    5               4   .28731031      .29     .08332   .4541684 </span>|
+     |------------------------------------------------------------------|
+ 21. | <span class="stres">    1   Most deprived   .49070655      .07   .0343495   .4023852 </span>|
+ 22. | <span class="stres">    2   Most deprived   .51067644      .12   .0612812   .4023852 </span>|
+ 23. | <span class="stres">    3   Most deprived   .45424791      .23    .104477   .4023852 </span>|
+ 24. | <span class="stres">    4   Most deprived   .41574839      .29    .120567   .4023852 </span>|
+ 25. | <span class="stres">    5   Most deprived   .28176033      .29   .0817105   .4023852 </span>|
+     +------------------------------------------------------------------+
+</samp></pre>
+<h3>Remember: <font color="blue"><mark>H(t) = -ln(S(t)) ==> exp(-H(t)) = S(t)</mark></font></h3>
+<h3>V) Age-Standardised Net Survival Statistical Inference</h3>
+<p>Weighted STANDARD ERROR of the net survival estimate. The formula for the the standard error for net survival (se_ns) is derived from the DELTA METHOD
+based on Clayton and Hills. Statistical Models in Epidemiology, 1993</p>
+<pre id="stlog-19" class="stlog"><samp><span class="stinp">. gen ns=exp(-cum_hazard) <span class="stcmt">//using the Delta method we ned the cummulative hazard H(t).</span></span>
+
+<span class="stinp">. corr ns surv <span class="stcmt">//checking consistency</span></span>
+(obs=25)
+
+             |       ns survival
+-------------+------------------
+          ns |<span class="stres">   1.0000</span>
+<span class="stres">    </span>survival |<span class="stres">   1.0000   1.0000</span>
+
+
+<span class="stinp">. gen se_ns=ns*std_err <span class="stcmt">//where std_err is the standard error of the cumulative hazard and ns is the survival estimat</span>
+&gt; e from stns</span>
+
+<span class="stinp">. bysort <span class="stcmt">/*insert relevant variables*/</span> dep (agegr): gen seASN = sqrt(sum((se_ns*weight)^2))</span>
+
+<span class="stinp">. //Keep age-standardise estimate by deprivation</span>
+<span class="stinp">. bysort <span class="stcmt">/*insert relevant variables*/</span> dep (agegr): keep if _n == _N</span>
+(20 observations deleted)
+</samp></pre>
+<p>95%CIs from Corazziari et al. European Journal of Cancer. 2004 and Clayton and Hills. Statistical Models in Epidemiology, 1993</p>
+<pre id="stlog-20" class="stlog"><samp><span class="stinp">. gen L95CI=(ASNS/exp(1.96*seASN/ASNS))</span>
+
+<span class="stinp">. gen U95CI=(ASNS*exp(1.96*seASN/ASNS))</span>
+</samp></pre>
+<h3>VI) Age-standardised Five-year Net Survival by Deprivation, for the Cohort 1971</h3>
+<pre id="stlog-21" class="stlog"><samp><span class="stinp">. list dep survival ASNS L95CI U95CI </span>
+
+     +------------------------------------------------------------+
+     | <span class="stres">          dep    survival       ASNS      L95CI      U95CI </span>|
+     |------------------------------------------------------------|
+  1. | <span class="stres">Most affluent   .46020791   .5316175    .493679   .5724715 </span>|
+  2. | <span class="stres">            2   .37331449   .5082796   .4736013   .5454971 </span>|
+  3. | <span class="stres">            3   .36356431   .4598733   .4255474    .496968 </span>|
+  4. | <span class="stres">            4   .28731031   .4541684   .4192516   .4919932 </span>|
+  5. | <span class="stres">Most deprived   .28176033   .4023852   .3628127   .4462739 </span>|
+     +------------------------------------------------------------+
+
+<span class="stinp">. eclplot ASNS L95CI U95CI dep, hori estopts(msize(vlarge)) ciopts(msize(vlarge)) yscale(range(1 6)) xline(0,lpatter
+&gt; n(dot)) xtitle("Age-Standardised Net Survival")</span>
+</samp></pre>
+<figure id="fig-21">
+<figcaption>Figure 2. Age-Standardised Five-year Net Survival for the Breast Cancer Cohort of 1971</figcaption>
+<a href="Cohort_21.png"><img alt="Cohort_21.png" src="Cohort_21.png"/></a>
+</figure>
+
+<h3><font color="blue">THANK YOU FOR YOUR ATTENTION</font></h3>
+
+</body>
+</html>
+</body>
+</html>
