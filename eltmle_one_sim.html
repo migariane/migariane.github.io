@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>OneSimulation.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  max-width: 800px;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<style>
+.stlog { color: #00FF00; background-color: #000000; }
+.stres { color: #FFFF00; }
+.stinp { color: #FFFFFF; }
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<html>
+<head>
+<title>ELTMLE vs. others ATE estimators (RA, IPTW, IPTW-RA, and AIPTW)</title>
+</head>
+<body>
+<h2>2017 LONDON STATA USERS GROUP MEETING</br>
+<p></p>
+Miguel Angel Luque Fernandez, BSc, MA, MPH, MSc, GStat(UK), PhD</br>
+Assistant Professor of Epidemiology</br>
+Cancer Survival Group, LSHTM, London, UK</br>
+<p></p>
+</h2>
+<h2>Content</h4>
+<h3>I) Data generation: one sample</br>
+<p></p>
+II)Dual misspecification: the worts-case scenario</br>
+<p></p>
+III) Results</br>
+<p></p>
+<p>Note: Data reproduce a Cancer Epidemiological example. The interpretation of the results is not applicable to real-world</p>
+
+<h3>I) Data generation: one sample</h3>
+<p>Setting your path and working directory</p>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. clear </span>
+
+<span class="stinp">. set more off</span>
+
+<span class="stinp">. cd "D:\Dropbox\SUML\OneSimulation"</span>
+<span class="stres">D:\Dropbox\SUML\OneSimulation</span>
+
+<span class="stinp">. //cd "Set your path"</span>
+</samp></pre>
+<p>One simulated dataset:</p>
+<p>w1=Socieconomic status, w2=Age, w3=Cancer stage, w4=Comorbidities</p>
+<p>Note: the interaction between age and comorbidities</p>
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">. set obs 1000</span>
+number of observations (_N) was 0, now 1,000
+
+<span class="stinp">. set seed 777</span>
+
+<span class="stinp">. gen w1    = round(runiform(1, 5)) <span class="stcmt">//Quintiles of Socioeconomic Deprivation</span></span>
+
+<span class="stinp">. gen w2    = rbinomial(1, 0.45) <span class="stcmt">//Binary: probability age &gt;65 = 0.45</span></span>
+
+<span class="stinp">. gen w3    = round(runiform(0, 1) + 0.75*(w2) + 0.8*(w1)) <span class="stcmt">//Stage </span></span>
+
+<span class="stinp">. recode w3 (5/6=1)       <span class="stcmt">//Stage (TNM): categorical 4 levels</span></span>
+(w3: 128 changes made)
+
+<span class="stinp">. gen w4    = round(runiform(0, 1) + 0.75*(w2) + 0.2*(w1)) <span class="stcmt">//Comorbidites: categorical four levels</span></span>
+
+<span class="stinp">. gen A     = (rbinomial(1,invlogit(-1 -  0.15*(w4) + 1.5*(w2) + 0.75*(w3) + 0.25*(w1) + 0.8*(w2)*(w4)))) <span class="stcmt">//Binary treatment</span></span>
+
+<span class="stinp">. gen Y     = (rbinomial(1,invlogit(-3 + A + 0.25*(w4) + 0.75*(w3) + 0.8*(w2)*(w4) + 0.05*(w1)))) <span class="stcmt">//Binary outcome</span></span>
+
+<span class="stinp">. // Potential outcomes</span>
+<span class="stinp">. gen Yt1 = (invlogit(-3 + 1 + 0.25*(w4) + 0.75*(w3) + 0.8*(w2)*(w4) + 0.05*(w1)))</span>
+
+<span class="stinp">. gen Yt0 = (invlogit(-3 + 0 + 0.25*(w4) + 0.75*(w3) + 0.8*(w2)*(w4) + 0.05*(w1)))</span>
+
+<span class="stinp">. // True ATE</span>
+<span class="stinp">. gen psi = Yt1-Yt0</span>
+</samp></pre>
+<p>TRUE SIMULATED ATE = 17.8%</p>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">. mean psi</span>
+
+Mean estimation                   Number of obs   = <span class="stres">     1,000</span>
+
+--------------------------------------------------------------
+             |       Mean   Std. Err.     [95% Conf. Interval]
+-------------+------------------------------------------------
+         psi |<span class="stres">   .1787412   .0020142      .1747886    .1826938</span>
+--------------------------------------------------------------
+</samp></pre>
+<p>Saving the data in your desktop</p>
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">. save CancerData.dta, replace</span>
+file CancerData.dta saved
+</samp></pre>
+<h3>II) ATE estimation</h3>
+<p>Note: We misspecified the models excluding the interaction between age and comorbidities</p>
+<p>Regression adjustment ATE= 13.6%</p>
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. teffects ra (Y w1 w2 w3 w4) (A)</span>
+
+Iteration 0:   EE criterion = <span class="stres"> 8.701e-32</span>  
+Iteration 1:   EE criterion = <span class="stres"> 1.434e-32</span>  
+
+Treatment-effects estimation                    Number of obs     = <span class="stres">     1,000</span>
+Estimator<span class="stres">      : regression adjustment</span>
+Outcome model<span class="stres">  : linear</span>
+Treatment model<span class="stres">: none</span>
+------------------------------------------------------------------------------
+             |               Robust
+           Y |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+<span class="stres">ATE          </span>|
+           A |
+   (1 vs 0)  |<span class="stres">   .2410504   .1148066     2.10   0.036     .0160336    .4660672</span>
+-------------+----------------------------------------------------------------
+<span class="stres">POmean       </span>|
+           A |
+          0  |<span class="stres">   .4739475   .1141366     4.15   0.000     .2502439     .697651</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store ra</span>
+</samp></pre>
+<p>Inverse probability weighting ATE = 32.1%</p>
+<pre id="stlog-6" class="stlog"><samp><span class="stinp">. teffects ipw (Y) (A w1 w2 w3 w4) </span>
+
+Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
+Iteration 1:   EE criterion = <span class="stres"> 2.840e-33</span>  
+
+Treatment-effects estimation                    Number of obs     = <span class="stres">     1,000</span>
+Estimator<span class="stres">      : inverse-probability weights</span>
+Outcome model<span class="stres">  : weighted mean</span>
+Treatment model<span class="stres">: logit</span>
+------------------------------------------------------------------------------
+             |               Robust
+           Y |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+<span class="stres">ATE          </span>|
+           A |
+   (1 vs 0)  |<span class="stres">    .378604   .0807516     4.69   0.000     .2203337    .5368743</span>
+-------------+----------------------------------------------------------------
+<span class="stres">POmean       </span>|
+           A |
+          0  |<span class="stres">   .3362695    .079327     4.24   0.000     .1807913    .4917476</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store ipw</span>
+</samp></pre>
+<p>IPTW-RA ATE = 13.9%</p>
+<pre id="stlog-7" class="stlog"><samp><span class="stinp">. teffects ipwra (Y w1 w2 w3 w4) (A w1 w2 w3 w4)</span>
+
+Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
+Iteration 1:   EE criterion = <span class="stres"> 5.128e-33</span>  
+
+Treatment-effects estimation                    Number of obs     = <span class="stres">     1,000</span>
+Estimator<span class="stres">      : IPW regression adjustment</span>
+Outcome model<span class="stres">  : linear</span>
+Treatment model<span class="stres">: logit</span>
+------------------------------------------------------------------------------
+             |               Robust
+           Y |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+<span class="stres">ATE          </span>|
+           A |
+   (1 vs 0)  |<span class="stres">   .3188398   .0706036     4.52   0.000     .1804593    .4572202</span>
+-------------+----------------------------------------------------------------
+<span class="stres">POmean       </span>|
+           A |
+          0  |<span class="stres">   .3958477   .0691749     5.72   0.000     .2602674    .5314281</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store ipwra</span>
+</samp></pre>
+<p>AIPTW ATE = 13.6%</p>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. teffects aipw (Y w1 w2 w3 w4) (A w1 w2 w3 w4)</span>
+
+Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
+Iteration 1:   EE criterion = <span class="stres"> 3.600e-33</span>  
+
+Treatment-effects estimation                    Number of obs     = <span class="stres">     1,000</span>
+Estimator<span class="stres">      : augmented IPW</span>
+Outcome model<span class="stres">  : linear by ML</span>
+Treatment model<span class="stres">: logit</span>
+------------------------------------------------------------------------------
+             |               Robust
+           Y |      Coef.   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+<span class="stres">ATE          </span>|
+           A |
+   (1 vs 0)  |<span class="stres">    .285314   .1152551     2.48   0.013     .0594183    .5112098</span>
+-------------+----------------------------------------------------------------
+<span class="stres">POmean       </span>|
+           A |
+          0  |<span class="stres">   .4293636   .1144905     3.75   0.000     .2049664    .6537608</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store aipw</span>
+</samp></pre>
+<h3>III) RESULTS</h3>
+<pre id="stlog-9" class="stlog"><samp><span class="stinp">. quie reg psi</span>
+
+<span class="stinp">. estimates store psi</span>
+
+<span class="stinp">. estout psi ra ipw ipwra aipw</span>
+
+-----------------------------------------------------------------------------
+                      psi           ra          ipw        ipwra         aipw
+                        b            b            b            b            b
+-----------------------------------------------------------------------------
+<span class="stres">main                                                                         </span>
+r1vs0.A     <span class="stres">                  .2410504      .378604     .3188398      .285314</span>
+_cons       <span class="stres">     .1787412                                                    </span>
+-----------------------------------------------------------------------------
+<span class="stres">POmean                                                                       </span>
+0.A         <span class="stres">                  .4739475     .3362695     .3958477     .4293636</span>
+-----------------------------------------------------------------------------
+<span class="stres">OME0                                                                         </span>
+w1          <span class="stres">                  .0395478                  .1119125     .0395478</span>
+w2          <span class="stres">                  .1770299                  -.098543     .1770299</span>
+w3          <span class="stres">                  .1715455                  .0389883     .1715455</span>
+w4          <span class="stres">                  .1019039                  .2425232     .1019039</span>
+_cons       <span class="stres">                 -.3331923                 -.3427923    -.3331923</span>
+-----------------------------------------------------------------------------
+<span class="stres">OME1                                                                         </span>
+w1          <span class="stres">                  .0100658                  .0071447     .0100658</span>
+w2          <span class="stres">                  .1529128                  .1510302     .1529128</span>
+w3          <span class="stres">                  .0867786                  .0859272     .0867786</span>
+w4          <span class="stres">                  .1157346                  .1193923     .1157346</span>
+_cons       <span class="stres">                  .2148979                  .2211646     .2148979</span>
+-----------------------------------------------------------------------------
+<span class="stres">TME1                                                                         </span>
+w1          <span class="stres">                                .200913      .200913      .200913</span>
+w2          <span class="stres">                               3.383105     3.383105     3.383105</span>
+w3          <span class="stres">                               .6876172     .6876172     .6876172</span>
+w4          <span class="stres">                              -.1261434    -.1261434    -.1261434</span>
+_cons       <span class="stres">                                -.85242      -.85242      -.85242</span>
+-----------------------------------------------------------------------------
+</samp></pre>
+<p>Ensemble Learning Maximum Likelihood Estimation (ELTMLE) ATE = 22.1%</p>
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">. eltmle Y A w1 w2 w3 w4, tmle</span>
+<span class="stres">D:\Dropbox\SUML\OneSimulation</span>
+
+<span class="stinp">. shell "C:\Program Files\R\R-3.3.2\bin\x64\R.exe" CMD BATCH SLS.R </span>
+
+<span class="stinp">. </span>
+end of do-file
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        POM1 |<span class="stres">      1,000    .7100199     .187985     .20515   .9727612</span>
+        POM0 |<span class="stres">      1,000    .4891232     .255392   .0454817   .9379262</span>
+          WT |<span class="stres">      1,000    .2563642    3.599528        -40   2.046998</span>
+          PS |<span class="stres">      1,000      .86845    .1383139   .4885203       .975</span>
+
+
+<span class="stres">TMLE: Average Causal Effect</span>
+
+<span class="stres">ACE (Risk Differences):    0.2209; SE:   0.05458; p-value: 0.0002; 95%CI:(0.1139, 0.3279)</span>
+
+
+<span class="stres">TMLE: Causal Relative Risk</span>
+
+<span class="stres">RR:   1.4516; 95%CI:(1.1314, 1.8624)</span>
+</samp></pre>
+<p>RELATIVE BIAS IPTW</p>
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">. display (0.38 - 0.18)/.38 </span>
+<span class="stres">.52631579</span>
+</samp></pre>
+<p>RELATIVE BIAS AIPTW</p>
+<pre id="stlog-12" class="stlog"><samp><span class="stinp">. display (0.28 - 0.18)/0.28</span>
+<span class="stres">.35714286</span>
+</samp></pre>
+<p>RELATIVE BIAS ELTMLE</p>
+<pre id="stlog-13" class="stlog"><samp><span class="stinp">. display (0.22 - 0.18)/0.22</span>
+<span class="stres">.18181818</span>
+</samp></pre>
+<h3><font color="blue">THANK YOU FOR YOUR ATTENTION</font></h3>
+</body>
+</html>
+</body>
+</html>
