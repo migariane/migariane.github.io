@@ -52,14 +52,18 @@ pre {
 <body>
 <html>
 <head>
-<title>ELTMLE vs. others ATE estimators (RA, IPTW, IPTW-RA, and AIPTW)</title>
+<title>ELTMLE vs. competitors (RA, IPTW, IPTW-RA, and AIPTW)</title>
 </head>
 <body>
 <h2>2017 LONDON STATA USERS GROUP MEETING</br>
 <p></p>
-Miguel Angel Luque Fernandez, BSc, MA, MPH, MSc, GStat(UK), PhD</br>
-Assistant Professor of Epidemiology</br>
-Cancer Survival Group, LSHTM, London, UK</br>
+*************************************************************************************
+*! 2017 STATA USERS GROUP MEETING LONDON</br>
+*! ELTMLE: Stata module for Ensemble Learning Targeted Maximum Likelihood Estimation</br>
+*! by Miguel Angel Luque-Fernandez, PhD [cre,aut]</br>
+*! Bug reports:</br>
+*! miguel-angel.luque at lshtm.ac.uk</br>
+**************************************************************************************
 <p></p>
 </h2>
 <h2>Content</h4>
@@ -130,7 +134,7 @@ file CancerData.dta saved
 </samp></pre>
 <h3>II) ATE estimation</h3>
 <p>Note: We misspecified the models excluding the interaction between age and comorbidities</p>
-<p>Regression adjustment ATE= 13.6%</p>
+<p>Regression adjustment ATE= 24.1%</p>
 <pre id="stlog-5" class="stlog"><samp><span class="stinp">. teffects ra (Y w1 w2 w3 w4) (A)</span>
 
 Iteration 0:   EE criterion = <span class="stres"> 8.701e-32</span>  
@@ -155,7 +159,7 @@ Treatment model<span class="stres">: none</span>
 
 <span class="stinp">. estimates store ra</span>
 </samp></pre>
-<p>Inverse probability weighting ATE = 32.1%</p>
+<p>Inverse probability weighting ATE = 37.9%</p>
 <pre id="stlog-6" class="stlog"><samp><span class="stinp">. teffects ipw (Y) (A w1 w2 w3 w4) </span>
 
 Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
@@ -180,7 +184,7 @@ Treatment model<span class="stres">: logit</span>
 
 <span class="stinp">. estimates store ipw</span>
 </samp></pre>
-<p>IPTW-RA ATE = 13.9%</p>
+<p>IPTW-RA ATE = 31.9%</p>
 <pre id="stlog-7" class="stlog"><samp><span class="stinp">. teffects ipwra (Y w1 w2 w3 w4) (A w1 w2 w3 w4)</span>
 
 Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
@@ -205,7 +209,7 @@ Treatment model<span class="stres">: logit</span>
 
 <span class="stinp">. estimates store ipwra</span>
 </samp></pre>
-<p>AIPTW ATE = 13.6%</p>
+<p>AIPTW ATE = 28.8%</p>
 <pre id="stlog-8" class="stlog"><samp><span class="stinp">. teffects aipw (Y w1 w2 w3 w4) (A w1 w2 w3 w4)</span>
 
 Iteration 0:   EE criterion = <span class="stres"> 3.522e-23</span>  
