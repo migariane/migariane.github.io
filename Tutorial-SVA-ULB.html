@@ -154,10 +154,10 @@ Contains data from <span class="stres">https://stats.idre.ucla.edu/stat/examples
   obs:<span class="stres">           100                          </span>
  vars:<span class="stres">             9                          5 Nov 2007 15:59</span>
  size:<span class="stres">         2,700                          </span>
-------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
               storage   display    value
 variable name   type    format     label      variable label
-------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
 <span class="stres">id             </span> byte    %8.0g                 
 <span class="stres">addate         </span> str8    %9s                   <span class="stres">Admission date</span>
 <span class="stres">foldate        </span> str8    %9s                   <span class="stres">Follow up date</span>
@@ -167,7 +167,7 @@ variable name   type    format     label      variable label
 <span class="stres">age            </span> byte    %8.0g                 
 <span class="stres">gender         </span> byte    %8.0g      gender     
 <span class="stres">bmi            </span> float   %9.0g                 
-------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
 Sorted by: 
 
 <span class="stinp">. list, sep(0) noobs</span>
@@ -329,8 +329,8 @@ time at risk          <span class="stres">    150540      1505.4           6    
 failures              <span class="stres">        51         .51           0          1          1</span>
 ------------------------------------------------------------------------------
 
-<span class="stinp">. stset exit, fail(folstatus==1) enter(time entry) origin(time entry) scale(365.25) <span class="stcmt">// Sca</span>
-&gt; le in years</span>
+<span class="stinp">. stset exit, fail(folstatus==1) enter(time entry) origin(time entry) scale(365.25) <span class="stcmt">// Scale i</span>
+&gt; n years</span>
 
      failure event:  <span class="stres">folstatus == 1</span>
 obs. time interval:  <span class="stres">(origin, exit]</span>
@@ -563,8 +563,8 @@ obs. time interval:  <span class="stres">(0, catyrfol]</span>
        total | <span class="stres">      100    1.472964      .7682197      .750171    3.29911</span>
 </samp></pre>
 <h4> Incidence Rate, person-time at risk and # of subjects</h4>
-<pre id="stlog-8" class="stlog"><samp><span class="stinp">. stsum <span class="stcmt">//Overall Incidence Rate and PTR (use it for your abstract and the results section</span>
-&gt;  of your paper)</span>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. stsum <span class="stcmt">//Overall Incidence Rate and PTR (use it for your abstract and the results section of </span>
+&gt; your paper)</span>
 
          failure _d:  <span class="stres">folstatus == 1</span>
 <span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
@@ -574,8 +574,8 @@ obs. time interval:  <span class="stres">(0, catyrfol]</span>
 ---------+---------------------------------------------------------------------
    total | <span class="stres"> 412.1560575   .1237395           100   1.472964   6.02601  7.419576</span>
 
-<span class="stinp">. stsum, by(gender) <span class="stcmt">//By levels of your categorical variables. Note 95%CI is not provided </span>
-&gt;         </span>
+<span class="stinp">. stsum, by(gender) <span class="stcmt">//By levels of your categorical variables. Note 95%CI is not provided     </span>
+&gt;     </span>
 
          failure _d:  <span class="stres">folstatus == 1</span>
 <span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
@@ -620,8 +620,7 @@ http://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_DiseaseFrequency/EP713_Disea
 -------------+---------------------------------------------------------
        yrfol |<span class="stres">        100    4.121561    2.351538   .0164271   7.444216</span>
 
-<span class="stinp">. strate <span class="stcmt">//    Y = 412.2 years at risk and Incidence Density or Rate per person-year at ri</span>
-&gt; sk</span>
+<span class="stinp">. strate <span class="stcmt">//    Y = 412.2 years at risk and Incidence Density or Rate per person-year at risk</span></span>
 
          failure _d:  <span class="stres">folstatus == 1</span>
 <span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
@@ -639,8 +638,7 @@ Estimated rates and lower/upper bounds of 95% confidence intervals
 <span class="stinp">. </span>
 <span class="stinp">. gen n = 1</span>
 
-<span class="stinp">. tabrate folstatus gender, exp(n) per(1000) <span class="stcmt">// Cumulative incidence (Proportion) over 8 y</span>
-&gt; ears</span>
+<span class="stinp">. tabrate folstatus gender, exp(n) per(1000) <span class="stcmt">// Cumulative incidence (Proportion) over 8 years</span></span>
 
 table of cases (D), person-years (Y), and rates per 1000 person-years
 
@@ -758,8 +756,8 @@ Approx test for unequal RRs (effect modification): chi2(<span class="stres">14</
 
 <span class="stinp">. label var naH "NA"</span>
 
-<span class="stinp">. twoway connected kmS naS _t, connect(J J) sort <span class="stcmt">// Survivor estimate using NA always &gt; th</span>
-&gt; an KM (simulations)</span>
+<span class="stinp">. twoway connected kmS naS _t, connect(J J) sort <span class="stcmt">// Survivor estimate using NA always &gt; than K</span>
+&gt; M (simulations)</span>
 </samp></pre>
 <figure id="fig-13">
 <figcaption>Figure 6: KM estimator vs exp(-NA)</figcaption>
@@ -812,8 +810,8 @@ time       0<span class="stres">     0.0000     0.0000</span>
      8.35626<span class="stres">          .          .</span>
 ----------------------------------
 
-<span class="stinp">. sts test gender, logrank <span class="stcmt">// Logrank Test (it is an extension of the Mantel-Haenszel appl</span>
-&gt; ied to survival)</span>
+<span class="stinp">. sts test gender, logrank <span class="stcmt">// Logrank Test (it is an extension of the Mantel-Haenszel applied </span>
+&gt; to survival)</span>
 
          failure _d:  <span class="stres">folstatus == 1</span>
 <span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
@@ -1344,8 +1342,8 @@ Likelihood-ratio test                                 LR chi2(<span class="stres
 (Assumption: A nested in B)                           Prob &gt; chi2 = <span class="stres">   0.0002</span>
 
 <span class="stinp">. </span>
-<span class="stinp">. tab agecat gender, row chi <span class="stcmt">// Do not forget crosstabulations: understanding your data is</span>
-&gt;  KEY!</span>
+<span class="stinp">. tab agecat gender, row chi <span class="stcmt">// Do not forget crosstabulations: understanding your data is KEY</span>
+&gt; !</span>
 
 +----------------+
 | Key            |
@@ -1491,8 +1489,8 @@ Log likelihood  =   <span class="stres">  -200.323                  </span>Prob 
 </figure>
 <h3 id="h-0-1-8"> Testing the proportional-hazards assumption</h3>
 <h4> Test based on Schoenfeld residuals: null hypothesi, slope residuals is zero</h4>
-<pre id="stlog-24" class="stlog"><samp><span class="stinp">. estat phtest <span class="stcmt">// There is no evidence that the model violates the proportional-hazards as</span>
-&gt; sumption          </span>
+<pre id="stlog-24" class="stlog"><samp><span class="stinp">. estat phtest <span class="stcmt">// There is no evidence that the model violates the proportional-hazards assump</span>
+&gt; tion          </span>
 
       Test of proportional-hazards assumption
 
@@ -1518,8 +1516,8 @@ Log likelihood  =   <span class="stres">  -200.323                  </span>Prob 
       ----------------------------------------------------------------
 </samp></pre>
 <h4> Visually based on -ln[-ln[S(t)]] versus time  for each level of the covariate in assessment</h4>
-<pre id="stlog-25" class="stlog"><samp><span class="stinp">. stphplot, by(gender) adjust(age) <span class="stcmt">//Curves are roughly parallel, providing evidence in fa</span>
-&gt; vor of the proportional hazard assumption of gender </span>
+<pre id="stlog-25" class="stlog"><samp><span class="stinp">. stphplot, by(gender) adjust(age) <span class="stcmt">//Curves are roughly parallel, providing evidence in favor </span>
+&gt; of the proportional hazard assumption of gender </span>
 
          failure _d:  <span class="stres">folstatus == 1</span>
 <span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
@@ -1616,8 +1614,8 @@ Log likelihood  =   <span class="stres">  -200.323                  </span>Prob 
          age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
 ------------------------------------------------------------------------------
 
-<span class="stinp">. predict cs, csnell <span class="stcmt">//Cox-Snell residuals have a standard censored exponential distributi</span>
-&gt; on with hazard ratio of one       </span>
+<span class="stinp">. predict cs, csnell <span class="stcmt">//Cox-Snell residuals have a standard censored exponential distribution w</span>
+&gt; ith hazard ratio of one       </span>
 
 <span class="stinp">. stset cs, fail(folstatus)</span>
 
