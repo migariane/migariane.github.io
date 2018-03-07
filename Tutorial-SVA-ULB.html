@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>Tutorial-SVA-ULB.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  max-width: 1500px;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<style>
+.stlog { color: #00FF00; background-color: #000000; }
+.stres { color: #FFFF00; }
+.stinp { color: #FFFFFF; }
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<ul>
+<ul>
+<li><a href="#h-0-1">TUTORIAL: TIME-TO-EVENT-ANALYSIS</br></a>
+<ul>
+<li><a href="#h-0-1-1"> I) Nonparametric estimation </a>
+</li>
+<li><a href="#h-0-1-2"> II) Discrete time Life Table KM: Survival and Cumulative Hazard</a>
+</li>
+<li><a href="#h-0-1-3"> III) Continuous time: The Kaplan-Meier product limit estimator</a>
+</li>
+<li><a href="#h-0-1-4">  IV) Cummulative Hazard: The Nelson-Aalen estimator</a>
+</li>
+<li><a href="#h-0-1-5"> V) Comparing Survival Time: Log-rank Test</a>
+</li>
+<li><a href="#h-0-1-6"> VI) The Cox Model in Stata: stcox </a>
+</li>
+<li><a href="#h-0-1-7"> VII) The Cox Model stratified analysis</a>
+</li>
+<li><a href="#h-0-1-8"> Testing the proportional-hazards assumption</a>
+</li>
+<li><a href="#h-0-1-9">VIII) Stratified analysis <h3>		  </a>
+</li>
+<li><a href="#h-0-1-10"> IX) Goodness of fit <h3>		  </a>
+</li>
+<li><a href="#h-0-1-11"> X) Flexible Parametric Survival <h3>		  </a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#h-1"><font color="blue">THANK YOU FOR YOUR ATTENTION</font></a>
+</li>
+</ul>
+<html>
+<head>
+<title> TUTORIAL TIME-TO-EVENT ANALYSIS</title>
+</head>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} });
+</script>
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<body>
+<h2 id="h-0-1">TUTORIAL: TIME-TO-EVENT-ANALYSIS</br>
+<p></p>
+ECOLE DE SANTE PUBLIQUE</br>
+UNIVERSITE LIBRE DE BRUXELLES</br>
+BRUSSELS, BELGIUM, 8th March 2018</br>
+<p></p>
+Miguel Angel Luque Fernandez</br>
+Miguel Servet I Biostatistics and Epidemiology</br>
+Biomedical Research Institute of Granada, University of Granada.</br>
+Andalusian School of Public Health, Granada, Spain</br>
+<p></p>
+</h2>
+<p>Copyright (c) 2017  <Miguel Angel Luque-Fernandez>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.<br>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p>
+<p>Bug reports: miguel.luque.easp at juntadeandalucia.es</p>
+<h3 id="h-0-1-1"> I) Nonparametric estimation </h3>
+<h4>DATA: Hosmer, D. W., Lemeshow, S. and May, S. (2008) Introduction to Regression Modeling of Survival Data, in Applied Survival Analysis: 
+Regression Modeling of Time-to-Event Data, Second Edition, John Wiley & Sons, Inc., Hoboken, NJ, USA. doi: 10.1002/9780470258019.</h4>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. set more off</span>
+
+<span class="stinp">. use https://stats.idre.ucla.edu/stat/examples/asa2/whas100, clear</span>
+
+<span class="stinp">. label define status 0 "alive" 1 "dead"</span>
+
+<span class="stinp">. label value folstatus status</span>
+
+<span class="stinp">. label define gender 0 "male" 1 "female"</span>
+
+<span class="stinp">. label value gender gender</span>
+
+<span class="stinp">. label var addate "Admission date"</span>
+
+<span class="stinp">. label var foldate "Follow up date"</span>
+
+<span class="stinp">. label var hosstay "Length of Hospital Stay in days"</span>
+
+<span class="stinp">. label var foltime "Follow Up Time"</span>
+
+<span class="stinp">. label var folstatus "Vital Status"</span>
+
+<span class="stinp">. describe </span>
+
+Contains data from <span class="stres">https://stats.idre.ucla.edu/stat/examples/asa2/whas100.dta</span>
+  obs:<span class="stres">           100                          </span>
+ vars:<span class="stres">             9                          5 Nov 2007 15:59</span>
+ size:<span class="stres">         2,700                          </span>
+------------------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+------------------------------------------------------------------------------------------
+<span class="stres">id             </span> byte    %8.0g                 
+<span class="stres">addate         </span> str8    %9s                   <span class="stres">Admission date</span>
+<span class="stres">foldate        </span> str8    %9s                   <span class="stres">Follow up date</span>
+<span class="stres">hosstay        </span> byte    %8.0g                 <span class="stres">Length of Hospital Stay in days</span>
+<span class="stres">foltime        </span> int     %8.0g                 <span class="stres">Follow Up Time</span>
+<span class="stres">folstatus      </span> byte    %8.0g      status     <span class="stres">Vital Status</span>
+<span class="stres">age            </span> byte    %8.0g                 
+<span class="stres">gender         </span> byte    %8.0g      gender     
+<span class="stres">bmi            </span> float   %9.0g                 
+------------------------------------------------------------------------------------------
+Sorted by: 
+
+<span class="stinp">. list, sep(0) noobs</span>
+
+  +------------------------------------------------------------------------------------+
+  | <span class="stres"> id     addate    foldate   hosstay   foltime   folsta~s   age   gender        bmi </span>|
+  |------------------------------------------------------------------------------------|
+  | <span class="stres">  1    3/13/95    3/19/95         4         6       dead    65     male   31.38134 </span>|
+  | <span class="stres">  2    1/14/95    1/23/96         5       374       dead    88   female    22.6579 </span>|
+  | <span class="stres">  3    2/17/95    10/4/01         5      2421       dead    77     male   27.87892 </span>|
+  | <span class="stres">  4     4/7/95    7/14/95         9        98       dead    81   female   21.47878 </span>|
+  | <span class="stres">  5     2/9/95    5/29/98         4      1205       dead    78     male   30.70601 </span>|
+  | <span class="stres">  6    1/16/95    9/11/00         7      2065       dead    82   female   26.45294 </span>|
+  | <span class="stres">  7    1/17/95   10/15/97         3      1002       dead    66   female   35.71147 </span>|
+  | <span class="stres">  8   11/15/94   11/24/00        56      2201       dead    81   female   28.27676 </span>|
+  | <span class="stres">  9    8/18/95    2/23/96         5       189       dead    76     male   27.12082 </span>|
+  | <span class="stres"> 10    7/22/95   12/31/02         9      2719      alive    40     male   21.78971 </span>|
+  | <span class="stres"> 11   10/11/95   12/31/02         6      2638      alive    73   female   28.43344 </span>|
+  | <span class="stres"> 12    5/26/95    9/29/96        11       492       dead    83     male   24.66175 </span>|
+  | <span class="stres"> 13    5/21/95    3/18/96         6       302       dead    64   female   27.46412 </span>|
+  | <span class="stres"> 14   12/14/95   12/31/02        10      2574      alive    58     male   29.83756 </span>|
+  | <span class="stres"> 15    11/8/95   12/31/02         7      2610      alive    43     male   22.95776 </span>|
+  | <span class="stres"> 16    10/8/95   12/31/02         5      2641      alive    39     male   30.10881 </span>|
+  | <span class="stres"> 17   10/17/95    5/12/00         6      1669       dead    66     male   31.99738 </span>|
+  | <span class="stres"> 18   10/30/95     1/5/03         9      2624       dead    61     male    30.7142 </span>|
+  | <span class="stres"> 19   12/10/95   12/31/02         6      2578      alive    49     male   25.69548 </span>|
+  | <span class="stres"> 20   11/23/95   12/31/02         5      2595      alive    53   female   30.12017 </span>|
+  | <span class="stres"> 21    10/5/95     2/5/96         6       123       dead    85     male   18.41038 </span>|
+  | <span class="stres"> 22    11/5/95   12/31/02         8      2613      alive    69   female   37.60097 </span>|
+  | <span class="stres"> 23     9/9/95   10/22/97         4       774       dead    54     male   28.97529 </span>|
+  | <span class="stres"> 24     9/9/95    3/13/01        14      2012       dead    82     male   19.90095 </span>|
+  | <span class="stres"> 25   12/15/95   12/31/02         4      2573      alive    67   female   28.32237 </span>|
+  | <span class="stres"> 26    12/3/95    1/19/01        11      1874       dead    89   female   23.43605 </span>|
+  | <span class="stres"> 27   10/18/95   12/31/02         2      2631      alive    68     male   26.44693 </span>|
+  | <span class="stres"> 28    3/16/95     6/4/00         7      1907       dead    78     male   28.20595 </span>|
+  | <span class="stres"> 29   10/25/95    4/15/97         5       538       dead    56     male   24.11997 </span>|
+  | <span class="stres"> 30    10/6/95    1/18/96         4       104       dead    85   female   36.71647 </span>|
+  | <span class="stres"> 31     9/3/95     9/9/95         4         6       dead    72     male   27.97907 </span>|
+  | <span class="stres"> 32    6/30/95     5/1/99         5      1401       dead    50     male     20.363 </span>|
+  | <span class="stres"> 33    7/22/95   12/22/02         8      2710       dead    81   female   28.64898 </span>|
+  | <span class="stres"> 34    9/17/95     1/5/98         4       841       dead    85   female   20.17772 </span>|
+  | <span class="stres"> 35    3/21/97    8/16/97         6       148       dead    84   female    23.6187 </span>|
+  | <span class="stres"> 36    2/23/97   12/31/02        12      2137      alive    75     male   23.67519 </span>|
+  | <span class="stres"> 37     1/1/97   12/31/02        16      2190      alive    61     male    23.4314 </span>|
+  | <span class="stres"> 38    1/18/97   12/31/02         5      2173      alive    48     male    33.4511 </span>|
+  | <span class="stres"> 39    1/19/97    4/25/98         8       461       dead    83   female   19.57068 </span>|
+  | <span class="stres"> 40    3/18/97   12/31/02        10      2114      alive    82     male   25.82748 </span>|
+  | <span class="stres"> 41     2/3/97   12/31/02         4      2157      alive    62     male   30.86625 </span>|
+  | <span class="stres"> 42    5/17/97   12/31/02         5      2054      alive    39     male   24.21079 </span>|
+  | <span class="stres"> 43     3/8/97   12/31/02         5      2124      alive    45     male   31.66439 </span>|
+  | <span class="stres"> 44    2/23/97   12/31/02         4      2137      alive    65     male   26.22085 </span>|
+  | <span class="stres"> 45    6/14/97     1/5/03        18      2031       dead    76   female   32.41986 </span>|
+  | <span class="stres"> 46     7/7/97   12/31/02         9      2003      alive    77   female   24.56345 </span>|
+  | <span class="stres"> 47    4/27/97   12/31/02         9      2074      alive    68     male    21.3055 </span>|
+  | <span class="stres"> 48    5/15/97    2/13/98         7       274       dead    73     male   26.45678 </span>|
+  | <span class="stres"> 49    7/26/97   12/31/02         4      1984      alive    64     male   27.97977 </span>|
+  | <span class="stres"> 50    7/17/97   12/31/02         6      1993      alive    80     male   36.02333 </span>|
+  | <span class="stres"> 51     9/9/97   12/31/02         7      1939      alive    84   female   22.31424 </span>|
+  | <span class="stres"> 52    6/19/97     9/3/00         4      1172       dead    43   female   25.33148 </span>|
+  | <span class="stres"> 53    8/20/97   11/17/97         3        89       dead    87   female   18.77718 </span>|
+  | <span class="stres"> 54    8/28/97     1/3/98         7       128       dead    70   female   18.60004 </span>|
+  | <span class="stres"> 55     9/9/97   12/31/02        17      1939      alive    80     male   25.50204 </span>|
+  | <span class="stres"> 56     9/1/97    9/15/97        11        14       dead    64   female   24.41255 </span>|
+  | <span class="stres"> 57     9/3/97    6/10/00         5      1011       dead    59   female   29.85998 </span>|
+  | <span class="stres"> 58    9/24/97   10/30/01         6      1497       dead    92     male    24.3664 </span>|
+  | <span class="stres"> 59    9/19/97   12/31/02         3      1929      alive    51     male   34.77034 </span>|
+  | <span class="stres"> 60    4/17/97   12/31/02         1      2084      alive    41     male   27.26234 </span>|
+  | <span class="stres"> 61   10/21/97     2/5/98         6       107       dead    90     male   24.78423 </span>|
+  | <span class="stres"> 62    10/2/97   12/27/98         4       451       dead    83     male   21.80987 </span>|
+  | <span class="stres"> 63     1/8/97   12/31/02         3      2183      alive    61     male   27.36909 </span>|
+  | <span class="stres"> 64   11/11/97   12/31/02         7      1876      alive    64     male   26.22085 </span>|
+  | <span class="stres"> 65    11/7/97    5/31/00         3       936       dead    82     male   26.88683 </span>|
+  | <span class="stres"> 66    4/20/97    4/18/98         5       363       dead    91   female   27.61844 </span>|
+  | <span class="stres"> 67    6/18/97     5/1/00         5      1048       dead    48     male   31.58373 </span>|
+  | <span class="stres"> 68   10/29/97   12/31/02        12      1889      alive    63     male   23.33267 </span>|
+  | <span class="stres"> 69    4/29/97   12/31/02         5      2072      alive    81     male   28.35006 </span>|
+  | <span class="stres"> 70    11/8/97   12/31/02         7      1879      alive    52     male   32.63621 </span>|
+  | <span class="stres"> 71   11/17/97   12/31/02         4      1870      alive    65     male   31.95113 </span>|
+  | <span class="stres"> 72   11/28/97   12/31/02         5      1859      alive    74     male   25.01782 </span>|
+  | <span class="stres"> 73    5/19/97   12/31/02         5      2052      alive    62     male   30.22827 </span>|
+  | <span class="stres"> 74   12/11/97   12/31/02         4      1846      alive    60   female   29.28812 </span>|
+  | <span class="stres"> 75    5/10/97   12/31/02         7      2061      alive    71     male   32.32407 </span>|
+  | <span class="stres"> 76    10/6/97   12/31/02         3      1912      alive    73     male   31.47445 </span>|
+  | <span class="stres"> 77   12/21/97   12/31/02         5      1836      alive    43     male   28.59188 </span>|
+  | <span class="stres"> 78   11/22/97    3/16/98         7       114       dead    80     male   33.36074 </span>|
+  | <span class="stres"> 79   10/31/97     2/4/02         7      1557       dead    72     male   21.80987 </span>|
+  | <span class="stres"> 80    6/28/97   12/27/00         5      1278       dead    57     male   23.57087 </span>|
+  | <span class="stres"> 81   12/21/97   12/31/02         3      1836      alive    80   female   28.35006 </span>|
+  | <span class="stres"> 82    10/2/97   12/31/02         6      1916      alive    76     male   28.03555 </span>|
+  | <span class="stres"> 83    9/14/97   12/31/02         3      1934      alive    53     male   24.21079 </span>|
+  | <span class="stres"> 84    9/25/97   12/31/02        10      1923      alive    44     male   32.60387 </span>|
+  | <span class="stres"> 85    12/2/97    1/15/98         3        44       dead    71     male    23.0563 </span>|
+  | <span class="stres"> 86    9/26/97   12/31/02         6      1922      alive    64     male   31.75016 </span>|
+  | <span class="stres"> 87   10/24/97    7/25/98         5       274       dead    86     male   21.10959 </span>|
+  | <span class="stres"> 88   11/27/97   12/31/02         7      1860      alive    72   female   25.23266 </span>|
+  | <span class="stres"> 89    4/12/97    3/23/02         4      1806       dead    73   female   22.86698 </span>|
+  | <span class="stres"> 90    2/15/97   12/31/02         6      2145      alive    85   female   26.05501 </span>|
+  | <span class="stres"> 91   10/22/97    4/22/98         5       182       dead    60     male   23.18023 </span>|
+  | <span class="stres"> 92    6/27/97   12/31/02         4      2013      alive    63     male   35.48949 </span>|
+  | <span class="stres"> 93    1/17/97   12/31/02         5      2174      alive    80   female   20.59809 </span>|
+  | <span class="stres"> 94   12/12/97    5/24/02         4      1624       dead    74     male   30.13206 </span>|
+  | <span class="stres"> 95    11/4/97    5/10/98        10       187       dead    79   female   16.78615 </span>|
+  | <span class="stres"> 96    11/4/97   12/31/02         4      1883      alive    48   female   32.11709 </span>|
+  | <span class="stres"> 97   12/24/97    4/19/02         3      1577       dead    32   female   39.93835 </span>|
+  | <span class="stres"> 98   11/26/97    1/27/98         8        62       dead    86   female   14.91878 </span>|
+  | <span class="stres"> 99    8/10/97   12/31/02        16      1969      alive    56     male   29.05295 </span>|
+  | <span class="stres">100    3/26/97    2/13/00         7      1054       dead    74     male   32.89087 </span>|
+  +------------------------------------------------------------------------------------+
+</samp></pre>
+<h4> Setting Time </h4>
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">. gen entry = date(addate, "MD19Y")</span>
+
+<span class="stinp">. format entry %td</span>
+
+<span class="stinp">. gen exit = date(foldate, "MDY", 2003)</span>
+
+<span class="stinp">. format exit %td</span>
+
+<span class="stinp">. stset exit, fail(folstatus==1) enter(time entry) origin(time entry) <span class="stcmt">// Scale in days</span></span>
+
+     failure event:  <span class="stres">folstatus == 1</span>
+obs. time interval:  <span class="stres">(origin, exit]</span>
+ enter on or after:  <span class="stres">time entry</span>
+ exit on or before:  <span class="stres">failure</span>
+<span class="stres">    </span>t for analysis:  <span class="stres">(time-origin)</span>
+<span class="stres">            </span>origin:  <span class="stres">time entry</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  observations remaining, representing
+<span class="stres">         51</span>  failures in single-record/single-failure data
+<span class="stres">    150,540</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres">    2,719</span>
+
+<span class="stinp">. stdescribe <span class="stcmt">// In days</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">(exit-origin)</span>
+<span class="stres">             </span>origin:  <span class="stres">time entry</span>
+  enter on or after:  <span class="stres">time entry</span>
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects       <span class="stres">       100   </span>
+no. of records        <span class="stres">       100           1           1          1          1</span>
+
+(first) entry time                 <span class="stres">        0           0          0          0</span>
+(final) exit time                  <span class="stres">   1505.4           6     1877.5       2719</span>
+
+subjects with gap     <span class="stres">         0   </span>
+time on gap if gap    <span class="stres">         0   </span>
+time at risk          <span class="stres">    150540      1505.4           6     1877.5       2719</span>
+
+failures              <span class="stres">        51         .51           0          1          1</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stset exit, fail(folstatus==1) enter(time entry) origin(time entry) scale(365.25) <span class="stcmt">// Sca</span>
+&gt; le in years</span>
+
+     failure event:  <span class="stres">folstatus == 1</span>
+obs. time interval:  <span class="stres">(origin, exit]</span>
+ enter on or after:  <span class="stres">time entry</span>
+ exit on or before:  <span class="stres">failure</span>
+<span class="stres">    </span>t for analysis:  <span class="stres">(time-origin)/365.25</span>
+<span class="stres">            </span>origin:  <span class="stres">time entry</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  observations remaining, representing
+<span class="stres">         51</span>  failures in single-record/single-failure data
+<span class="stres">    412.156</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres"> 7.444216</span>
+
+<span class="stinp">. stdescribe <span class="stcmt">// In years</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">(exit-origin)/365.25</span>
+<span class="stres">             </span>origin:  <span class="stres">time entry</span>
+  enter on or after:  <span class="stres">time entry</span>
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects       <span class="stres">       100   </span>
+no. of records        <span class="stres">       100           1           1          1          1</span>
+
+(first) entry time                 <span class="stres">        0           0          0          0</span>
+(final) exit time                  <span class="stres"> 4.121561    .0164271   5.140315   7.444216</span>
+
+subjects with gap     <span class="stres">         0   </span>
+time on gap if gap    <span class="stres">         0   </span>
+time at risk          <span class="stres"> 412.15606    4.121561    .0164271   5.140315   7.444216</span>
+
+failures              <span class="stres">        51         .51           0          1          1</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stset foltime, fail(folstatus==1) scale(365.25) <span class="stcmt">// Using the computed time</span></span>
+
+     failure event:  <span class="stres">folstatus == 1</span>
+obs. time interval:  <span class="stres">(0, foltime]</span>
+ exit on or before:  <span class="stres">failure</span>
+<span class="stres">    </span>t for analysis:  <span class="stres">time/365.25</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  observations remaining, representing
+<span class="stres">         51</span>  failures in single-record/single-failure data
+<span class="stres">    412.156</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres"> 7.444216</span>
+
+<span class="stinp">. stdescribe <span class="stcmt">// In years</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+                                   |-------------- per subject --------------|
+Category                   total        mean         min     median        max
+------------------------------------------------------------------------------
+no. of subjects       <span class="stres">       100   </span>
+no. of records        <span class="stres">       100           1           1          1          1</span>
+
+(first) entry time                 <span class="stres">        0           0          0          0</span>
+(final) exit time                  <span class="stres"> 4.121561    .0164271   5.140315   7.444216</span>
+
+subjects with gap     <span class="stres">         0   </span>
+time on gap if gap    <span class="stres">         0   </span>
+time at risk          <span class="stres"> 412.15606    4.121561    .0164271   5.140315   7.444216</span>
+
+failures              <span class="stres">        51         .51           0          1          1</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stvary <span class="stcmt">// For multiple records</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+               subjects for whom the variable is
+                                                 never    always   sometimes
+    variable |  constant    varying             missing   missing   missing
+-------------+--------------------------------------------------------------
+          id |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">      </span>addate |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">     </span>foldate |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">     </span>hosstay |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">         </span>age |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">      </span>gender |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">         </span>bmi |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">       </span>entry |  <span class="stres">     100          0                 100         0         0</span>
+<span class="stres">        </span>exit |  <span class="stres">     100          0                 100         0         0</span>
+</samp></pre>
+<h3 id="h-0-1-2"> II) Discrete time Life Table KM: Survival and Cumulative Hazard</h3>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">. sum foltime</span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     foltime |<span class="stres">        100      1505.4    858.8992          6       2719</span>
+
+<span class="stinp">. gen yrfol = foltime/365.25</span>
+
+<span class="stinp">. sum yrfol</span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       yrfol |<span class="stres">        100    4.121561    2.351538   .0164271   7.444216</span>
+
+<span class="stinp">. egen catyrfol = cut(yrfol), at(0,2,4,6,8)</span>
+
+<span class="stinp">. tab catyrfol</span>
+
+   catyrfol |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |<span class="stres">         25       25.00       25.00</span>
+          2 |<span class="stres">         11       11.00       36.00</span>
+          4 |<span class="stres">         50       50.00       86.00</span>
+          6 |<span class="stres">         14       14.00      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">        100      100.00</span>
+
+<span class="stinp">. stset catyrfol, fail(folstatus==1)</span>
+
+     failure event:  <span class="stres">folstatus == 1</span>
+obs. time interval:  <span class="stres">(0, catyrfol]</span>
+ exit on or before:  <span class="stres">failure</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">         25</span>  observations end on or before enter()
+------------------------------------------------------------------------------
+<span class="stres">         75</span>  observations remaining, representing
+<span class="stres">         26</span>  failures in single-record/single-failure data
+<span class="stres">        306</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres">        6</span>
+
+<span class="stinp">. sts list <span class="stcmt">//Kaplan-Meier</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">catyrfol</span>
+
+<span class="stres">           </span>Beg.          Net            Survivor      Std.
+  Time    Total   Fail   Lost           Function     Error     [95% Conf. Int.]
+-------------------------------------------------------------------------------
+     2 <span class="stres">      75     11      0             0.8533    0.0409     0.7508    0.9160</span>
+     4 <span class="stres">      64     11     39             0.7067    0.0526     0.5895    0.7960</span>
+     6 <span class="stres">      14      4     10             0.5048    0.0932     0.3132    0.6686</span>
+-------------------------------------------------------------------------------
+
+<span class="stinp">. sts list, cumhaz <span class="stcmt">//Cumulative Hazard</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">catyrfol</span>
+
+<span class="stres">           </span>Beg.          Net          Nelson-Aalen    Std.
+  Time    Total   Fail   Lost           Cum. Haz.    Error     [95% Conf. Int.]
+-------------------------------------------------------------------------------
+     2 <span class="stres">      75     11      0             0.1467    0.0442     0.0812    0.2648</span>
+     4 <span class="stres">      64     11     39             0.3185    0.0681     0.2095    0.4844</span>
+     6 <span class="stres">      14      4     10             0.6043    0.1583     0.3616    1.0097</span>
+-------------------------------------------------------------------------------
+</samp></pre>
+<h3 id="h-0-1-3"> III) Continuous time: The Kaplan-Meier product limit estimator</h3>
+<p>
+\[
+  \hat{S}(t)\,=\,\prod_{(j|t_{j}\leq t)} \left(\frac{n_{j}\,-\,d_{j}}{n_{j}}\right)
+\]
+</p>
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">. qui: stset foltime, fail(folstatus==1) scale(365.25) <span class="stcmt">// Using the computed time</span></span>
+
+<span class="stinp">. </span>
+<span class="stinp">. sts graph</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-4">
+<figcaption>Figure 1: Survival: Kaplan-Meier estimator</figcaption>
+<a href="Tutorial-SVA-ULB_4.png"><img alt="Tutorial-SVA-ULB_4.png" title="Surival" src="Tutorial-SVA-ULB_4.png" width="100%"/></a>
+</figure>
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. sts generate svar = s </span>
+
+<span class="stinp">. </span>
+<span class="stinp">. sts graph, risktable</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-5">
+<figcaption>Figure 2: Survival: Kaplan-Meier including subjects at risk over time</figcaption>
+<a href="Tutorial-SVA-ULB_5.png"><img alt="Tutorial-SVA-ULB_5.png" title="Surival" src="Tutorial-SVA-ULB_5.png" width="100%"/></a>
+</figure>
+<pre id="stlog-6" class="stlog"><samp><span class="stinp">. sts graph, by(gender) risktable</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-6">
+<figcaption>Figure 3: Survival by gender: Kaplan-Meier estimator</figcaption>
+<a href="Tutorial-SVA-ULB_6.png"><img alt="Tutorial-SVA-ULB_6.png" title="Surival" src="Tutorial-SVA-ULB_6.png" width="100%"/></a>
+</figure>
+<h4> Median Survival Time and percentiles</h4>
+<pre id="stlog-7" class="stlog"><samp><span class="stinp">. stci </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+             |    no. of 
+             |  subjects         50%     Std. Err.     [95% Conf. Interval]
+-------------+-------------------------------------------------------------
+       total | <span class="stres">      100     6.02601      .5603603      4.44627    7.41958</span>
+
+<span class="stinp">. stci, p(25)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+             |    no. of 
+             |  subjects         25%     Std. Err.     [95% Conf. Interval]
+-------------+-------------------------------------------------------------
+       total | <span class="stres">      100    1.472964      .7682197      .750171    3.29911</span>
+</samp></pre>
+<h4> Incidence Rate, person-time at risk and # of subjects</h4>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. stsum <span class="stcmt">//Overall Incidence Rate and PTR (use it for your abstract and the results section</span>
+&gt;  of your paper)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+         |               incidence       no. of    |------ Survival time -----|
+         | time at risk     rate        subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+   total | <span class="stres"> 412.1560575   .1237395           100   1.472964   6.02601  7.419576</span>
+
+<span class="stinp">. stsum, by(gender) <span class="stcmt">//By levels of your categorical variables. Note 95%CI is not provided </span>
+&gt;         </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+         |               incidence       no. of    |------ Survival time -----|
+gender   | time at risk     rate        subjects        25%       50%       75%
+---------+---------------------------------------------------------------------
+    male | <span class="stres"> 284.2299795   .0985118            65   2.885695   7.18412         .</span>
+<span class="stres">  </span>female | <span class="stres">  127.926078   .1797913            35   .8268309  4.944559  7.419576</span>
+---------+---------------------------------------------------------------------
+   total | <span class="stres"> 412.1560575   .1237395           100   1.472964   6.02601  7.419576</span>
+</samp></pre>
+<h3 id="h-0-1-4">  IV) Cummulative Hazard: The Nelson-Aalen estimator</h3>
+<p>
+\[
+  H(t)\,=\,\sum_{(j|t_{j}\leq t)}\frac{d_{j}}{n_{j}}
+\]
+</p>
+<pre id="stlog-9" class="stlog"><samp><span class="stinp">. sts graph, cumhaz</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-9">
+<figcaption>Figure 4: Cumulative Hazard: Nelson-Aalen estimator</figcaption>
+<a href="Tutorial-SVA-ULB_9.png"><img alt="Tutorial-SVA-ULB_9.png" title="Nelson-Aalen Cumulative Hazard Estimates" src="Tutorial-SVA-ULB_9.png" width="100%"/></a>
+</figure>
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">. sts graph, cumhaz by(gender)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-10">
+<figcaption>Figure 5: Cumulative Hazard: Nelson-Aalen estimator by gender</figcaption>
+<a href="Tutorial-SVA-ULB_10.png"><img alt="Tutorial-SVA-ULB_10.png" title="Nelson-Aalen Cumulative Hazard Estimates by gender" src="Tutorial-SVA-ULB_10.png" width="100%"/></a>
+</figure>
+<h4> Mantel-Haenszel method: Rates, Univariate Rate Ratios, person-time at risk and 95%CI</h4>
+http://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_DiseaseFrequency/EP713_DiseaseFrequency4.html
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">. sum yrfol <span class="stcmt">// Y = Mean followup x N = Years at risk </span></span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       yrfol |<span class="stres">        100    4.121561    2.351538   .0164271   7.444216</span>
+
+<span class="stinp">. strate <span class="stcmt">//    Y = 412.2 years at risk and Incidence Density or Rate per person-year at ri</span>
+&gt; sk</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Estimated rates and lower/upper bounds of 95% confidence intervals
+(<span class="stres">100</span> records included in the analysis)
+
+  +------------------------------------------------+
+  | <span class="stres"> D          Y       Rate      Lower      Upper </span>|
+  |------------------------------------------------|
+  | <span class="stres">51   412.1561   0.123740   0.094041   0.162817 </span>|
+  +------------------------------------------------+
+
+
+<span class="stinp">. </span>
+<span class="stinp">. gen n = 1</span>
+
+<span class="stinp">. tabrate folstatus gender, exp(n) per(1000) <span class="stcmt">// Cumulative incidence (Proportion) over 8 y</span>
+&gt; ears</span>
+
+table of cases (D), person-years (Y), and rates per 1000 person-years
+
+  +--------------------------------------------------+
+  | <span class="stres">gender   _D     _Y     _rate    ci_low   ci_high </span>|
+  |--------------------------------------------------|
+  | <span class="stres">  male   28   65.0   430.769   297.429   623.888 </span>|
+  | <span class="stres">female   23   35.0   657.143   436.689   988.889 </span>|
+  +--------------------------------------------------+
+
+Chisq test for unequal rates = <span class="stres">    2.29 (1 df, p =  0.131 )</span>
+
+<span class="stinp">. </span>
+<span class="stinp">. strate gender, per(1000) <span class="stcmt">// Incidence Density or Rate per 1000 person-year at risk</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Estimated rates (per 1000) and lower/upper bounds of 95% confidence intervals
+(<span class="stres">100</span> records included in the analysis)
+
+  +----------------------------------------------------+
+  | <span class="stres">gender    D        Y      Rate     Lower     Upper </span>|
+  |----------------------------------------------------|
+  | <span class="stres">  male   28   0.2842    98.512    68.018   142.676 </span>|
+  | <span class="stres">female   23   0.1279   179.791   119.476   270.556 </span>|
+  +----------------------------------------------------+
+
+
+<span class="stinp">. stmh gender, c(1,0)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Maximum likelihood estimate of the rate ratio
+  comparing <span class="stres">gender==1</span> vs. <span class="stres">gender==0</span>
+
+RR estimate, and lower and upper 95% confidence limits
+
+        ----------------------------------------------------------
+             RR       chi2        P&gt;chi2      [95% Conf. Interval]
+        ----------------------------------------------------------
+     <span class="stres">     1.825       4.71        0.0300         1.051      3.168</span>
+        ----------------------------------------------------------
+</samp></pre>
+<h4> Mantel-Haenszel method: Adjusted Rate Ratios and 95%CI (</h4>
+<pre id="stlog-12" class="stlog"><samp><span class="stinp">. stmh gender, by(age) c(1,0)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Maximum likelihood estimate of the rate ratio
+  comparing <span class="stres">gender==1</span> vs. <span class="stres">gender==0</span>
+<span class="stres">  </span>by <span class="stres">age</span>
+
+RR estimate, and lower and upper 95% confidence limits
+
+  +----------------------------+
+  | <span class="stres">age     RR   Lower   Upper </span>|
+  |----------------------------|
+  | <span class="stres"> 43      .       .       . </span>|
+  | <span class="stres"> 48   0.00       .       . </span>|
+  | <span class="stres"> 60   0.00       .       . </span>|
+  | <span class="stres"> 64      .       .       . </span>|
+  | <span class="stres"> 66   1.67    0.10   26.63 </span>|
+  |----------------------------|
+  | <span class="stres"> 72   0.00       .       . </span>|
+  | <span class="stres"> 73   0.49    0.03    7.86 </span>|
+  | <span class="stres"> 76   1.04    0.06   16.57 </span>|
+  | <span class="stres"> 77   0.00       .       . </span>|
+  | <span class="stres"> 80   0.00       .       . </span>|
+  |----------------------------|
+  | <span class="stres"> 81      .       .       . </span>|
+  | <span class="stres"> 82   1.23    0.11   13.52 </span>|
+  | <span class="stres"> 83   1.02    0.09   11.28 </span>|
+  | <span class="stres"> 85   0.08    0.01    0.88 </span>|
+  | <span class="stres"> 86   4.42    0.28   70.65 </span>|
+  +----------------------------+
+
+Overall estimate controlling for <span class="stres">age</span>
+
+        ----------------------------------------------------------
+             RR       chi2        P&gt;chi2      [95% Conf. Interval]
+        ----------------------------------------------------------
+     <span class="stres">     1.009       0.00        0.9765         0.543      1.877</span>
+        ----------------------------------------------------------
+
+Approx test for unequal RRs (effect modification): chi2(<span class="stres">14</span>) = <span class="stres">   65.21</span>
+<span class="stres">                                                   </span>Pr&gt;chi2 = <span class="stres">  0.0000</span>
+</samp></pre>
+<h4> Alternative Estimators (Remember the mathematical refresh in the presentation)</h4>
+<p>
+\[
+  H(t)\,=\,-\text{ln}\left[\text(S(t))\right]
+\]
+</p>
+<p>
+\[
+  S(t)\,=\,\text{exp}\left[\text(-H(t))\right]
+\]
+</p>
+<pre id="stlog-13" class="stlog"><samp><span class="stinp">. sts generate kmS = s <span class="stcmt">// Obtain KM survivor estimate</span></span>
+
+<span class="stinp">. sts generate naH = na <span class="stcmt">// Obtain NA cum. hazard estimate</span></span>
+
+<span class="stinp">. gen naS = exp(-naH) <span class="stcmt">// Calculate NA survivor estimate</span></span>
+
+<span class="stinp">. gen kmH = -log(kmS) <span class="stcmt">// Calculate KM cum. harzard estimate</span></span>
+
+<span class="stinp">. label var kmS "KM"</span>
+
+<span class="stinp">. label var naS "exp(-NA)"</span>
+
+<span class="stinp">. label var kmH "-log(KM)"</span>
+
+<span class="stinp">. label var naH "NA"</span>
+
+<span class="stinp">. twoway connected kmS naS _t, connect(J J) sort <span class="stcmt">// Survivor estimate using NA always &gt; th</span>
+&gt; an KM (simulations)</span>
+</samp></pre>
+<figure id="fig-13">
+<figcaption>Figure 6: KM estimator vs exp(-NA)</figcaption>
+<a href="Tutorial-SVA-ULB_13.png"><img alt="Tutorial-SVA-ULB_13.png" title="KM vs exp(-NA)" src="Tutorial-SVA-ULB_13.png" width="100%"/></a>
+</figure>
+<pre id="stlog-14" class="stlog"><samp><span class="stinp">. twoway connected kmH naH _t, connect(J J) sort</span>
+</samp></pre>
+<figure id="fig-14">
+<figcaption>Figure 7: Cum Hazard from KM vs NA cum. Hazard</figcaption>
+<a href="Tutorial-SVA-ULB_14.png"><img alt="Tutorial-SVA-ULB_14.png" title="Cum Hazard from KM vs NA cum. Hazard" src="Tutorial-SVA-ULB_14.png" width="100%"/></a>
+</figure>
+<h3 id="h-0-1-5"> V) Comparing Survival Time: Log-rank Test</h3>
+<pre id="stlog-15" class="stlog"><samp><span class="stinp">. sts list, by(gender) compare <span class="stcmt">// Survival </span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+<span class="stres">                 </span>Survivor Function
+gender             male     female
+----------------------------------
+time       0<span class="stres">     1.0000     1.0000</span>
+     .928474<span class="stres">     0.8462     0.7429</span>
+     1.85695<span class="stres">     0.8000     0.6571</span>
+     2.78542<span class="stres">     0.7692     0.5714</span>
+     3.71389<span class="stres">     0.7077     0.5429</span>
+     4.64237<span class="stres">     0.6308     0.5143</span>
+     5.57084<span class="stres">     0.5872     0.4059</span>
+     6.49932<span class="stres">     0.5872     0.3007</span>
+     7.42779<span class="stres">     0.3854          .</span>
+     8.35626<span class="stres">          .          .</span>
+----------------------------------
+
+<span class="stinp">. sts list, na by(gender) compare <span class="stcmt">// Cumulative Hazard</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+<span class="stres">            </span>Nelson-Aalen Cum. Haz.
+gender             male     female
+----------------------------------
+time       0<span class="stres">     0.0000     0.0000</span>
+     .928474<span class="stres">     0.1651     0.2924</span>
+     1.85695<span class="stres">     0.2207     0.4125</span>
+     2.78542<span class="stres">     0.2595     0.5490</span>
+     3.71389<span class="stres">     0.3420     0.5990</span>
+     4.64237<span class="stres">     0.4558     0.6517</span>
+     5.57084<span class="stres">     0.5260     0.8787</span>
+     6.49932<span class="stres">     0.5260     1.1564</span>
+     7.42779<span class="stres">     0.9010          .</span>
+     8.35626<span class="stres">          .          .</span>
+----------------------------------
+
+<span class="stinp">. sts test gender, logrank <span class="stcmt">// Logrank Test (it is an extension of the Mantel-Haenszel appl</span>
+&gt; ied to survival)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+
+<span class="stres"><u>Log-rank test for equality of survivor functions</u></span>
+
+       |   Events         Events
+gender |  observed       expected
+-------+-------------------------
+male   |<span class="stres">        28          34.62</span>
+female |<span class="stres">        23          16.38</span>
+-------+-------------------------
+Total  |<span class="stres">        51          51.00</span>
+
+<span class="stres">             </span>chi2(1) = <span class="stres">      3.97</span>
+<span class="stres">             </span>Pr&gt;chi2 = <span class="stres">    0.0463</span>
+</samp></pre>
+<h4> Comparing Survival Time adding test for trend across ordered groups</h4>
+<pre id="stlog-16" class="stlog"><samp><span class="stinp">. sum age</span>
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         age |<span class="stres">        100       68.25    14.42807         32         92</span>
+
+<span class="stinp">. egen agecat = cut(age), at(30,50,80,100) </span>
+
+<span class="stinp">. sts graph, by(agecat) risktable gwood</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-16">
+<figcaption>Figure 8: Survival by age: Kaplan-Meier estimator</figcaption>
+<a href="Tutorial-SVA-ULB_16.png"><img alt="Tutorial-SVA-ULB_16.png" title="Survival by age" src="Tutorial-SVA-ULB_16.png" width="100%"/></a>
+</figure>
+<pre id="stlog-17" class="stlog"><samp><span class="stinp">. sts test agecat, trend logrank</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+
+<span class="stres"><u>Log-rank test for equality of survivor functions</u></span>
+
+       |   Events         Events
+agecat |  observed       expected
+-------+-------------------------
+30     |<span class="stres">         3           9.75</span>
+50     |<span class="stres">        26          28.91</span>
+80     |<span class="stres">        22          12.34</span>
+-------+-------------------------
+Total  |<span class="stres">        51          51.00</span>
+
+<span class="stres">             </span>chi2(2) = <span class="stres">     12.73</span>
+<span class="stres">             </span>Pr&gt;chi2 = <span class="stres">    0.0017</span>
+
+Test for trend of survivor functions
+
+             chi2(1) = <span class="stres">     12.73</span>
+<span class="stres">             </span>Pr&gt;chi2 = <span class="stres">    0.0004</span>
+</samp></pre>
+<h3 id="h-0-1-6"> VI) The Cox Model in Stata: stcox </h3>
+<pre id="stlog-18" class="stlog"><samp><span class="stinp">. sts list <span class="stcmt">// very small number of ties</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+<span class="stres">           </span>Beg.          Net            Survivor      Std.
+  Time    Total   Fail   Lost           Function     Error     [95% Conf. Int.]
+-------------------------------------------------------------------------------
+ .0164 <span class="stres">     100      2      0             0.9800    0.0140     0.9224    0.9950</span>
+ .0383 <span class="stres">      98      1      0             0.9700    0.0171     0.9099    0.9902</span>
+ .1205 <span class="stres">      97      1      0             0.9600    0.0196     0.8969    0.9848</span>
+ .1697 <span class="stres">      96      1      0             0.9500    0.0218     0.8840    0.9789</span>
+ .2437 <span class="stres">      95      1      0             0.9400    0.0237     0.8713    0.9726</span>
+ .2683 <span class="stres">      94      1      0             0.9300    0.0255     0.8588    0.9660</span>
+ .2847 <span class="stres">      93      1      0             0.9200    0.0271     0.8464    0.9592</span>
+  .293 <span class="stres">      92      1      0             0.9100    0.0286     0.8342    0.9521</span>
+ .3121 <span class="stres">      91      1      0             0.9000    0.0300     0.8221    0.9449</span>
+ .3368 <span class="stres">      90      1      0             0.8900    0.0313     0.8102    0.9375</span>
+ .3504 <span class="stres">      89      1      0             0.8800    0.0325     0.7984    0.9300</span>
+ .4052 <span class="stres">      88      1      0             0.8700    0.0336     0.7867    0.9224</span>
+ .4983 <span class="stres">      87      1      0             0.8600    0.0347     0.7751    0.9146</span>
+  .512 <span class="stres">      86      1      0             0.8500    0.0357     0.7636    0.9067</span>
+ .5175 <span class="stres">      85      1      0             0.8400    0.0367     0.7522    0.8988</span>
+ .7502 <span class="stres">      84      2      0             0.8200    0.0384     0.7296    0.8826</span>
+ .8268 <span class="stres">      82      1      0             0.8100    0.0392     0.7185    0.8743</span>
+ .9938 <span class="stres">      81      1      0             0.8000    0.0400     0.7074    0.8660</span>
+ 1.024 <span class="stres">      80      1      0             0.7900    0.0407     0.6964    0.8577</span>
+ 1.235 <span class="stres">      79      1      0             0.7800    0.0414     0.6854    0.8492</span>
+ 1.262 <span class="stres">      78      1      0             0.7700    0.0421     0.6745    0.8407</span>
+ 1.347 <span class="stres">      77      1      0             0.7600    0.0427     0.6637    0.8322</span>
+ 1.473 <span class="stres">      76      1      0             0.7500    0.0433     0.6529    0.8236</span>
+ 2.119 <span class="stres">      75      1      0             0.7400    0.0439     0.6422    0.8149</span>
+ 2.303 <span class="stres">      74      1      0             0.7300    0.0444     0.6315    0.8061</span>
+ 2.563 <span class="stres">      73      1      0             0.7200    0.0449     0.6209    0.7974</span>
+ 2.743 <span class="stres">      72      1      0             0.7100    0.0454     0.6103    0.7885</span>
+ 2.768 <span class="stres">      71      1      0             0.7000    0.0458     0.5998    0.7797</span>
+ 2.869 <span class="stres">      70      1      0             0.6900    0.0462     0.5894    0.7707</span>
+ 2.886 <span class="stres">      69      1      0             0.6800    0.0466     0.5790    0.7617</span>
+ 3.209 <span class="stres">      68      1      0             0.6700    0.0470     0.5686    0.7527</span>
+ 3.299 <span class="stres">      67      1      0             0.6600    0.0474     0.5583    0.7437</span>
+ 3.499 <span class="stres">      66      1      0             0.6500    0.0477     0.5480    0.7345</span>
+ 3.836 <span class="stres">      65      1      0             0.6400    0.0480     0.5377    0.7254</span>
+ 4.099 <span class="stres">      64      1      0             0.6300    0.0483     0.5275    0.7162</span>
+ 4.263 <span class="stres">      63      1      0             0.6200    0.0485     0.5174    0.7070</span>
+ 4.318 <span class="stres">      62      1      0             0.6100    0.0488     0.5073    0.6977</span>
+ 4.446 <span class="stres">      61      1      0             0.6000    0.0490     0.4972    0.6884</span>
+ 4.569 <span class="stres">      60      1      0             0.5900    0.0492     0.4872    0.6790</span>
+ 4.945 <span class="stres">      59      1      0             0.5800    0.0494     0.4772    0.6696</span>
+ 5.027 <span class="stres">      58      0      2             0.5800    0.0494     0.4772    0.6696</span>
+ 5.054 <span class="stres">      56      0      1             0.5800    0.0494     0.4772    0.6696</span>
+  5.09 <span class="stres">      55      0      1             0.5800    0.0494     0.4772    0.6696</span>
+ 5.092 <span class="stres">      54      0      1             0.5800    0.0494     0.4772    0.6696</span>
+  5.12 <span class="stres">      53      0      1             0.5800    0.0494     0.4772    0.6696</span>
+ 5.131 <span class="stres">      52      1      0             0.5688    0.0497     0.4658    0.6593</span>
+ 5.136 <span class="stres">      51      0      1             0.5688    0.0497     0.4658    0.6593</span>
+ 5.144 <span class="stres">      50      0      1             0.5688    0.0497     0.4658    0.6593</span>
+ 5.155 <span class="stres">      49      0      1             0.5688    0.0497     0.4658    0.6593</span>
+ 5.172 <span class="stres">      48      0      1             0.5688    0.0497     0.4658    0.6593</span>
+ 5.221 <span class="stres">      47      1      0             0.5567    0.0500     0.4533    0.6482</span>
+ 5.235 <span class="stres">      46      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.246 <span class="stres">      45      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.262 <span class="stres">      44      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.265 <span class="stres">      43      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.281 <span class="stres">      42      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.295 <span class="stres">      41      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.309 <span class="stres">      40      0      2             0.5567    0.0500     0.4533    0.6482</span>
+ 5.391 <span class="stres">      38      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.432 <span class="stres">      37      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.457 <span class="stres">      36      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.484 <span class="stres">      35      0      1             0.5567    0.0500     0.4533    0.6482</span>
+ 5.509 <span class="stres">      34      1      0             0.5404    0.0512     0.4351    0.6343</span>
+ 5.511 <span class="stres">      33      0      1             0.5404    0.0512     0.4351    0.6343</span>
+ 5.561 <span class="stres">      32      1      0             0.5235    0.0523     0.4165    0.6198</span>
+ 5.618 <span class="stres">      31      0      1             0.5235    0.0523     0.4165    0.6198</span>
+ 5.624 <span class="stres">      30      0      1             0.5235    0.0523     0.4165    0.6198</span>
+ 5.643 <span class="stres">      29      0      1             0.5235    0.0523     0.4165    0.6198</span>
+ 5.654 <span class="stres">      28      1      0             0.5048    0.0537     0.3956    0.6041</span>
+ 5.673 <span class="stres">      27      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.678 <span class="stres">      26      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.706 <span class="stres">      25      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.788 <span class="stres">      24      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.815 <span class="stres">      23      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.851 <span class="stres">      22      0      2             0.5048    0.0537     0.3956    0.6041</span>
+ 5.873 <span class="stres">      20      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.906 <span class="stres">      19      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.949 <span class="stres">      18      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.952 <span class="stres">      17      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.977 <span class="stres">      16      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 5.996 <span class="stres">      15      0      1             0.5048    0.0537     0.3956    0.6041</span>
+ 6.026 <span class="stres">      14      1      0             0.4687    0.0607     0.3466    0.5816</span>
+ 6.628 <span class="stres">      13      1      0             0.4327    0.0659     0.3023    0.5562</span>
+ 7.044 <span class="stres">      12      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.047 <span class="stres">      11      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.058 <span class="stres">      10      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.105 <span class="stres">       9      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.146 <span class="stres">       8      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.154 <span class="stres">       7      0      1             0.4327    0.0659     0.3023    0.5562</span>
+ 7.184 <span class="stres">       6      1      0             0.3606    0.0857     0.1997    0.5241</span>
+ 7.203 <span class="stres">       5      0      1             0.3606    0.0857     0.1997    0.5241</span>
+ 7.222 <span class="stres">       4      0      1             0.3606    0.0857     0.1997    0.5241</span>
+ 7.231 <span class="stres">       3      0      1             0.3606    0.0857     0.1997    0.5241</span>
+  7.42 <span class="stres">       2      1      0             0.1803    0.1345     0.0179    0.4820</span>
+ 7.444 <span class="stres">       1      0      1             0.1803    0.1345     0.0179    0.4820</span>
+-------------------------------------------------------------------------------
+
+<span class="stinp">. stcox gender <span class="stcmt">// Breslow estimate for ties</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -207.2544</span>
+Iteration 2:   log likelihood = <span class="stres"> -207.2423</span>
+Iteration 3:   log likelihood = <span class="stres"> -207.2423</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -207.2423</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">      3.75</span>
+Log likelihood  =   <span class="stres"> -207.2423                  </span>Prob &gt; chi2      =  <span class="stres">    0.0527</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   1.742761   .4921308     1.97   0.049     1.002006    3.031133</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stcox gender, efron <span class="stcmt">// Mor accurate than Breslow</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.09769</span>
+Iteration 1:   log likelihood = <span class="stres">-207.23669</span>
+Iteration 2:   log likelihood = <span class="stres">-207.22467</span>
+Iteration 3:   log likelihood = <span class="stres">-207.22467</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-207.22467</span>
+
+Cox regression -- Efron method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">      3.75</span>
+Log likelihood  =   <span class="stres">-207.22467                  </span>Prob &gt; chi2      =  <span class="stres">    0.0529</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   1.741613   .4918126     1.96   0.049      1.00134    3.029157</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. </span>
+<span class="stinp">. stcox i.gender  <span class="stcmt">// Indicator variables</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -207.2544</span>
+Iteration 2:   log likelihood = <span class="stres"> -207.2423</span>
+Iteration 3:   log likelihood = <span class="stres"> -207.2423</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -207.2423</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">      3.75</span>
+Log likelihood  =   <span class="stres"> -207.2423                  </span>Prob &gt; chi2      =  <span class="stres">    0.0527</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |
+     female  |<span class="stres">   1.742761   .4921308     1.97   0.049     1.002006    3.031133</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. tab agecat</span>
+
+     agecat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         30 |<span class="stres">         14       14.00       14.00</span>
+         50 |<span class="stres">         56       56.00       70.00</span>
+         80 |<span class="stres">         30       30.00      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">        100      100.00</span>
+
+<span class="stinp">. stcox i.agecat <span class="stcmt">// Categorical variables (Contrast indicator and wald test)</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres">-203.05446</span>
+Iteration 2:   log likelihood = <span class="stres">-202.59595</span>
+Iteration 3:   log likelihood = <span class="stres">-202.59206</span>
+Iteration 4:   log likelihood = <span class="stres">-202.59206</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-202.59206</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     13.06</span>
+Log likelihood  =   <span class="stres">-202.59206                  </span>Prob &gt; chi2      =  <span class="stres">    0.0015</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      agecat |
+         50  |<span class="stres">   2.950289   1.807422     1.77   0.077     .8879672    9.802395</span>
+         80  |<span class="stres">   5.934847   3.668544     2.88   0.004     1.767059    19.93279</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. stcox age <span class="stcmt">// Continuous variables interpretation and scale </span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres">-200.64424</span>
+Iteration 2:   log likelihood = <span class="stres">-200.44425</span>
+Iteration 3:   log likelihood = <span class="stres">-200.44391</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-200.44391</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">     17.35</span>
+Log likelihood  =   <span class="stres">-200.44391                  </span>Prob &gt; chi2      =  <span class="stres">    0.0000</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         age |<span class="stres">    1.04672   .0125089     3.82   0.000     1.022488    1.071527</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. gen age5 = age/5</span>
+
+<span class="stinp">. stcox age5</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres">-200.64424</span>
+Iteration 2:   log likelihood = <span class="stres">-200.44425</span>
+Iteration 3:   log likelihood = <span class="stres">-200.44391</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-200.44391</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">     17.35</span>
+Log likelihood  =   <span class="stres">-200.44391                  </span>Prob &gt; chi2      =  <span class="stres">    0.0000</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        age5 |<span class="stres">   1.256473   .0750778     3.82   0.000     1.117613    1.412586</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. stcox c.age##c.age <span class="stcmt">// Functional form age: No evidence of nonlinear effect (quadratic)</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres">-200.17407</span>
+Iteration 2:   log likelihood = <span class="stres">-199.58078</span>
+Iteration 3:   log likelihood = <span class="stres">-199.57967</span>
+Iteration 4:   log likelihood = <span class="stres">-199.57967</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-199.57967</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     19.08</span>
+Log likelihood  =   <span class="stres">-199.57967                  </span>Prob &gt; chi2      =  <span class="stres">    0.0001</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         age |<span class="stres">   .9222841   .0850547    -0.88   0.380     .7697777    1.105005</span>
+             |
+ c.age#c.age |<span class="stres">   1.000944    .000689     1.37   0.170     .9995945    1.002295</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. stcox i.gender##c.age <span class="stcmt">// Interactions: small evidence effect modification of age</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres">-199.57097</span>
+Iteration 2:   log likelihood = <span class="stres"> -198.9633</span>
+Iteration 3:   log likelihood = <span class="stres">-198.95656</span>
+Iteration 4:   log likelihood = <span class="stres">-198.95655</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-198.95655</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">3</span>)       =  <span class="stres">     20.33</span>
+Log likelihood  =   <span class="stres">-198.95655                  </span>Prob &gt; chi2      =  <span class="stres">    0.0001</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |
+     female  |<span class="stres">    25.7504     47.048     1.78   0.075      .717088    924.6889</span>
+         age |<span class="stres">    1.06086   .0171645     3.65   0.000     1.027746    1.095041</span>
+             |
+gender#c.age |
+     female  |<span class="stres">    .959227   .0234825    -1.70   0.089     .9142888    1.006374</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. stcox i.gender age <span class="stcmt">// Age as confounder. Note: consider the interpretation of gender</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |
+     female  |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+         age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. gen age30 = age - 30</span>
+
+<span class="stinp">. stcox i.gender age30 <span class="stcmt">// More meaninful interpretation (mean centering age)</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |
+     female  |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+       age30 |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. stcox gender <span class="stcmt">// Likelihood Ratio Test</span></span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -207.2544</span>
+Iteration 2:   log likelihood = <span class="stres"> -207.2423</span>
+Iteration 3:   log likelihood = <span class="stres"> -207.2423</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -207.2423</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">      3.75</span>
+Log likelihood  =   <span class="stres"> -207.2423                  </span>Prob &gt; chi2      =  <span class="stres">    0.0527</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   1.742761   .4921308     1.97   0.049     1.002006    3.031133</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store A </span>
+
+<span class="stinp">. stcox gender age </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+         age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. estimates store B</span>
+
+<span class="stinp">. lrtest A B</span>
+
+Likelihood-ratio test                                 LR chi2(<span class="stres">1</span>)  =<span class="stres">     13.84</span>
+(Assumption: A nested in B)                           Prob &gt; chi2 = <span class="stres">   0.0002</span>
+
+<span class="stinp">. </span>
+<span class="stinp">. tab agecat gender, row chi <span class="stcmt">// Do not forget crosstabulations: understanding your data is</span>
+&gt;  KEY!</span>
+
++----------------+
+| Key            |
+|----------------|
+|   <i>frequency</i>    |
+| <i>row percentage</i> |
++----------------+
+
+           |        gender
+    agecat |      male     female |     Total
+-----------+----------------------+----------
+        30 |<span class="stres">        11          3 </span>|<span class="stres">        14 </span>
+<span class="stres">           </span>|<span class="stres">     78.57      21.43 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+        50 |<span class="stres">        41         15 </span>|<span class="stres">        56 </span>
+<span class="stres">           </span>|<span class="stres">     73.21      26.79 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+        80 |<span class="stres">        13         17 </span>|<span class="stres">        30 </span>
+<span class="stres">           </span>|<span class="stres">     43.33      56.67 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+     Total |<span class="stres">        65         35 </span>|<span class="stres">       100 </span>
+<span class="stres">           </span>|<span class="stres">     65.00      35.00 </span>|<span class="stres">    100.00 </span>
+
+          Pearson chi2(<span class="stres">2</span>) = <span class="stres">  8.9848  </span> Pr = <span class="stres">0.011</span>
+</samp></pre>
+<h3 id="h-0-1-7"> VII) The Cox Model stratified analysis</h3>
+<h4> Deriving baseline hazard and survival</h4>
+<pre id="stlog-19" class="stlog"><samp><span class="stinp">. stcox gender age30</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+       age30 |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. </span>
+<span class="stinp">. predict H0, basechazard <span class="stcmt">// Baseline cumulative hazard function</span></span>
+
+<span class="stinp">. tw line H0 _t, connect (J) sort</span>
+</samp></pre>
+<figure id="fig-19">
+<figcaption>Figure 9: Baseline Cumulative Hazard</figcaption>
+<a href="Tutorial-SVA-ULB_19.png"><img alt="Tutorial-SVA-ULB_19.png" src="Tutorial-SVA-ULB_19.png" width="100%"/></a>
+</figure>
+<pre id="stlog-20" class="stlog"><samp><span class="stinp">. gen H1 = H0*exp(_b[gender]) <span class="stcmt">// Baseline cumulative hazard by gender </span></span>
+
+<span class="stinp">. tw line H0 H1 _t, connect (J J) sort</span>
+</samp></pre>
+<figure id="fig-20">
+<figcaption>Figure 10: Baseline Cumulative Hazard by gender</figcaption>
+<a href="Tutorial-SVA-ULB_20.png"><img alt="Tutorial-SVA-ULB_20.png" src="Tutorial-SVA-ULB_20.png" width="100%"/></a>
+</figure>
+<pre id="stlog-21" class="stlog"><samp><span class="stinp">. predict S0, basesurv <span class="stcmt">// Baseline Survivor function</span></span>
+
+<span class="stinp">. tw line S _t, connect (J) sort</span>
+</samp></pre>
+<figure id="fig-21">
+<figcaption>Figure 11: Baseline Survivor</figcaption>
+<a href="Tutorial-SVA-ULB_21.png"><img alt="Tutorial-SVA-ULB_21.png" src="Tutorial-SVA-ULB_21.png" width="100%"/></a>
+</figure>
+<h4> Deriving baseline hazard and survival using stcurve</h4>
+<pre id="stlog-22" class="stlog"><samp><span class="stinp">. stcox gender </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -207.2544</span>
+Iteration 2:   log likelihood = <span class="stres"> -207.2423</span>
+Iteration 3:   log likelihood = <span class="stres"> -207.2423</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -207.2423</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">      3.75</span>
+Log likelihood  =   <span class="stres"> -207.2423                  </span>Prob &gt; chi2      =  <span class="stres">    0.0527</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   1.742761   .4921308     1.97   0.049     1.002006    3.031133</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stcurve, surv at1(gender =0) at2(gender =1)</span>
+</samp></pre>
+<figure id="fig-22">
+<a href="Tutorial-SVA-ULB_22.png"><img alt="Tutorial-SVA-ULB_22.png" src="Tutorial-SVA-ULB_22.png"/></a>
+</figure>
+<pre id="stlog-23" class="stlog"><samp><span class="stinp">. stcox gender age</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+         age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stcurve, surv at1(gender =0) at2(gender =1)</span>
+</samp></pre>
+<figure id="fig-23">
+<a href="Tutorial-SVA-ULB_23.png"><img alt="Tutorial-SVA-ULB_23.png" src="Tutorial-SVA-ULB_23.png"/></a>
+</figure>
+<h3 id="h-0-1-8"> Testing the proportional-hazards assumption</h3>
+<h4> Test based on Schoenfeld residuals: null hypothesi, slope residuals is zero</h4>
+<pre id="stlog-24" class="stlog"><samp><span class="stinp">. estat phtest <span class="stcmt">// There is no evidence that the model violates the proportional-hazards as</span>
+&gt; sumption          </span>
+
+      Test of proportional-hazards assumption
+
+      Time:  <span class="stres">Time</span>
+      ----------------------------------------------------------------
+                  |                      chi2       df       Prob&gt;chi2
+      ------------+---------------------------------------------------
+      global test |<span class="stres">                      0.36        2         0.8353</span>
+      ----------------------------------------------------------------
+
+<span class="stinp">. estat phtest, detail    </span>
+
+      Test of proportional-hazards assumption
+
+      Time:  <span class="stres">Time</span>
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob&gt;chi2
+      ------------+---------------------------------------------------
+      gender      |<span class="stres">     -0.06680         0.27        1         0.6010</span>
+      age         |<span class="stres">     -0.01167         0.01        1         0.9204</span>
+      ------------+---------------------------------------------------
+      global test |<span class="stres">                      0.36        2         0.8353</span>
+      ----------------------------------------------------------------
+</samp></pre>
+<h4> Visually based on -ln[-ln[S(t)]] versus time  for each level of the covariate in assessment</h4>
+<pre id="stlog-25" class="stlog"><samp><span class="stinp">. stphplot, by(gender) adjust(age) <span class="stcmt">//Curves are roughly parallel, providing evidence in fa</span>
+&gt; vor of the proportional hazard assumption of gender </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+</samp></pre>
+<figure id="fig-25">
+<a href="Tutorial-SVA-ULB_25.png"><img alt="Tutorial-SVA-ULB_25.png" src="Tutorial-SVA-ULB_25.png"/></a>
+</figure>
+<h3 id="h-0-1-9">VIII) Stratified analysis <h3>		  
+<pre id="stlog-26" class="stlog"><samp><span class="stinp">. stcox gender age </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+         age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stcox age, strata(gender)</span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-173.10245</span>
+Iteration 1:   log likelihood = <span class="stres">-166.56589</span>
+Iteration 2:   log likelihood = <span class="stres">-166.39683</span>
+Iteration 3:   log likelihood = <span class="stres"> -166.3966</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -166.3966</span>
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">1</span>)       =  <span class="stres">     13.41</span>
+Log likelihood  =   <span class="stres"> -166.3966                  </span>Prob &gt; chi2      =  <span class="stres">    0.0003</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         age |<span class="stres">   1.044398   .0133473     3.40   0.001     1.018563    1.070889</span>
+------------------------------------------------------------------------------
+                                                          Stratified by gender
+</samp></pre>
+<h3 id="h-0-1-10"> IX) Goodness of fit <h3>		  
+<pre id="stlog-27" class="stlog"><samp><span class="stinp">. hist age</span>
+(bin=<span class="stres">10</span>, start=<span class="stres">32</span>, width=<span class="stres">6</span>)
+</samp></pre>
+<figure id="fig-27">
+<a href="Tutorial-SVA-ULB_27.png"><img alt="Tutorial-SVA-ULB_27.png" src="Tutorial-SVA-ULB_27.png"/></a>
+</figure>
+<pre id="stlog-28" class="stlog"><samp><span class="stinp">. stcox gender age </span>
+
+         failure _d:  <span class="stres">folstatus == 1</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">foltime/365.25</span>
+
+Iteration 0:   log likelihood = <span class="stres">-209.11972</span>
+Iteration 1:   log likelihood = <span class="stres"> -200.5215</span>
+Iteration 2:   log likelihood = <span class="stres"> -200.3233</span>
+Iteration 3:   log likelihood = <span class="stres">  -200.323</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">  -200.323</span>
+
+Cox regression -- Breslow method for ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 412.1560575</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">     17.59</span>
+Log likelihood  =   <span class="stres">  -200.323                  </span>Prob &gt; chi2      =  <span class="stres">    0.0002</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">    1.16075    .351101     0.49   0.622     .6416069    2.099946</span>
+         age |<span class="stres">   1.044538   .0132085     3.45   0.001     1.018968     1.07075</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. predict cs, csnell <span class="stcmt">//Cox-Snell residuals have a standard censored exponential distributi</span>
+&gt; on with hazard ratio of one       </span>
+
+<span class="stinp">. stset cs, fail(folstatus)</span>
+
+     failure event:  <span class="stres">folstatus != 0 &amp; folstatus &lt; .</span>
+obs. time interval:  <span class="stres">(0, cs]</span>
+ exit on or before:  <span class="stres">failure</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  observations remaining, representing
+<span class="stres">         51</span>  failures in single-record/single-failure data
+<span class="stres">         51</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres"> 2.761897</span>
+
+<span class="stinp">. sts gen Hcs = na</span>
+
+<span class="stinp">. tw line Hcs cs cs, sort  </span>
+</samp></pre>
+<figure id="fig-28">
+<a href="Tutorial-SVA-ULB_28.png"><img alt="Tutorial-SVA-ULB_28.png" src="Tutorial-SVA-ULB_28.png"/></a>
+</figure>
+<pre id="stlog-29" class="stlog"><samp><span class="stinp">. gen lnage = ln(age)  </span>
+
+<span class="stinp">. drop Hcs cs</span>
+
+<span class="stinp">. stcox gender lnage </span>
+
+         failure _d:  <span class="stres">folstatus</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">cs</span>
+
+Iteration 0:   log likelihood = <span class="stres"> -191.6887</span>
+Iteration 1:   log likelihood = <span class="stres">-191.65715</span>
+Iteration 2:   log likelihood = <span class="stres">-191.65714</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres">-191.65714</span>
+
+Cox regression -- no ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 51.00000005</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">      0.06</span>
+Log likelihood  =   <span class="stres">-191.65714                  </span>Prob &gt; chi2      =  <span class="stres">    0.9689</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   .9563769   .3030901    -0.14   0.888     .5138905    1.779867</span>
+       lnage |<span class="stres">   .8683343    .730407    -0.17   0.867     .1669903    4.515258</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. predict cs, csnell <span class="stcmt">//Cox-Snell residuals          </span></span>
+
+<span class="stinp">. stset cs, fail(folstatus)</span>
+
+     failure event:  <span class="stres">folstatus != 0 &amp; folstatus &lt; .</span>
+obs. time interval:  <span class="stres">(0, cs]</span>
+ exit on or before:  <span class="stres">failure</span>
+
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  total observations
+<span class="stres">          0</span>  exclusions
+------------------------------------------------------------------------------
+<span class="stres">        100</span>  observations remaining, representing
+<span class="stres">         51</span>  failures in single-record/single-failure data
+<span class="stres">         51</span>  total analysis time at risk and under observation
+                                                at risk from t = <span class="stres">        0</span>
+<span class="stres">                                     </span>earliest observed entry t = <span class="stres">        0</span>
+<span class="stres">                                          </span>last observed exit t = <span class="stres"> 2.841931</span>
+
+<span class="stinp">. sts gen Hcs = na</span>
+
+<span class="stinp">. tw line Hcs cs cs, sort </span>
+</samp></pre>
+<figure id="fig-29">
+<a href="Tutorial-SVA-ULB_29.png"><img alt="Tutorial-SVA-ULB_29.png" src="Tutorial-SVA-ULB_29.png"/></a>
+</figure>
+<pre id="stlog-30" class="stlog"><samp><span class="stinp">. stcox gender lnage </span>
+
+         failure _d:  <span class="stres">folstatus</span>
+<span class="stres">   </span>analysis time _t:  <span class="stres">cs</span>
+
+Iteration 0:   log likelihood = <span class="stres">-191.44774</span>
+Iteration 1:   log likelihood = <span class="stres"> -191.4413</span>
+Iteration 2:   log likelihood = <span class="stres"> -191.4413</span>
+Refining estimates:
+Iteration 0:   log likelihood = <span class="stres"> -191.4413</span>
+
+Cox regression -- no ties
+
+No. of subjects = <span class="stres">         100                  </span>Number of obs    =  <span class="stres">       100</span>
+No. of failures = <span class="stres">          51</span>
+Time at risk    = <span class="stres"> 51.00000025</span>
+<span class="stres">                                                </span>LR chi2(<span class="stres">2</span>)       =  <span class="stres">      0.01</span>
+Log likelihood  =   <span class="stres"> -191.4413                  </span>Prob &gt; chi2      =  <span class="stres">    0.9936</span>
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      gender |<span class="stres">   .9779439   .3095562    -0.07   0.944     .5258677     1.81866</span>
+       lnage |<span class="stres">   .9444136   .7887569    -0.07   0.945     .1837614    4.853668</span>
+------------------------------------------------------------------------------
+
+<span class="stinp">. stcurve, surv at1(gender =0) at2(gender=1)</span>
+</samp></pre>
+<figure id="fig-30">
+<a href="Tutorial-SVA-ULB_30.png"><img alt="Tutorial-SVA-ULB_30.png" src="Tutorial-SVA-ULB_30.png"/></a>
+</figure>
+<h3 id="h-0-1-11"> X) Flexible Parametric Survival <h3>		  
+<pre id="stlog-31" class="stlog"><samp><span class="stinp">. <span class="stcmt">//ssc install stpm2       </span></span>
+<span class="stinp">. stpm2 gender age, df(3) scale(hazard) eform nolog</span>
+
+Log likelihood = <span class="stres">-117.47139</span>                     Number of obs     = <span class="stres">       100</span>
+
+------------------------------------------------------------------------------
+             |     exp(b)   Std. Err.      z    P&gt;|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+<span class="stres">xb           </span>|
+      gender |<span class="stres">   .9540495   .3025159    -0.15   0.882     .5124679    1.776131</span>
+         age |<span class="stres">   1.000827   .0130148     0.06   0.949     .9756407    1.026663</span>
+       _rcs1 |<span class="stres">   2.738344   .3655384     7.55   0.000     2.107959    3.557246</span>
+       _rcs2 |<span class="stres">    1.04388   .1104969     0.41   0.685     .8482989    1.284553</span>
+       _rcs3 |<span class="stres">    .967567   .0613668    -0.52   0.603     .8544657    1.095639</span>
+       _cons |<span class="stres">   .3343509    .306433    -1.20   0.232     .0554722    2.015254</span>
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation.
+
+<span class="stinp">. predict s0, meansurv at (gender 0)      </span>
+
+<span class="stinp">. predict s1, meansurv at (gender 1)      </span>
+
+<span class="stinp">. tw line s0 s1 _t, connect (J J) sort <span class="stcmt">//Note different shape as we do not assume </span></span>
+</samp></pre>
+<figure id="fig-31">
+<a href="Tutorial-SVA-ULB_31.png"><img alt="Tutorial-SVA-ULB_31.png" src="Tutorial-SVA-ULB_31.png"/></a>
+</figure>
+<h1 id="h-1"><font color="blue">THANK YOU FOR YOUR ATTENTION</font></h1>
+</body>
+</html>
+</body>
+</html>
