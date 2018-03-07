@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>SVA-ULB-ESP.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  max-width: 1000px;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<style>
+.stlog { color: #00FF00; background-color: #000000; }
+.stres { color: #FFFF00; }
+.stinp { color: #FFFFFF; }
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<html>
+<head>
+<title>TUTORIAL TIME-TO-EVENT-ANALYSIS</title>
+</head>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} });
+</script>
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+<body>
+<h2>TUTORIAL: TIME-TO-EVENT-ANALYSIS</br>
+<p></p>
+ECOLE DE SANTE PUBLIQUE</br>
+UNIVERSITE LIBRE DE BRUXELLES</br>
+BRUSSELS, BELGIUM, 8th March 2018</br>
+<p></p>
+Miguel Angel Luque Fernandez</br>
+Miguel Servet I Biostatistics and Epidemiology</br>
+Biomedical Research Institute of Granada, University of Granada.</br>
+Andalusian School of Public Health, Granada, Spain</br>
+<p></p>
+</h2>
+<p>Copyright (c) 2017  <Miguel Angel Luque-Fernandez>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.<br>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p>
+<p>Bug reports: miguel.luque.easp at juntadeandalucia.es</p>
+<h2>Content</h2>
+<h3>I) Nonparametric estimation</br>
+<p></p>
+II) The Kaplan-Meier estimator</br>
+<p></p>
+III) The Nelson-Aelen estimator</br>
+<p></p>
+IV)  Comparing Survival: The Log-rank test</br>
+<p></p>
+V)   Modeling the hazard: The Cox Model (stcox)</br>
+<p></p>
+VI) Testing the proportional-hazards assumption</br>
+<p></p>
+<p></p>
+VII) Stratified analysis</br>
+<p></p>
+<p></p>
+VIII) Goodness of fit</br>
+<p></p>
+<p></p>
+IX) Flexible Parametric Modeling</br>
+<p></p>
+<h3> I)  Nonparametric estimation </h3>
+<h4>DATA: Hosmer, D. W., Lemeshow, S. and May, S. (2008) Introduction to Regression Modeling of Survival Data, in Applied Survival Analysis: 
+Regression Modeling of Time-to-Event Data, Second Edition, John Wiley & Sons, Inc., Hoboken, NJ, USA. doi: 10.1002/9780470258019.</h4>
