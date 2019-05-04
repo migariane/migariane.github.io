@@ -1,0 +1,8 @@
+title: MALF
+description: Test
+google_analytics: UA-58672084-1
+show_downloads: true
+theme: jekyll-theme-leap-day
+
+gems:
+  - jekyll-mentions
