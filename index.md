@@ -1,1 +1,0 @@
-[Google Schoolar](http://scholar.google.com/citations?user=lA11XToAAAAJ&hl=en)
