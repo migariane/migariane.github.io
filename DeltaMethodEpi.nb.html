@@ -3038,16 +3038,6 @@ div.tocify {
 <p>To illustrate the use of the Delta Method we are going to generate data based on a cancer epidemiology example where we want to estimate the effect of comorbidities (binary indicator) on one-year cancer mortality controlling for the confounding effect of age in a cohort of 1,000 patients in their middle age. We assume that it is an extremely lethal type of cancer (i.e., pancreatic cancer) thus we can expect high one-year mortality rate. Age in years was generated as a normal random variable with mean 65 years and standard deviation 5 years. Comorbidities was generated as a binary indicator and as a function of age using a binomial model. Patients<span class="math inline">\(’\)</span> one-year mortality rate was generated as a function of the patients<span class="math inline">\(’\)</span> age and the presence of comorbidities using a binomial distribution. The data generation and models specifications are provide here below:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAzLjEuMSAgICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtcHVycnIgIFx1MDAxYlszMG0gMC4zLjIgIFxuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXRpYmJsZSBcdTAwMWJbMzBtIDIuMS4xICAgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguMC5cdTAwMWJbMzFtMVx1MDAxYlszMG1cblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWR5ciAgXHUwMDFiWzMwbSAwLjguMyAgICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjAgIFxuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXJlYWRyICBcdTAwMWJbMzBtIDEuMy4xICAgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1mb3JjYXRzXHUwMDFiWzMwbSAwLjQuMCAgXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzBtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>[30m── [1mAttaching packages[22m ──────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[30m[32m✔[30m [34mggplot2[30m 3.1.1       [32m✔[30m [34mpurrr  [30m 0.3.2  
-[32m✔[30m [34mtibble [30m 2.1.1       [32m✔[30m [34mdplyr  [30m 0.8.0.[31m1[30m
-[32m✔[30m [34mtidyr  [30m 0.8.3       [32m✔[30m [34mstringr[30m 1.4.0  
-[32m✔[30m [34mreadr  [30m 1.3.1       [32m✔[30m [34mforcats[30m 0.4.0  [39m
-[30m── [1mConflicts[22m ─────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
-[31m✖[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Here we describe the data</p>
@@ -3462,6 +3452,94 @@ Calculations and Intervals on Original Scale</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV2dG9vbHM6OnNlc3Npb25faW5mbygpXG5gYGAifQ== -->
 <pre class="r"><code>devtools::session_info()</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6OX0sInJkZiI6Ikg0c0lBQUFBQUFBQUE4VlNXMC9DTUJRdWhZbk1TMHp3MFljOVl1THFOb0hnSTRuNjVDVUJTWGdqZFpTbFpyUmtMVGQvUE5wQmo0RWxQcHVzNnpuZitjN2xPMXZ2WVJpNVF4Y2hoRkhad1FpWGpWbkI1bFZDRlZUTDd4VkM1ZnFXZ05DRk9UVWJxQzVZcHJnVTFzVlNXZXRJclpWbVU4RG4zRnJIS1JYSm5DWU1Dc1F5VGFrRzE0bjFlZ1lPMWwvV3FveHp5bUhycTU1bm0zdDNwRVVpcnhFRlljY1BJejhLcmkzbmNrcmp0NzczSWovcGdubGhRTUltYVVKczFXbVAyczBiYjB5ekpSZGhpN1JKQUZQMStubys1aExhTng1Zm9lUUpFNk5Cbnd6ZW4vek8zMUM5TzJVWmorbnRzMVNqcmtoWXltQXpyaG56M2c5YTVpbHMyUkYwYW1nN21SaEdVVXhyTGhMZ0xHZzZaNFhFV2lhWFpELzVmejdQb1pnNHBRcm1BZEExUkVvbW1SblZlSnRDU2xYT3RCbldKT0g4WDNNS3lhV3NBSndxcG5KMVBoY1RtVmZmeG5ibnpONjFQUnZ2K3VGdlc4ZUJaVENSY1BHck1hVWZMTFhPdWRuc2RyRmtsbkdoUVlaQkZkRlNVK0M1WmsrQWJJV2h6UTlNR3c5TFZnTUFBQT09In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["setting"],"name":[1],"type":["chr"],"align":["left"]},{"label":["value"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"version","2":"R version 3.5.2 (2018-12-20)","_rn_":"version"},{"1":"os","2":"macOS Mojave 10.14.4","_rn_":"os"},{"1":"system","2":"x86_64, darwin15.6.0","_rn_":"system"},{"1":"ui","2":"RStudio","_rn_":"ui"},{"1":"language","2":"(EN)","_rn_":"language"},{"1":"collate","2":"en_US.UTF-8","_rn_":"collate"},{"1":"ctype","2":"en_US.UTF-8","_rn_":"ctype"},{"1":"tz","2":"America/Los_Angeles","_rn_":"tz"},{"1":"date","2":"2019-05-05","_rn_":"date"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[9]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-output-begin eyJkYXRhIjoi4pSAIFNlc3Npb24gaW5mbyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcblxu4pSAIFBhY2thZ2VzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgFxuIHBhY2thZ2UgICAgICogdmVyc2lvbiAgZGF0ZSAgICAgICBsaWIgc291cmNlICAgICAgICBcbiBhc3NlcnR0aGF0ICAgIDAuMi4xICAgIDIwMTktMDMtMjEgWzFdIENSQU4gKFIgMy41LjIpXG4gYmFja3BvcnRzICAgICAxLjEuMyAgICAyMDE4LTEyLTE0IFsxXSBDUkFOIChSIDMuNS4wKVxuIGJhc2U2NGVuYyAgICAgMC4xLTMgICAgMjAxNS0wNy0yOCBbMV0gQ1JBTiAoUiAzLjUuMClcbiBib290ICAgICAgICAqIDEuMy0yMCAgIDIwMTctMDgtMDYgWzFdIENSQU4gKFIgMy41LjIpXG4gYnJvb20gICAgICAgICAwLjUuMiAgICAyMDE5LTA0LTA3IFsxXSBDUkFOIChSIDMuNS4yKVxuIGNhbGxyICAgICAgICAgMy4yLjAgICAgMjAxOS0wMy0xNSBbMV0gQ1JBTiAoUiAzLjUuMilcbiBjZWxscmFuZ2VyICAgIDEuMS4wICAgIDIwMTYtMDctMjcgWzFdIENSQU4gKFIgMy41LjApXG4gY2xpICAgICAgICAgICAxLjEuMCAgICAyMDE5LTAzLTE5IFsxXSBDUkFOIChSIDMuNS4yKVxuIGNvbG9yc3BhY2UgICAgMS40LTEgICAgMjAxOS0wMy0xOCBbMV0gQ1JBTiAoUiAzLjUuMilcbiBjcmF5b24gICAgICAgIDEuMy40ICAgIDIwMTctMDktMTYgWzFdIENSQU4gKFIgMy41LjApXG4gZGVzYyAgICAgICAgICAxLjIuMCAgICAyMDE4LTA1LTAxIFsxXSBDUkFOIChSIDMuNS4wKVxuIGRldnRvb2xzICAgICAgMi4wLjEgICAgMjAxOC0xMC0yNiBbMV0gQ1JBTiAoUiAzLjUuMClcbiBkaWdlc3QgICAgICAgIDAuNi4xOCAgIDIwMTgtMTAtMTAgWzFdIENSQU4gKFIgMy41LjApXG4gZHBseXIgICAgICAgKiAwLjguMC4xICAyMDE5LTAyLTE1IFsxXSBDUkFOIChSIDMuNS4yKVxuIGV2YWx1YXRlICAgICAgMC4xMyAgICAgMjAxOS0wMi0xMiBbMV0gQ1JBTiAoUiAzLjUuMilcbiBleHBtICAgICAgICAgIDAuOTk5LTQgIDIwMTktMDMtMjEgWzFdIENSQU4gKFIgMy41LjIpXG4gZm9yY2F0cyAgICAgKiAwLjQuMCAgICAyMDE5LTAyLTE3IFsxXSBDUkFOIChSIDMuNS4yKVxuIGZzICAgICAgICAgICAgMS4yLjcgICAgMjAxOS0wMy0xOSBbMV0gQ1JBTiAoUiAzLjUuMilcbiBnZW5lcmljcyAgICAgIDAuMC4yICAgIDIwMTgtMTEtMjkgWzFdIENSQU4gKFIgMy41LjApXG4gZ2dwbG90MiAgICAgKiAzLjEuMSAgICAyMDE5LTA0LTA3IFsxXSBDUkFOIChSIDMuNS4yKVxuIGdsdWUgICAgICAgICAgMS4zLjEgICAgMjAxOS0wMy0xMiBbMV0gQ1JBTiAoUiAzLjUuMilcbiBndGFibGUgICAgICAgIDAuMy4wICAgIDIwMTktMDMtMjUgWzFdIENSQU4gKFIgMy41LjIpXG4gaGF2ZW4gICAgICAgICAyLjEuMCAgICAyMDE5LTAyLTE5IFsxXSBDUkFOIChSIDMuNS4yKVxuIGhtcyAgICAgICAgICAgMC40LjIgICAgMjAxOC0wMy0xMCBbMV0gQ1JBTiAoUiAzLjUuMClcbiBodG1sdG9vbHMgICAgIDAuMy42ICAgIDIwMTctMDQtMjggWzFdIENSQU4gKFIgMy41LjApXG4gaHR0ciAgICAgICAgICAxLjQuMCAgICAyMDE4LTEyLTExIFsxXSBDUkFOIChSIDMuNS4wKVxuIGpzb25saXRlICAgICAgMS42ICAgICAgMjAxOC0xMi0wNyBbMV0gQ1JBTiAoUiAzLjUuMClcbiBrbml0ciAgICAgICAgIDEuMjIgICAgIDIwMTktMDMtMDggWzFdIENSQU4gKFIgMy41LjIpXG4gbGF0dGljZSAgICAgICAwLjIwLTM4ICAyMDE4LTExLTA0IFsxXSBDUkFOIChSIDMuNS4yKVxuIGxhenlldmFsICAgICAgMC4yLjIgICAgMjAxOS0wMy0xNSBbMV0gQ1JBTiAoUiAzLjUuMilcbiBsdWJyaWRhdGUgICAgIDEuNy40ICAgIDIwMTgtMDQtMTEgWzFdIENSQU4gKFIgMy41LjApXG4gbWFncml0dHIgICAgICAxLjUgICAgICAyMDE0LTExLTIyIFsxXSBDUkFOIChSIDMuNS4wKVxuIE1hdHJpeCAgICAgICAgMS4yLTE3ICAgMjAxOS0wMy0yMiBbMV0gQ1JBTiAoUiAzLjUuMilcbiBtZW1vaXNlICAgICAgIDEuMS4wICAgIDIwMTctMDQtMjEgWzFdIENSQU4gKFIgMy41LjApXG4gbW9kZWxyICAgICAgICAwLjEuNCAgICAyMDE5LTAyLTE4IFsxXSBDUkFOIChSIDMuNS4yKVxuIG1zbSAgICAgICAgICogMS42LjcgICAgMjAxOS0wMy0xOCBbMV0gQ1JBTiAoUiAzLjUuMilcbiBtdW5zZWxsICAgICAgIDAuNS4wICAgIDIwMTgtMDYtMTIgWzFdIENSQU4gKFIgMy41LjApXG4gbXZ0bm9ybSAgICAgICAxLjAtMTAgICAyMDE5LTAzLTA1IFsxXSBDUkFOIChSIDMuNS4yKVxuIG5sbWUgICAgICAgICAgMy4xLTEzOCAgMjAxOS0wNC0wNyBbMV0gQ1JBTiAoUiAzLjUuMilcbiBwaWxsYXIgICAgICAgIDEuMy4xICAgIDIwMTgtMTItMTUgWzFdIENSQU4gKFIgMy41LjApXG4gcGtnYnVpbGQgICAgICAxLjAuMyAgICAyMDE5LTAzLTIwIFsxXSBDUkFOIChSIDMuNS4yKVxuIHBrZ2NvbmZpZyAgICAgMi4wLjIgICAgMjAxOC0wOC0xNiBbMV0gQ1JBTiAoUiAzLjUuMClcbiBwa2dsb2FkICAgICAgIDEuMC4yICAgIDIwMTgtMTAtMjkgWzFdIENSQU4gKFIgMy41LjApXG4gcGx5ciAgICAgICAgICAxLjguNCAgICAyMDE2LTA2LTA4IFsxXSBDUkFOIChSIDMuNS4wKVxuIHByZXR0eXVuaXRzICAgMS4wLjIgICAgMjAxNS0wNy0xMyBbMV0gQ1JBTiAoUiAzLjUuMClcbiBwcm9jZXNzeCAgICAgIDMuMy4wICAgIDIwMTktMDMtMTAgWzFdIENSQU4gKFIgMy41LjIpXG4gcHMgICAgICAgICAgICAxLjMuMCAgICAyMDE4LTEyLTIxIFsxXSBDUkFOIChSIDMuNS4wKVxuIHB1cnJyICAgICAgICogMC4zLjIgICAgMjAxOS0wMy0xNSBbMV0gQ1JBTiAoUiAzLjUuMilcbiBSNiAgICAgICAgICAgIDIuNC4wICAgIDIwMTktMDItMTQgWzFdIENSQU4gKFIgMy41LjIpXG4gUmNwcCAgICAgICAgICAxLjAuMSAgICAyMDE5LTAzLTE3IFsxXSBDUkFOIChSIDMuNS4yKVxuIHJlYWRyICAgICAgICogMS4zLjEgICAgMjAxOC0xMi0yMSBbMV0gQ1JBTiAoUiAzLjUuMClcbiByZWFkeGwgICAgICAgIDEuMy4xICAgIDIwMTktMDMtMTMgWzFdIENSQU4gKFIgMy41LjIpXG4gcmVtb3RlcyAgICAgICAyLjAuMiAgICAyMDE4LTEwLTMwIFsxXSBDUkFOIChSIDMuNS4wKVxuIHJsYW5nICAgICAgICAgMC4zLjQgICAgMjAxOS0wNC0wNyBbMV0gQ1JBTiAoUiAzLjUuMilcbiBybWFya2Rvd24gICAgIDEuMTIgICAgIDIwMTktMDMtMTQgWzFdIENSQU4gKFIgMy41LjIpXG4gcnByb2pyb290ICAgICAxLjMtMiAgICAyMDE4LTAxLTAzIFsxXSBDUkFOIChSIDMuNS4wKVxuIHJzdHVkaW9hcGkgICAgMC4xMCAgICAgMjAxOS0wMy0xOSBbMV0gQ1JBTiAoUiAzLjUuMilcbiBydmVzdCAgICAgICAgIDAuMy4yICAgIDIwMTYtMDYtMTcgWzFdIENSQU4gKFIgMy41LjApXG4gc2NhbGVzICAgICAgICAxLjAuMCAgICAyMDE4LTA4LTA5IFsxXSBDUkFOIChSIDMuNS4wKVxuIHNlc3Npb25pbmZvICAgMS4xLjEgICAgMjAxOC0xMS0wNSBbMV0gQ1JBTiAoUiAzLjUuMClcbiBzdHJpbmdpICAgICAgIDEuNC4zICAgIDIwMTktMDMtMTIgWzFdIENSQU4gKFIgMy41LjIpXG4gc3RyaW5nciAgICAgKiAxLjQuMCAgICAyMDE5LTAyLTEwIFsxXSBDUkFOIChSIDMuNS4yKVxuIHN1cnZpdmFsICAgICAgMi40NC0xLjEgMjAxOS0wNC0wMSBbMV0gQ1JBTiAoUiAzLjUuMilcbiB0ZXN0dGhhdCAgICAgIDIuMC4xICAgIDIwMTgtMTAtMTMgWzFdIENSQU4gKFIgMy41LjApXG4gdGliYmxlICAgICAgKiAyLjEuMSAgICAyMDE5LTAzLTE2IFsxXSBDUkFOIChSIDMuNS4yKVxuIHRpZHlyICAgICAgICogMC44LjMgICAgMjAxOS0wMy0wMSBbMV0gQ1JBTiAoUiAzLjUuMilcbiB0aWR5c2VsZWN0ICAgIDAuMi41ICAgIDIwMTgtMTAtMTEgWzFdIENSQU4gKFIgMy41LjApXG4gdGlkeXZlcnNlICAgKiAxLjIuMSAgICAyMDE3LTExLTE0IFsxXSBDUkFOIChSIDMuNS4wKVxuIHVzZXRoaXMgICAgICogMS41LjAgICAgMjAxOS0wNC0wNyBbMV0gQ1JBTiAoUiAzLjUuMilcbiB3aXRociAgICAgICAgIDIuMS4yICAgIDIwMTgtMDMtMTUgWzFdIENSQU4gKFIgMy41LjApXG4geGZ1biAgICAgICAgICAwLjYgICAgICAyMDE5LTA0LTAyIFsxXSBDUkFOIChSIDMuNS4yKVxuIHhtbDIgICAgICAgICAgMS4yLjAgICAgMjAxOC0wMS0yNCBbMV0gQ1JBTiAoUiAzLjUuMClcbiB5YW1sICAgICAgICAgIDIuMi4wICAgIDIwMTgtMDctMjUgWzFdIENSQU4gKFIgMy41LjApXG5cblsxXSAvTGlicmFyeS9GcmFtZXdvcmtzL1IuZnJhbWV3b3JrL1ZlcnNpb25zLzMuNS9SZXNvdXJjZXMvbGlicmFyeVxuIn0= -->
+<pre><code>─ Session info ────────────────────────────────────────────────────────────────────────
+
+─ Packages ────────────────────────────────────────────────────────────────────────────
+ package     * version  date       lib source        
+ assertthat    0.2.1    2019-03-21 [1] CRAN (R 3.5.2)
+ backports     1.1.3    2018-12-14 [1] CRAN (R 3.5.0)
+ base64enc     0.1-3    2015-07-28 [1] CRAN (R 3.5.0)
+ boot        * 1.3-20   2017-08-06 [1] CRAN (R 3.5.2)
+ broom         0.5.2    2019-04-07 [1] CRAN (R 3.5.2)
+ callr         3.2.0    2019-03-15 [1] CRAN (R 3.5.2)
+ cellranger    1.1.0    2016-07-27 [1] CRAN (R 3.5.0)
+ cli           1.1.0    2019-03-19 [1] CRAN (R 3.5.2)
+ colorspace    1.4-1    2019-03-18 [1] CRAN (R 3.5.2)
+ crayon        1.3.4    2017-09-16 [1] CRAN (R 3.5.0)
+ desc          1.2.0    2018-05-01 [1] CRAN (R 3.5.0)
+ devtools      2.0.1    2018-10-26 [1] CRAN (R 3.5.0)
+ digest        0.6.18   2018-10-10 [1] CRAN (R 3.5.0)
+ dplyr       * 0.8.0.1  2019-02-15 [1] CRAN (R 3.5.2)
+ evaluate      0.13     2019-02-12 [1] CRAN (R 3.5.2)
+ expm          0.999-4  2019-03-21 [1] CRAN (R 3.5.2)
+ forcats     * 0.4.0    2019-02-17 [1] CRAN (R 3.5.2)
+ fs            1.2.7    2019-03-19 [1] CRAN (R 3.5.2)
+ generics      0.0.2    2018-11-29 [1] CRAN (R 3.5.0)
+ ggplot2     * 3.1.1    2019-04-07 [1] CRAN (R 3.5.2)
+ glue          1.3.1    2019-03-12 [1] CRAN (R 3.5.2)
+ gtable        0.3.0    2019-03-25 [1] CRAN (R 3.5.2)
+ haven         2.1.0    2019-02-19 [1] CRAN (R 3.5.2)
+ hms           0.4.2    2018-03-10 [1] CRAN (R 3.5.0)
+ htmltools     0.3.6    2017-04-28 [1] CRAN (R 3.5.0)
+ httr          1.4.0    2018-12-11 [1] CRAN (R 3.5.0)
+ jsonlite      1.6      2018-12-07 [1] CRAN (R 3.5.0)
+ knitr         1.22     2019-03-08 [1] CRAN (R 3.5.2)
+ lattice       0.20-38  2018-11-04 [1] CRAN (R 3.5.2)
+ lazyeval      0.2.2    2019-03-15 [1] CRAN (R 3.5.2)
+ lubridate     1.7.4    2018-04-11 [1] CRAN (R 3.5.0)
+ magrittr      1.5      2014-11-22 [1] CRAN (R 3.5.0)
+ Matrix        1.2-17   2019-03-22 [1] CRAN (R 3.5.2)
+ memoise       1.1.0    2017-04-21 [1] CRAN (R 3.5.0)
+ modelr        0.1.4    2019-02-18 [1] CRAN (R 3.5.2)
+ msm         * 1.6.7    2019-03-18 [1] CRAN (R 3.5.2)
+ munsell       0.5.0    2018-06-12 [1] CRAN (R 3.5.0)
+ mvtnorm       1.0-10   2019-03-05 [1] CRAN (R 3.5.2)
+ nlme          3.1-138  2019-04-07 [1] CRAN (R 3.5.2)
+ pillar        1.3.1    2018-12-15 [1] CRAN (R 3.5.0)
+ pkgbuild      1.0.3    2019-03-20 [1] CRAN (R 3.5.2)
+ pkgconfig     2.0.2    2018-08-16 [1] CRAN (R 3.5.0)
+ pkgload       1.0.2    2018-10-29 [1] CRAN (R 3.5.0)
+ plyr          1.8.4    2016-06-08 [1] CRAN (R 3.5.0)
+ prettyunits   1.0.2    2015-07-13 [1] CRAN (R 3.5.0)
+ processx      3.3.0    2019-03-10 [1] CRAN (R 3.5.2)
+ ps            1.3.0    2018-12-21 [1] CRAN (R 3.5.0)
+ purrr       * 0.3.2    2019-03-15 [1] CRAN (R 3.5.2)
+ R6            2.4.0    2019-02-14 [1] CRAN (R 3.5.2)
+ Rcpp          1.0.1    2019-03-17 [1] CRAN (R 3.5.2)
+ readr       * 1.3.1    2018-12-21 [1] CRAN (R 3.5.0)
+ readxl        1.3.1    2019-03-13 [1] CRAN (R 3.5.2)
+ remotes       2.0.2    2018-10-30 [1] CRAN (R 3.5.0)
+ rlang         0.3.4    2019-04-07 [1] CRAN (R 3.5.2)
+ rmarkdown     1.12     2019-03-14 [1] CRAN (R 3.5.2)
+ rprojroot     1.3-2    2018-01-03 [1] CRAN (R 3.5.0)
+ rstudioapi    0.10     2019-03-19 [1] CRAN (R 3.5.2)
+ rvest         0.3.2    2016-06-17 [1] CRAN (R 3.5.0)
+ scales        1.0.0    2018-08-09 [1] CRAN (R 3.5.0)
+ sessioninfo   1.1.1    2018-11-05 [1] CRAN (R 3.5.0)
+ stringi       1.4.3    2019-03-12 [1] CRAN (R 3.5.2)
+ stringr     * 1.4.0    2019-02-10 [1] CRAN (R 3.5.2)
+ survival      2.44-1.1 2019-04-01 [1] CRAN (R 3.5.2)
+ testthat      2.0.1    2018-10-13 [1] CRAN (R 3.5.0)
+ tibble      * 2.1.1    2019-03-16 [1] CRAN (R 3.5.2)
+ tidyr       * 0.8.3    2019-03-01 [1] CRAN (R 3.5.2)
+ tidyselect    0.2.5    2018-10-11 [1] CRAN (R 3.5.0)
+ tidyverse   * 1.2.1    2017-11-14 [1] CRAN (R 3.5.0)
+ usethis     * 1.5.0    2019-04-07 [1] CRAN (R 3.5.2)
+ withr         2.1.2    2018-03-15 [1] CRAN (R 3.5.0)
+ xfun          0.6      2019-04-02 [1] CRAN (R 3.5.2)
+ xml2          1.2.0    2018-01-24 [1] CRAN (R 3.5.0)
+ yaml          2.2.0    2018-07-25 [1] CRAN (R 3.5.0)
+
+[1] /Library/Frameworks/R.framework/Versions/3.5/Resources/library</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
