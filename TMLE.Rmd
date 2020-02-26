@@ -23,8 +23,12 @@ csl: references/isme.csl
 bibliography: references/bibliography.bib
 ---
 <script>
-<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+ $(document).ready(function() {
+  $head = $('#header');
+  $head.prepend('<img src = "Figures/Logo.png" style =\"float: right;width: 150px;\"/>')
+ });
+</script>
+ 
 <!--BEGIN:  Set the global options and load packages-->
 ```{r set-global-options, echo = FALSE, error=FALSE, message= FALSE}
 knitr::opts_chunk$set(eval = TRUE, 
@@ -164,12 +168,11 @@ generateData <- function(n){
   w3 <- round(runif(n, min=0, max=4), digits=3)
   w4 <- round(runif(n, min=0, max=5), digits=3)
   A  <- rbinom(n, size=1, prob= plogis(-0.4 + 0.2*w2 + 0.15*w3 + 0.2*w4 + 0.15*w2*w4))
-  Y  <- rbinom(n, size=1, prob= plogis(-1 + A -0.1*w1 + 0.3*w2 + 0.25*w3 + 0.2*w4 + 0.15*w2*w4))
-  
   # counterfactual
   Y.1 <- rbinom(n, size=1, prob= plogis(-1 + 1 -0.1*w1 + 0.3*w2 + 0.25*w3 + 0.2*w4 + 0.15*w2*w4))
   Y.0 <- rbinom(n, size=1, prob= plogis(-1 + 0 -0.1*w1 + 0.3*w2 + 0.25*w3 + 0.2*w4 + 0.15*w2*w4))
-  
+  # Observed outcome
+  Y <- Y.1*A + Y.0*(1 - A)
   # return data.frame
   data.frame(w1, w2, w3, w4, A, Y, Y.1, Y.0)
 }
@@ -296,11 +299,11 @@ cat("\n Relative_TMLE.SI_bias:",abs(True_Psi-Psi)/True_Psi*100,"%")
 **Visualizing** the 4th step (H = IPTW or clever covarites):  
 
 ```{r, warning=FALSE}
-df <- round(cbind(Q0=(Q0),H=(h),epsilon,psi), digits= 4)
+df <- round(cbind(Q0=(Q0),H=(h),epsilon,psi), digits= 3)
 datatable(head(df, n = nrow(df)), options = list(pageLength = 5, digits = 3))
 ```
 ```{r}
-cat("\n Psi first row:", plogis((0.0012*1.2399) + (2.3678)) - (plogis((0.0012*-5.1681) + (1.3413))))
+cat("\n Psi first row:", plogis((0.001*1.239) + (2.395)) - (plogis((0.001*-5.168) + (1.343))))
 ```
 
 ## Step 5: Inference
@@ -487,7 +490,7 @@ cat("\n TMLE_bias:", abs(True_Psi-tmle$estimates[[2]][[1]]))
 cat("\n Relative_TMLE_bias:",abs(True_Psi-tmle$estimates[[2]][[1]])/True_Psi*100,"%")
 ```
 
-TMLE implementation in the R-package **tmle** improves the estimation of the inverse-propability of treatment weights. It bounds by default the distribution of the weights for the propensity score to (0.025th and 0.975th percentiles) to decrease the impact of near-positivity violations. Also, note that at each time that we run the super-learner the V-fold cross-validation splits the data randomly. So, we have to set a seed for replicability. It is why the bias using the **tmle** R-package decreases from 0.7354 to 0.6979.
+TMLE implementation in the R-package **tmle** improves the estimation of the inverse-propability of treatment weights. It bounds by default the distribution of the weights for the propensity score to (0.025th and 0.975th percentiles) to decrease the impact of near-positivity violations. Also, note that at each time that we run the super-learner the V-fold cross-validation splits the data randomly. So, we have to set a seed for replicability. It is why the bias using the **tmle** R-package decreases from 0.007 to 0.005.
 
 # R-TMLE reducing bias by calling more advanced machine-learning libraries
 
@@ -578,3 +581,4 @@ Luque-Fernandez MA, (2019). Taregeted Maximum Likelihood Estimation for a Binary
 **Twitter** `@WATZILEI`  
 
 # References 
+
