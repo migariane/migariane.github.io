@@ -1,17 +1,23 @@
 Tutorial for epidemiologists and applied statisticians:  
 
-1. Crossvalidation  
+1. Cross-validation  
 2. Machine Learning  
 3. Causal Inference  
 4. Survival Analysis  
 5. TMLE  
+6. Dynamic web applicatios with Shiny  
+7. Graphical displays with Plotly and ggplot (gapminder)    
+8. Stata programs (eltmle, cvauroc, cmatch)  
 
 Thank you for participating in this tutorial.  
-If you have updates or changes that you would like to make, please send me a pull request. Alternatively, if you have any questions, please e-mail me.  
+If you have updates or changes that you would like to make, please send me a pull request. 
+Alternatively, if you have any questions, please e-mail me:    
 E-mail: miguel-angel.luque at lshtm.ac.uk  
 Twitter @WATZILEI  
 
-Miguel Angel Luque-Fernandezc
+Miguel Angel Luque-Fernandez  
+https://maluque.netlify.com/  
+
 
  
 
