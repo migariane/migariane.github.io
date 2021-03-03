@@ -1,6 +1,6 @@
 ---
 title: "Delta Method in Epidemiology: An Applied and Reproducible Tutorial."
-author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, Ph.D"
+author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, PhD"
 date: "20/10/2020 \n https://scholar.harvard.edu/malf/home"
 output:
   html_notebook:
