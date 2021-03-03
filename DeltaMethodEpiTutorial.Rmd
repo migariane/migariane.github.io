@@ -1,17 +1,12 @@
 ---
 title: "Delta Method in Epidemiology: An Applied and Reproducible Tutorial."
-<<<<<<< HEAD
 author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, PhD"
-=======
-<<<<<<< HEAD
-author: "Miguel Angel Luque Fernandez, Michael Schomaker, Sho Komukai, Aurelien Belot, Daniel Redondo-Sanchez, Bernard Rachet, Mireille Schnitzer"
-date: "Updated: 24/04/2020"
-=======
-author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, Ph.D"
->>>>>>> c1a6ef14567163ccda8aa3eb47aa1336b47ac277
 date: "20/10/2020 \n https://scholar.harvard.edu/malf/home"
->>>>>>> 42b30766890e85791a5561ada65f6a164d11c797
 output:
+  html_document:
+    toc: yes
+  word_document:
+    toc: yes
   html_notebook:
     code_folding: show
     highlight: default
@@ -22,10 +17,6 @@ output:
       collapsed: no
       smooth_scroll: yes
       toc_depth: 3
-  word_document:
-    toc: yes
-  html_document:
-    toc: yes
   pdf_document:
      toc: true
      number_sections: true
