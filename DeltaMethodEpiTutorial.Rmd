@@ -1,12 +1,8 @@
 ---
 title: "Delta Method in Epidemiology: An Applied and Reproducible Tutorial."
-author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, PhD"
+author: "Miguel Angel Luque Fernandez, MA, MPH, MSc, Ph.D"
 date: "20/10/2020 \n https://scholar.harvard.edu/malf/home"
 output:
-  html_document:
-    toc: yes
-  word_document:
-    toc: yes
   html_notebook:
     code_folding: show
     highlight: default
@@ -17,6 +13,10 @@ output:
       collapsed: no
       smooth_scroll: yes
       toc_depth: 3
+  word_document:
+    toc: yes
+  html_document:
+    toc: yes
   pdf_document:
      toc: true
      number_sections: true
@@ -185,7 +185,7 @@ Therefore, to estimate the var(\(\widehat{RD}\)) for the risk differences we sum
 
 Similarly to estimate the SE for risk ratio (RR) we have
 
-\[\widehat{RR} \,=\, \frac{\hat \theta_{1}}{\hat \theta_{2}} \,=\, log\left(\frac{\hat p_{1}}{\hat p_{2}}\right)\,=\,log(\hat p_{1}) + log(\hat p_{2})\]
+\[\widehat{RR} \,=\, \frac{\hat \theta_{1}}{\hat \theta_{2}} \,=\, log\left(\frac{\hat p_{1}}{\hat p_{2}}\right)\,=\,log(\hat p_{1}) - log(\hat p_{2})\]
 
 Note that the derivative of the log(p) is equal to 1/p.
 
@@ -629,7 +629,7 @@ Recently, the study of the behavior of the delta-method for data-adaptive double
 To conclude, there is an active research development of methods and tools for highly dimensional data analysis such as machine learning and causal inference. The new venue of methods requires a constant update on valid statistical inference for applied epidemiologists and statisticians. We provided a mostly applied overview of the delta-method, the functional delta-method, IC and the bootstrap that may help to fill this gap.
 
 # Funding
-Miguel Angel Luque Fernandez is supported by the National Institute of Health, Carlos III, Miguel Servet I Investigator Award (CP17/00206), Madrid, Spain. Mireille E. Schnitzer is supported by a New Investigator Salary Award from the Canadian Institutes of Health Research.
+Miguel Angel Luque Fernandez is supported by the National Institute of Health, Carlos III, Miguel Servet I Investigator Award (CP17/00206), Madrid, Spain. 
 
 # Authors contributions
 The article arise from the motivation to disseminate the principles of modern epidemiology among clinicians and applied researchers. MALF developed the concept, designed the study, analysed the data, and wrote the tutorial All authors interpreted and reviewed the code and the data, drafted and revised the tutorial.
