@@ -1,92 +1,655 @@
-
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>MALF by migariane</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Statistical tutorials, R packages, Stata programs, and Shiny apps by Miguel Angel Luque-Fernandez — causal inference, conformal prediction, survival analysis, and machine learning.">
+  <meta name="author" content="Miguel Angel Luque-Fernandez">
+  <meta property="og:title" content="Miguel Angel Luque-Fernandez | Tutorials &amp; Software">
+  <meta property="og:description" content="Open-access tutorials on causal inference, conformal prediction, survival analysis, and machine learning.">
+  <meta property="og:url" content="https://migariane.github.io">
+  <title>Miguel Angel Luque-Fernandez | Statistical Tutorials &amp; Software</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap">
+  <style>
+    /* ── RESET + BASE ───────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    :root {
+      --ugr-blue:    #00488C;
+      --ugr-green:   #008050;
+      --ugr-orange:  #D26400;
+      --purple:      #6B46C1;
+      --teal:        #0D7377;
+      --red:         #C53030;
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+      --bg:          #F7F9FC;
+      --surface:     #FFFFFF;
+      --border:      #E2E8F0;
+      --text:        #1A202C;
+      --muted:       #718096;
+      --link:        #00488C;
+
+      --radius-sm:   4px;
+      --radius:      8px;
+      --radius-lg:   14px;
+      --shadow:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:   0 4px 8px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── SITE HEADER ────────────────────────────────── */
+    .site-header {
+      background: linear-gradient(135deg, #002D5A 0%, var(--ugr-blue) 60%, #1565A8 100%);
+      color: #fff;
+      padding: 2.75rem 1.5rem 2.25rem;
+    }
+
+    .site-header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header-name {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.15;
+    }
+
+    .header-tagline {
+      font-size: .9rem;
+      font-weight: 400;
+      opacity: .8;
+      margin-top: .4rem;
+      letter-spacing: .01em;
+    }
+
+    .header-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: 1.1rem;
+    }
+
+    .header-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: rgba(255,255,255,.13);
+      color: #fff;
+      padding: .32rem .8rem;
+      border-radius: 999px;
+      font-size: .81rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,.22);
+      text-decoration: none;
+      transition: background .15s;
+    }
+
+    .header-links a:hover { background: rgba(255,255,255,.24); }
+
+    /* ── STICKY NAV ─────────────────────────────────── */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .site-nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .site-nav-inner::-webkit-scrollbar { display: none; }
+
+    .site-nav a {
+      display: block;
+      padding: .8rem 1rem;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+
+    .site-nav a:hover { color: var(--ugr-blue); border-bottom-color: var(--ugr-blue); }
+
+    /* ── MAIN LAYOUT ────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.25rem 1.5rem 5rem;
+    }
+
+    /* ── FEATURED BANNER ────────────────────────────── */
+    .featured-banner {
+      background: linear-gradient(135deg, var(--ugr-blue) 0%, #1565A8 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.25rem;
+      margin-bottom: 2.75rem;
+    }
+
+    .featured-banner-label {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.28);
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+
+    .featured-banner h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+      line-height: 1.3;
+    }
+
+    .featured-banner p {
+      font-size: .875rem;
+      opacity: .88;
+      line-height: 1.6;
+      max-width: 680px;
+      margin-bottom: 1.25rem;
+    }
+
+    .featured-links { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .48rem 1.1rem;
+      border-radius: var(--radius);
+      font-size: .84rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .15s;
+    }
+
+    .btn-white { background: #fff; color: var(--ugr-blue); }
+    .btn-white:hover { background: #EEF4FF; text-decoration: none; }
+
+    .btn-outline {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+    }
+
+    .btn-outline:hover { background: rgba(255,255,255,.22); text-decoration: none; }
+
+    .btn-new {
+      font-size: .68rem;
+      font-weight: 700;
+      background: var(--ugr-orange);
+      color: #fff;
+      padding: .1rem .4rem;
+      border-radius: var(--radius-sm);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-left: .15rem;
+    }
+
+    /* ── SECTION ────────────────────────────────────── */
+    .section { margin-bottom: 3rem; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── CARD GRID ──────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      border-left: 3px solid var(--accent, #CBD5E0);
+      padding: 1.1rem 1.2rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .card-title a { color: var(--text); }
+    .card-title a:hover { color: var(--link); text-decoration: none; }
+
+    .card-desc {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin-top: .2rem;
+    }
+
+    /* ── BADGES ─────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: .13rem .5rem;
+      border-radius: 999px;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .badge-r      { background: #EBF8FF; color: #2B6CB0; }
+    .badge-stata  { background: #F0FFF4; color: #276749; }
+    .badge-python { background: #FAF5FF; color: #553C9A; }
+    .badge-shiny  { background: #FFF5F0; color: #C05621; }
+    .badge-slides { background: #EDF2F7; color: #4A5568; }
+    .badge-es     { background: #FFFBEB; color: #92400E; }
+    .badge-github { background: #F7FAFC; color: #2D3748; border: 1px solid #E2E8F0; }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    footer .quote {
+      font-style: italic;
+      color: var(--ugr-blue);
+      font-size: .95rem;
+      font-weight: 500;
+      margin-bottom: .3rem;
+    }
+
+    footer .footer-links {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: .25rem 1.25rem;
+    }
+
+    footer .footer-links a { color: var(--muted); font-size: .82rem; }
+    footer .footer-links a:hover { color: var(--ugr-blue); }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      .header-name    { font-size: 1.45rem; }
+      .card-grid      { grid-template-columns: 1fr; }
+      .featured-banner { padding: 1.5rem 1.25rem; }
+      main            { padding: 1.5rem 1rem 3.5rem; }
+    }
+  </style>
 </head>
 <body>
-  <div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-</script>
-  <div class="wrapper">
-      <header>
-        <h1>Miguel Angel LUQUE-FERNANDEZ</h1>
-        <p>Links to my Statistical Package, Aplications, and Tutorials</p>
-        <p><div class="view"><a href="https://github.com/migariane">View the Project on GitHub <small>migariane</small></a></p>
-        <p><div class="view"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHJwYJKoZIhvcNAQcEoIIHGDCCBxQCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYC82b/lv+6phZoTerm/aHxWEDLgYnQLFHobAsRSXd4CZqmJWL1Tl7b/NB1asO9vFLXTXqCrCMDAO4V+/RZtWgU4YuytEV4d8vquH9z6L0vOsxgZRwVfRzEhuaOX4KuqJ18qB7NedsGCwIBVCJ5YdhdgUnqA7YJ/jmWk5udlSDIw/jELMAkGBSsOAwIaBQAwgaQGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIis3j+jPRJlaAgYCLDM/vvigW/O1rdM+2dxanzxKq88aPkqaaGtUbYL4+aRdQok3VQIoqdrUq3SS/pa/+7MqZuob0kYSIi2N3ZRAAVYqcy0H7k8dzkRqDOsPyUnX665k1iJUZNhNahU2uqPWR7KpymPVz9NlmctmxZgAlw2yh8JpnCLmgQOrK3FPZo6CCA4cwggODMIIC7KADAgECAgEAMA0GCSqGSIb3DQEBBQUAMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTAeFw0wNDAyMTMxMDEzMTVaFw0zNTAyMTMxMDEzMTVaMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAwUdO3fxEzEtcnI7ZKZL412XvZPugoni7i7D7prCe0AtaHTc97CYgm7NsAtJyxNLixmhLV8pyIEaiHXWAh8fPKW+R017+EmXrr9EaquPmsVvTywAAE1PMNOKqo2kl4Gxiz9zZqIajOm1fZGWcGS0f5JQ2kBqNbvbg2/Za+GJ/qwUCAwEAAaOB7jCB6zAdBgNVHQ4EFgQUlp98u8ZvF71ZP1LXChvsENZklGswgbsGA1UdIwSBszCBsIAUlp98u8ZvF71ZP1LXChvsENZklGuhgZSkgZEwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAgV86VpqAWuXvX6Oro4qJ1tYVIT5DgWpE692Ag422H7yRIr/9j/iKG4Thia/Oflx4TdL+IFJBAyPK9v6zZNZtBgPBynXb048hsP16l2vi0k5Q2JKiPDsEfBhGI+HnxLXEaUWAcVfCsQFvd2A1sxRr67ip5y2wwBelUecP3AjJ+YcxggGaMIIBlgIBATCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwCQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE3MDMxMjIxNDMzMlowIwYJKoZIhvcNAQkEMRYEFHBCZjus9HbKHYfqaEmPmctGbCY3MA0GCSqGSIb3DQEBAQUABIGAppYvRJy2DOJRTW/LZK0VKDY84R9y5kXCiQy+dEegUSZH7g2dHmsXEJUuG7yIRVS5WsoQjr7IOhWIxR4tTkV0hdlDz20I2FZZjd7OXGsEFmdaXEp69p9FpeI2sr3EegZ3D0iG8JGxp1u2mAXbO5HUpZhju5/yy1Ek7J8fJ9kSmH0=-----END PKCS7-----">
-        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"></form></p>
-        <ul>
-        <li class="single"><a href="https://github.com/migariane/migariane.github.io">View On <strong>GitHub</strong></a></li>
-        </ul>     
-       </header>
-       <section>
-       <h2>My academic web site</h2>
-       <p><li class="single"><a href="https://maluque-girto71.gamma.site/">My academic website</a></li></p>
-       <h2>Google Scholar</h2>
-       <p><li class="single"><a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&amp;hl=en">Link to my Google Schoolar webpage</a></li></p>
-       <h2>Shiny Apps</h2>
-       <p><li class="single"><a href="https://watzile.shinyapps.io/ExpectedDateDelivery/">Shiny App: Expected Date of Delivery</a></li></p>
-       <p><li class="single"><a href="https://watzile.shinyapps.io/CoMCoR/">Shiny App: Pattern of Comorbidities among Cancer Patients</a></li></p>
-       <p><li class="single"><a href="https://watzile.shinyapps.io/Pardist/">Shiny App: Parametric distributions for time-to-event analysis</a></li></p>
-       <p><li class="single"><a href="https://watzile.shinyapps.io/EpiCollider/">Shiny App: Colliders in epidemiology<a/></li></p>
-       <h2>Overall Survival Tutorial (SVA)</h2>
-       <p><li class="single"><a href="./Tutorial-SVA-ULB.html">Introduction Time-to-Event analyses (survival)<a/></li></p>
-       <h2>Relative Survival Tutorial</h2>
-       <p><li class="single"><a href="./Cohort.html">Standardization of Net Survival in a Cohort analysis under the Relative Survival Framework (Tutorial for Stata Users)<a/></li></p>
-        <p><li class="single"><a href="./TutorialOne.html">Modeling Net Survival using STRS and Poisson Regression in a Cohort analysis under the Relative Survival Framework (Tutorial for Stata Users)<a/></li></p>
-        <p><li class="single"><a href="./TutorialTwo.html">Modeling Net Survival using Flexible Parametric modeling in a Cohort analysis under the Relative Survival Framework (Tutorial for Stata Users)<a/></li></p>
-       <h2>Tabuations for 1:1 matched case-control studies</h2>
-       <p><li class="single"><a href="https://github.com/migariane/cmatch">Stata module for tabulation of matched pairs in 1:1 case-control study by exposure status<a/></li></p>
-       <h2>Cross-validation Tutorial and Stata Program (Stata cvAUROC)</h2>
-       <p><li class="single"><a href="./CrossValidation.nb.html">Cross Validation in practice with R<a/></li></p>
-       <p><li class="single"><a href="https://github.com/migariane/cvAUROC">Cross-validated AUC for Stata users<a/></li></p>
-       <h2>Cuasal Inference Tutorial for Double-Robust Methods and TMLE (Stata ELTMLE)</h2>
-       <p><li class="single"><a href="./CIM.html">Applied Computational Causal Inference Estimation usig STATA<a/></li></p>
-       <p><li class="single"><a href="./TMLE.nb.html">Targeted Maximum Likelihood Estimation (TMLE) in practice with R<a/></li></p>
-       <p><li class="single"><a href="https://github.com/migariane/meltmle">Targeted Maximum Likelihood Estimation (TMLE): Stata implementation<a/></li></p>
-       <p><li class="single"><a href="./eltmle_one_sim.html">ELTMLE example: Stata One Simulation, eltmle vs. competitors under dual missepecification (2017-SUGM)<a/></li></p>
-       <p><li class="single"><a href="./DeltaMethodEpiTutorial.nb.html">Delta Method Tutorial<a/></li></p>
-       <p><li class="single"><a href="./Maths_TMLE-IF.html">Las matemáticas detrás de TMLE (En Español)<a/></li></p>
-       <h2>Conformal Inference Tutorial</h2>
-       <p><li class="single"><a href="./ConformalInferenceExplained.html">The Comprehensive Guide to Conformal Statistical Inference<a/></li></p>
-	     <p><div class="fb-share-button" data-href="https://migariane.github.io" data-layout="button_count"></div></P>
-       <p><a href="https://twitter.com/share" class="twitter-share-button" data-via="WATZILEI">Tweet</a></p>
-	</div>
-    <footer>
-      <p><strong><font color="red">Learning never exhausts the mind</font></strong></p>
-      <p>(Leonardo da Vinci)</p>
-	</footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-     <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-     </script>
-     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-     </script>
-     <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-58672084-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-     </script>
-  </body>
+
+<!-- ── HEADER ────────────────────────────────────── -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <h1 class="header-name">Miguel Angel Luque-Fernandez</h1>
+    <p class="header-tagline">MA · MSc · MPH · BSc · PhD &ensp;|&ensp; Associate Professor, UGR &ensp;|&ensp; Honorary Researcher, LSHTM</p>
+    <div class="header-links">
+      <a href="https://github.com/migariane">⬡ GitHub</a>
+      <a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&hl=en">📖 Google Scholar</a>
+      <a href="https://maluque-girto71.gamma.site/">🌐 Academic Website</a>
+      <a href="https://twitter.com/WATZILEI">𝕏 @WATZILEI</a>
+      <a href="mailto:miguel-angel.luque@lshtm.ac.uk">✉ Contact</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── NAV ───────────────────────────────────────── -->
+<nav class="site-nav" aria-label="Jump to section">
+  <div class="site-nav-inner">
+    <a href="#conformal">Conformal Inference</a>
+    <a href="#causal">Causal Inference</a>
+    <a href="#survival">Survival Analysis</a>
+    <a href="#ml">Machine Learning</a>
+    <a href="#apps">Shiny Apps</a>
+    <a href="#stata">Stata Packages</a>
+  </div>
+</nav>
+
+<!-- ── MAIN ──────────────────────────────────────── -->
+<main>
+
+  <!-- FEATURED: Conformal Inference -->
+  <div class="featured-banner" id="conformal">
+    <div class="featured-banner-label">📐 Featured</div>
+    <h2>Conformal Statistical Inference</h2>
+    <p>
+      From theory to practice: marginal coverage guarantees, split conformal prediction (SCP),
+      conformal quantile regression (CQR), full conformal, and Jackknife+. Available as
+      a comprehensive interactive notebook and a structured slide tutorial in Spanish.
+    </p>
+    <div class="featured-links">
+      <a class="btn btn-white" href="./ConformalInferenceExplained.html">
+        📘 Comprehensive Guide (EN)
+      </a>
+      <a class="btn btn-outline" href="./ConformalPrediction_Tutorial_ES.html">
+        🎓 Tutorial Slides (ES) <span class="btn-new">NEW</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- BOOK ──────────────────────────────────────── -->
+  <div class="featured-banner" id="book" style="background: linear-gradient(135deg, #00488C 0%, #1565A8 100%);">
+    <div class="featured-banner-label">📖 New Book</div>
+    <h2>Computational Causal Inference for Applied Researchers</h2>
+    <p>
+      A comprehensive Quarto book introducing causal inference from a beginner's perspective
+      to advanced computational methods. Covers potential outcomes, DAGs, regression adjustment,
+      G-formula, propensity scores, AIPW, TMLE, longitudinal data, mediation, and sensitivity analysis.
+      With ~65 reproducible R and Stata code examples.
+    </p>
+    <div class="featured-links">
+      <a class="btn btn-white" href="https://migariane.github.io/Causal-Inference-Book/">
+        📘 Read the Book
+      </a>
+      <a class="btn btn-outline" href="https://github.com/migariane/Causal-Inference-Book">
+        ⬡ GitHub Repo <span class="btn-new">NEW</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAUSAL INFERENCE ──────────────────────────── -->
+  <section class="section" id="causal">
+    <div class="section-header">
+      <div class="section-icon" style="background:#EDE9FF">🧪</div>
+      <h2 class="section-title">Causal Inference &amp; TMLE</h2>
+    </div>
+    <div class="card-grid">
+
+      <article class="card" style="--accent:#00488C">
+        <div class="card-title">
+          <a href="https://migariane.github.io/Causal-Inference-Book/">📖 Computational Causal Inference for Applied Researchers (Book)</a>
+        </div>
+        <div class="card-desc">Complete online book with 9 chapters, 71 references, R and Stata code. From potential outcomes to TMLE.</div>
+        <div class="card-meta"><span class="badge badge-r">R</span><span class="badge badge-stata">Stata</span><span class="badge badge-github">Book</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="./TMLE.nb.html">Targeted Maximum Likelihood Estimation (TMLE) in practice with R</a>
+        </div>
+        <div class="card-desc">Step-by-step TMLE implementation. Covers influence functions, fluctuation steps, and variance estimation with worked examples.</div>
+        <div class="card-meta"><span class="badge badge-r">R</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="./CIM.html">Applied Computational Causal Inference using Stata</a>
+        </div>
+        <div class="card-desc">Doubly robust methods, AIPW, and TMLE in Stata using the <code>eltmle</code> command with real-data examples.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="./Maths_TMLE-IF.html">Las matemáticas detrás de TMLE (En Español)</a>
+        </div>
+        <div class="card-desc">Derivación matemática de TMLE: funciones de influencia, teoría semiparamétrica, y estimadores doblemente robustos.</div>
+        <div class="card-meta"><span class="badge badge-es">ES</span><span class="badge badge-r">R</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="./DeltaMethodEpiTutorial.nb.html">Delta Method Tutorial</a>
+        </div>
+        <div class="card-desc">Variance estimation using the delta method for epidemiological estimands. R notebook with derivations and worked examples.</div>
+        <div class="card-meta"><span class="badge badge-r">R</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="./eltmle_one_sim.html">ELTMLE: One Simulation (2017 SUGM)</a>
+        </div>
+        <div class="card-desc">Stata simulation comparing <code>eltmle</code> vs competitors under dual misspecification.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
+      </article>
+
+      <article class="card" style="--accent:#6B46C1">
+        <div class="card-title">
+          <a href="https://github.com/migariane/meltmle">ELTMLE — GitHub Repository</a>
+        </div>
+        <div class="card-desc">Open-source Stata module for TMLE estimation of the average treatment effect with SuperLearner integration.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SURVIVAL ANALYSIS ─────────────────────────── -->
+  <section class="section" id="survival">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E6F4EE">📈</div>
+      <h2 class="section-title">Survival Analysis</h2>
+    </div>
+    <div class="card-grid">
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="./Tutorial-SVA-ULB.html">Introduction to Time-to-Event Analysis</a>
+        </div>
+        <div class="card-desc">Kaplan-Meier estimator, log-rank tests, and Cox proportional hazards models. ULB workshop tutorial.</div>
+        <div class="card-meta"><span class="badge badge-r">R</span></div>
+      </article>
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="./Cohort.html">Net Survival: Cohort Analysis (Relative Survival Framework)</a>
+        </div>
+        <div class="card-desc">Standardization of net survival in a cohort analysis. For Stata users working with population-based cancer data.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
+      </article>
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="./TutorialOne.html">Net Survival: STRS &amp; Poisson Regression</a>
+        </div>
+        <div class="card-desc">Modeling net survival using STRS and Poisson regression in a cohort analysis under the relative survival framework.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
+      </article>
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="./TutorialTwo.html">Net Survival: Flexible Parametric Modeling</a>
+        </div>
+        <div class="card-desc">Royston-Parmar flexible parametric survival models for net survival estimation. Extended tutorial with Stata code.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- MACHINE LEARNING ──────────────────────────── -->
+  <section class="section" id="ml">
+    <div class="section-header">
+      <div class="section-icon" style="background:#EBF8FF">🤖</div>
+      <h2 class="section-title">Machine Learning</h2>
+    </div>
+    <div class="card-grid">
+
+      <article class="card" style="--accent:#00488C">
+        <div class="card-title">
+          <a href="./CrossValidation.nb.html">Cross-Validation in Practice with R</a>
+        </div>
+        <div class="card-desc">K-fold cross-validation, LOOCV, and bootstrap resampling for model selection and evaluation. Interactive R notebook.</div>
+        <div class="card-meta"><span class="badge badge-r">R</span></div>
+      </article>
+
+      <article class="card" style="--accent:#00488C">
+        <div class="card-title">
+          <a href="https://github.com/migariane/cvAUROC">cvAUROC — Cross-validated AUC for Stata</a>
+        </div>
+        <div class="card-desc">Stata module to compute cross-validated area under the ROC curve with bootstrap confidence intervals.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SHINY APPS ────────────────────────────────── -->
+  <section class="section" id="apps">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFF5EB">🔬</div>
+      <h2 class="section-title">Interactive Shiny Apps</h2>
+    </div>
+    <div class="card-grid">
+
+      <article class="card" style="--accent:#D26400">
+        <div class="card-title">
+          <a href="https://watzile.shinyapps.io/ExpectedDateDelivery/">Expected Date of Delivery</a>
+        </div>
+        <div class="card-desc">Calculate expected delivery date with gestational age uncertainty intervals.</div>
+        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
+      </article>
+
+      <article class="card" style="--accent:#D26400">
+        <div class="card-title">
+          <a href="https://watzile.shinyapps.io/CoMCoR/">Pattern of Comorbidities in Cancer</a>
+        </div>
+        <div class="card-desc">Visualize comorbidity patterns among cancer patients using interactive network analysis.</div>
+        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
+      </article>
+
+      <article class="card" style="--accent:#D26400">
+        <div class="card-title">
+          <a href="https://watzile.shinyapps.io/Pardist/">Parametric Distributions: Time-to-Event</a>
+        </div>
+        <div class="card-desc">Explore parametric survival distributions (Weibull, log-normal, Gompertz) and their hazard functions interactively.</div>
+        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
+      </article>
+
+      <article class="card" style="--accent:#D26400">
+        <div class="card-title">
+          <a href="https://watzile.shinyapps.io/EpiCollider/">Colliders in Epidemiology</a>
+        </div>
+        <div class="card-desc">Interactive demonstration of collider bias and selection bias effects in causal inference and epidemiology.</div>
+        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- STATA PACKAGES ────────────────────────────── -->
+  <section class="section" id="stata">
+    <div class="section-header">
+      <div class="section-icon" style="background:#F0FFF4">📦</div>
+      <h2 class="section-title">Stata Packages</h2>
+    </div>
+    <div class="card-grid">
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="https://github.com/migariane/meltmle">eltmle</a>
+        </div>
+        <div class="card-desc">Targeted Maximum Likelihood Estimation for Stata. Implements TMLE for the average treatment effect with SuperLearner ensemble learning.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
+      </article>
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="https://github.com/migariane/cvAUROC">cvAUROC</a>
+        </div>
+        <div class="card-desc">Cross-validated area under the ROC curve for binary outcome predictors. Bootstrap confidence intervals and k-fold CV.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
+      </article>
+
+      <article class="card" style="--accent:#008050">
+        <div class="card-title">
+          <a href="https://github.com/migariane/cmatch">cmatch</a>
+        </div>
+        <div class="card-desc">Tabulation of matched pairs in 1:1 matched case-control studies by exposure status. Simple, fast, and well-tested.</div>
+        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────── -->
+<footer>
+  <p class="quote">"Learning never exhausts the mind"</p>
+  <p>— Leonardo da Vinci</p>
+  <div class="footer-links">
+    <a href="https://github.com/migariane/migariane.github.io">View on GitHub</a>
+    <a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&hl=en">Google Scholar</a>
+    <a href="https://maluque-girto71.gamma.site/">Academic Website</a>
+    <a href="mailto:miguel-angel.luque@lshtm.ac.uk">miguel-angel.luque@lshtm.ac.uk</a>
+  </div>
+</footer>
+
+</body>
 </html>
