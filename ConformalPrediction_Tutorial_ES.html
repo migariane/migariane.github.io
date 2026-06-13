@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="ConformalPrediction_Tutorial_ES_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/tabby.min.js"></script>
+<script src="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/popper.min.js"></script>
+<script src="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="ConformalPrediction_Tutorial_ES_files/libs/quarto-html/quarto-syntax-highlighting-a37ad5cf1d2f8277837153f05fc1f70b.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.30">
+
+  <meta name="author" content="Miguel Ángel Luque Fernández">
+  <meta name="dcterms.date" content="2026-05-01">
+  <title>Predicción Conforme e Inferencia Libre de Distribución</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/dist/theme/quarto-ac865b2b61481a7cfb143c9719b06b75.css">
+  <link href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Predicción Conforme e Inferencia Libre de Distribución</h1>
+  <p class="subtitle">Tutorial Integrado</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Miguel Ángel Luque Fernández 
+</div>
+<div class="quarto-title-author-email">
+<a href="mailto:mluquefe@go.ugr.es">mluquefe@go.ugr.es</a>
+</div>
+</div>
+</div>
+
+  <p class="date">2026-05-01</p>
+</section>
+<section id="title-logos" class="slide level2">
+<h2></h2>
+<div class="logo-pair">
+<p><img data-src="../Figures/logo_ugr.png" height="60"> <img data-src="../Figures/lshtm_logo.jpg" height="55"></p>
+</div>
+<div class="note">
+<p><em>Basado en los tutoriales CIRM de R.F. Barber (UChicago) y A. Dieuleveut (École Polytechnique)</em></p>
+</div>
+</section>
+<section id="toc" class="slide level2">
+<h2>Contenido</h2>
+<ol type="1">
+<li>Motivación: ¿Por qué cuantificar la incertidumbre?</li>
+<li>Intercambiabilidad: El Fundamento Teórico</li>
+<li>Predicción Conforme Particionada (SCP)</li>
+<li>Regresión Cuantílica Conformizada (CQR)</li>
+<li>Clasificación Conforme</li>
+<li>Predicción Conforme Completa (Full CP)</li>
+<li>Jackknife+ y Validación Cruzada Conforme</li>
+<li>Desafíos: Validez Condicional</li>
+<li>Más Allá de la Intercambiabilidad</li>
+<li>Aplicaciones y Casos de Uso</li>
+<li>Resumen y Conclusiones</li>
+</ol>
+</section>
+<section>
+<section id="motivación-por-qué-cuantificar-la-incertidumbre" class="title-slide slide level1 center">
+<h1>Motivación: ¿Por qué cuantificar la incertidumbre?</h1>
+
+</section>
+<section id="el-problema-de-la-predicción-supervisada" class="slide level2">
+<h2>El problema de la predicción supervisada</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>Configuración estándar:</strong></p>
+<ul>
+<li>Datos de entrenamiento <span class="math inline">\((X_1,Y_1),\ldots,(X_n,Y_n) \in \mathcal{X}\times\mathcal{Y}\)</span></li>
+<li>Objetivo: dado <span class="math inline">\(X_{n+1}\)</span>, predecir <span class="math inline">\(Y_{n+1}\)</span></li>
+</ul>
+<p><strong>¿Predicción puntual o inferencia predictiva?</strong></p>
+<p><span class="math display">\[\underbrace{\hat{\mu}(X_{n+1})}_{\text{predicción puntual}}
+\quad \text{vs.} \quad
+\underbrace{Y_{n+1} \in \hat{\mu}(X_{n+1}) \pm \text{(margen)}}_{\text{intervalo de predicción}}\]</span></p>
+</div><div class="column" style="width:42%;">
+<div class="infobox">
+<p><strong>Incertidumbre importa</strong></p>
+<p>Misma predicción <span class="math inline">\(\hat{Y}\)</span>, tres fenómenos distintos. La incertidumbre transmite información fundamental.</p>
+</div>
+<div class="smaller">
+<p>Aplicaciones: meteorología, medicina, mercados financieros, visión por computadora</p>
+</div>
+</div></div>
+</section>
+<section id="enfoques-clásicos-y-sus-limitaciones" class="slide level2">
+<h2>Enfoques clásicos y sus limitaciones</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Paramétrico:</strong></p>
+<p><span class="math display">\[Y = X^\top\beta + \mathcal{N}(0,\sigma^2)\]</span></p>
+<p><span class="math inline">\(\Rightarrow\)</span> Intervalo: <span class="math inline">\(X_{n+1}^\top\hat\beta \pm \cdots\)</span></p>
+<p><strong>No paramétrico:</strong> <span class="math inline">\(\hat{\mu}(x) =\)</span> estimador suavizado de <span class="math inline">\(\mathbb{E}[Y|X=x]\)</span></p>
+<p><strong>ML / sobreparametrizado:</strong> Red neuronal en <span class="math inline">\(\{(X_i,Y_i)\}\)</span>, luego cuantificación basada en datos</p>
+</div><div class="column" style="width:48%;">
+<div class="dangerbox">
+<p><strong>¿Qué puede fallar?</strong></p>
+<ul>
+<li>Paramétrico: el modelo puede ser incorrecto</li>
+<li>No paramétrico: las hipótesis (p.ej. suavidad) pueden no cumplirse</li>
+<li>ML: ¿garantiza la inferencia basada en datos respuestas válidas?</li>
+</ul>
+</div>
+<div class="successbox">
+<p><strong>Solución:</strong> métodos que no dependen de hipótesis (o sólo de hipótesis más débiles)</p>
+</div>
+</div></div>
+</section>
+<section id="el-problema-del-sobreajuste-en-la-calibración" class="slide level2">
+<h2>El problema del sobreajuste en la calibración</h2>
+<p><strong>Idea ingenua:</strong> <span class="math inline">\(C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \operatorname{Cuantil}_{1-\alpha}(|Y_i - \hat{\mu}(X_i)|_{i=1}^n)\)</span></p>
+<div class="alertbox">
+<p><strong>Problema: sobreajuste</strong></p>
+<p>Si <span class="math inline">\(\hat{\mu}\)</span> sobreajusta: el error de test supera al de entrenamiento. <strong>Simulación:</strong> cobertura en entrenamiento <span class="math inline">\(= 90\%\)</span>, cobertura en test <span class="math inline">\(= 78\%\)</span></p>
+</div>
+<div class="methodbox">
+<p><strong>Solución: conjunto de calibración (<em>holdout</em>)</strong></p>
+<ul>
+<li>Dividir: <span class="math inline">\(n = n_0\)</span> (preentrenamiento) <span class="math inline">\(+ n_1\)</span> (calibración)</li>
+<li>Ajustar <span class="math inline">\(\hat{\mu}\)</span> sobre <span class="math inline">\(\{(X_i,Y_i)\}_{i\le n_0}\)</span>; calcular residuos en calibración</li>
+</ul>
+<p><span class="math inline">\(\Rightarrow\)</span> Cobertura en test <span class="math inline">\(\approx 89\%\)</span> (bien calibrada, aunque intervalos más anchos)</p>
+</div>
+</section></section>
+<section>
+<section id="intercambiabilidad-el-fundamento-teórico" class="title-slide slide level1 center">
+<h1>Intercambiabilidad: El Fundamento Teórico</h1>
+
+</section>
+<section id="de-i.i.d.-a-intercambiabilidad" class="slide level2">
+<h2>De i.i.d. a intercambiabilidad</h2>
+<div class="definicion">
+<div class="box-title">
+<p>Definición: Intercambiabilidad</p>
+</div>
+<p>Sea <span class="math inline">\(Z_i = (X_i, Y_i)\)</span>. Los datos <span class="math inline">\((Z_1,\ldots,Z_n)\)</span> son <strong>intercambiables</strong> si, para toda permutación <span class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math display">\[
+(Z_1, \ldots, Z_m) \overset{d}{=} (Z_{\sigma(1)}, \ldots, Z_{\sigma(m)})
+\]</span></p>
+<p>para todo <span class="math inline">\(m\)</span> y toda permutación <span class="math inline">\(\sigma\)</span>.</p>
+</div>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>El caso i.i.d.</strong></p>
+<p>Los datos i.i.d. son un caso especial.</p>
+<ul>
+<li>Sin supuestos sobre <span class="math inline">\(P\)</span></li>
+<li>No permite dependencia temporal</li>
+</ul>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>Caso i.i.d. condicional</strong></p>
+<p>Los datos i.i.d. condicionalmente también son intercambiables. Secuencias finitas pueden ser intercambiables sin ser i.i.d.</p>
+</div>
+</div></div>
+<div class="infobox">
+<p><strong>Idea clave:</strong> la predicción conforme usa la intercambiabilidad como única hipótesis sobre los datos.</p>
+</div>
+</section>
+<section id="lema-del-cuantil-la-herramienta-central" class="slide level2">
+<h2>Lema del Cuantil: La Herramienta Central</h2>
+<div class="lema">
+<div class="box-title">
+<p>Lema del Cuantil</p>
+</div>
+<p>Si <span class="math inline">\((U_1,\ldots,U_n, U_{n+1})\)</span> son intercambiables, entonces para <span class="math inline">\(\beta \in (0,1)\)</span>:</p>
+<p><span class="math display">\[\mathbb{P}\!\left(U_{n+1} \le q_\beta(U_1,\ldots,U_n,+\infty)\right) \ge \beta\]</span></p>
+<p>Además, si los <span class="math inline">\(U_i\)</span> son casi-seguramente distintos:</p>
+<p><span class="math display">\[\mathbb{P}\!\left(U_{n+1} \le q_\beta(U_1,\ldots,U_n,+\infty)\right) \le \beta + \frac{1}{n+1}\]</span></p>
+</div>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>Demostración (cota inferior):</strong></p>
+<p>Por intercambiabilidad, <span class="math inline">\(\mathbb{P}(U_{n+1} \le q_\beta) = \mathbb{P}(U_i \le q_\beta)\)</span> para todo <span class="math inline">\(i\)</span>. Luego:</p>
+<p><span class="math display">\[\mathbb{P}(U_{n+1} \le q_\beta) = \frac{1}{n+1}\sum_{i=1}^{n+1}\mathbb{P}(U_i \le q_\beta) \ge \frac{\lceil\beta(n+1)\rceil}{n+1} \ge \beta\]</span></p>
+</div><div class="column" style="width:40%;">
+<div class="warningbox">
+<p>Este lema es la <strong>piedra angular</strong> de toda la teoría de predicción conforme.</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="predicción-conforme-particionada-scp" class="title-slide slide level1 center">
+<h1>Predicción Conforme Particionada (SCP)</h1>
+
+</section>
+<section id="predicción-conforme-particionada-algoritmo" class="slide level2">
+<h2>Predicción Conforme Particionada — Algoritmo</h2>
+<div class="columns">
+<div class="column" style="width:52%;">
+<div class="methodbox">
+<p><strong>Algoritmo SCP (Vovk et al., 2005)</strong></p>
+<ol type="1">
+<li><p>Con datos de preentrenamiento <span class="math inline">\(Z_1,\ldots,Z_{n_0}\)</span>, ajustar modelo <span class="math inline">\(\hat{\mu} = \mathcal{A}(Z_1,\ldots,Z_{n_0})\)</span></p></li>
+<li><p>Calcular el cuantil <span class="math inline">\(\hat{q}\)</span> de los residuos en la calibración: <span class="math display">\[\hat{q} = \operatorname{Cuantil}_{(1-\alpha)(1+1/n_1)}\!\bigl(\{|Y_i - \hat{\mu}(X_i)|\}_{n_0&lt;i\le n}\bigr)\]</span></p></li>
+<li><p>Para el punto de test <span class="math inline">\(n+1\)</span>, devolver: <span class="math display">\[C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}\]</span></p></li>
+</ol>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../Figures/CINF-TUTORIAL/tikz_0.svg" style="width:100.0%"></p>
+<figcaption>Diagrama SCP: partición preentrenamiento/calibración</figcaption>
+</figure>
+</div>
+<div class="dangerbox smaller">
+<p><strong>Ventaja:</strong> funciona con <em>cualquier</em> algoritmo de regresión <strong>Coste:</strong> <span class="math inline">\(\hat{\mu}\)</span> menos preciso por la división</p>
+</div>
+</div></div>
+</section>
+<section id="garantía-teórica-de-la-scp" class="slide level2">
+<h2>Garantía Teórica de la SCP</h2>
+<div class="teorema">
+<div class="box-title">
+<p>Teorema: Validez marginal de la SCP (Vovk et al., 2005)</p>
+</div>
+<p>Si <span class="math inline">\(Z_1,\ldots,Z_{n+1}\)</span> son intercambiables, la predicción conforme particionada satisface:</p>
+<p><span class="math display">\[\boxed{\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1 - \alpha}\]</span></p>
+<p>Si además los scores <span class="math inline">\(\{S_i\}_{i \in \text{Cal}} \cup \{S_{n+1}\}\)</span> son c.s. distintos:</p>
+<p><span class="math display">\[\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \le 1 - \alpha + \frac{1}{n_1+1}\]</span></p>
+</div>
+<p><strong>Idea de la demostración:</strong> <span class="math inline">\(S_i = |Y_i - \hat{\mu}(X_i)|\)</span> para <span class="math inline">\(i \in \text{Cal}\cup\{n+1\}\)</span>. Como <span class="math inline">\(\hat{\mu}\)</span> se ajusta sólo sobre preentrenamiento, los scores son intercambiables <span class="math inline">\(\Rightarrow\)</span> Lema del Cuantil da la cota. <span class="math inline">\(\square\)</span></p>
+<div class="infobox">
+<p><strong>Garantía libre de distribución:</strong> válida para <em>cualquier</em> <span class="math inline">\(P\)</span>, sin supuestos paramétricos.</p>
+</div>
+</section>
+<section id="la-función-de-puntuación-conforme" class="slide level2">
+<h2>La Función de Puntuación Conforme</h2>
+<p><strong>SCP general:</strong> en lugar de residuos absolutos, usar cualquier <em>función de puntuación</em> <span class="math inline">\(s: \mathcal{X}\times\mathcal{Y}\to\mathbb{R}\)</span>:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="methodbox">
+<p><strong>Algoritmo SCP (versión general)</strong></p>
+<ol type="1">
+<li>Ajustar <span class="math inline">\(s\)</span> sobre datos de preentrenamiento</li>
+<li><span class="math inline">\(\hat{q} = \operatorname{Cuantil}_{(1-\alpha)(1+1/n_1)}(\{s(X_i,Y_i)\}_{i\in\text{Cal}})\)</span></li>
+<li>Devolver <span class="math inline">\(C(X_{n+1}) = \{y: s(X_{n+1},y) \le \hat{q}\}\)</span></li>
+</ol>
+</div>
+</div><div class="column" style="width:46%;">
+<div class="methodbox">
+<p><strong>Ejemplos de puntuación</strong></p>
+<p><strong>Residuo simple:</strong> <span class="math display">\[s(x,y) = |y - \hat{\mu}(x)|\]</span></p>
+<p><strong>Residuo escalado</strong> (Lei et al., 2018): <span class="math display">\[s(x,y) = \frac{|y - \hat{\mu}(x)|}{\hat{\sigma}(x)}\]</span></p>
+<p><span class="math inline">\(\Rightarrow C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}\cdot\hat{\sigma}(X_{n+1})\)</span></p>
+</div>
+</div></div>
+<div class="alertbox">
+<p><strong>Limitación del residuo simple</strong></p>
+<p><span class="math inline">\(C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}\)</span> tiene <strong>anchura constante</strong>: no se adapta a la heteroscedasticidad.</p>
+</div>
+</section></section>
+<section>
+<section id="regresión-cuantílica-conformizada-cqr" class="title-slide slide level1 center">
+<h1>Regresión Cuantílica Conformizada (CQR)</h1>
+
+</section>
+<section id="cqr-motivación-y-algoritmo" class="slide level2">
+<h2>CQR: Motivación y Algoritmo</h2>
+<div class="columns">
+<div class="column" style="width:52%;">
+<p><strong>Problema de la SCP estándar:</strong> intervalos de anchura constante, no adaptativos.</p>
+<div class="methodbox">
+<p><strong>Conformalized Quantile Regression (Romano et al., 2019)</strong></p>
+<ol type="1">
+<li><p>Ajustar regresores cuantílicos <span class="math inline">\(\widehat{Q}_\alpha^{lo}(x)\)</span> y <span class="math inline">\(\widehat{Q}_\alpha^{hi}(x)\)</span></p></li>
+<li><p>Puntuación de conformidad: <span class="math display">\[s(x,y) = \max\!\bigl(\widehat{Q}^{lo}(x)-y,\; y-\widehat{Q}^{hi}(x)\bigr)\]</span></p></li>
+<li><p>Intervalo de predicción: <span class="math display">\[\hat{C}_\alpha(x) = \bigl[\widehat{Q}^{lo}(x) - \hat{q},\; \widehat{Q}^{hi}(x) + \hat{q}\bigr]\]</span></p></li>
+</ol>
+</div>
+</div><div class="column" style="width:44%;">
+<div class="successbox">
+<p><strong>Propiedades CQR</strong></p>
+<ul>
+<li>✓ Validez marginal garantizada (mismo teorema)</li>
+<li>✓ <strong>Adaptativo</strong>: anchura varía con <span class="math inline">\(x\)</span></li>
+<li>✓ Más informativo en zonas de alta varianza</li>
+<li>✗ No es una caja negra alrededor de <span class="math inline">\(\hat{\mu}\)</span></li>
+</ul>
+</div>
+<div class="smaller">
+<p><strong>Validez:</strong> <span class="math inline">\(\{Y_{n+1} \in \hat{C}_\alpha(X_{n+1})\} = \{S_{n+1} \le q_{1-\alpha}(S)\}\)</span> <span class="math inline">\(\Rightarrow\)</span> garantía marginal se mantiene por el Lema del Cuantil.</p>
+</div>
+</div></div>
+</section>
+<section id="comparativa-de-puntuaciones-para-regresión" class="slide level2">
+<h2>Comparativa de Puntuaciones para Regresión</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 28%">
+<col style="width: 40%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Método</strong></th>
+<th><strong>Puntuación <span class="math inline">\(s(x,y)\)</span></strong></th>
+<th><strong>Intervalo <span class="math inline">\(\hat{C}_\alpha(x)\)</span></strong></th>
+<th><strong>Adaptativo</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SCP estándar</td>
+<td><span class="math inline">\(\|\hat{\mu}(x)-y\|\)</span></td>
+<td><span class="math inline">\([\hat{\mu}(x) \pm \hat{q}]\)</span></td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>SCP local</td>
+<td><span class="math inline">\(\|\hat{\mu}(x)-y\|/\hat{\sigma}(x)\)</span></td>
+<td><span class="math inline">\([\hat{\mu}(x) \pm \hat{q}\hat{\sigma}(x)]\)</span></td>
+<td>Sí</td>
+</tr>
+<tr class="odd">
+<td>CQR</td>
+<td><span class="math inline">\(\max(\hat{Q}^{lo}-y,\, y-\hat{Q}^{hi})\)</span></td>
+<td><span class="math inline">\([\hat{Q}^{lo}(x)-\hat{q},\, \hat{Q}^{hi}(x)+\hat{q}]\)</span></td>
+<td>Sí</td>
+</tr>
+</tbody>
+</table>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="infobox">
+<p><strong>Todos</strong> los métodos anteriores disfrutan de la misma garantía de validez marginal, gracias a la intercambiabilidad de los scores.</p>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="warningbox">
+<p>La elección de la puntuación determina la <strong>eficiencia</strong> (anchura promedio), no la <strong>validez</strong>.</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="clasificación-conforme" class="title-slide slide level1 center">
+<h1>Clasificación Conforme</h1>
+
+</section>
+<section id="scp-para-clasificación-multiclase" class="slide level2">
+<h2>SCP para Clasificación Multiclase</h2>
+<p><strong>Configuración:</strong> <span class="math inline">\(Y \in \{1,\ldots,C\}\)</span>, probabilidades estimadas <span class="math inline">\(\hat{p}_k(X)\)</span> para <span class="math inline">\(k=1,\ldots,C\)</span>.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="methodbox">
+<p><strong>SCP estándar para clasificación</strong></p>
+<p><strong>Puntuación:</strong> <span class="math display">\[s(\hat{A}(X), Y) = 1 - \hat{p}_Y(X)\]</span></p>
+<p><strong>Conjunto de predicción:</strong> <span class="math display">\[\hat{C}_\alpha(X_{n+1}) = \{y : s(\hat{A}(X_{n+1}),y) \le \hat{q}\}\]</span></p>
+<p>i.e., incluir todas las clases con probabilidad estimada suficientemente alta.</p>
+</div>
+</div><div class="column" style="width:46%;">
+<div class="successbox smaller">
+<p><strong>Propiedad:</strong> eficiente en términos de tamaño promedio del conjunto (Sadinle et al., 2018)</p>
+<p><strong>Limitación:</strong> no distingue entre puntos “fáciles” y “difíciles” — sobrecobertura para fáciles, infracobertura para difíciles.</p>
+</div>
+<div class="smaller">
+<p><strong>Ejemplo</strong> (<span class="math inline">\(\alpha=0.1\)</span>, 3 clases): Si <span class="math inline">\(\hat{q} = 0.65\)</span>, se incluye cualquier clase con <span class="math inline">\(\hat{p}_k(X_{n+1}) \ge 0.35\)</span>.</p>
+</div>
+</div></div>
+</section>
+<section id="conjuntos-de-predicción-adaptativos-rapsaps" class="slide level2">
+<h2>Conjuntos de Predicción Adaptativos (RAPS/APS)</h2>
+<p><strong>Puntuaciones acumulativas adaptativas</strong> (Angelopoulos et al., 2020):</p>
+<ol type="1">
+<li><p>Ordenar clases por probabilidad descendente: <span class="math inline">\(\hat{p}_{\sigma(1)}(x) \ge \ldots \ge \hat{p}_{\sigma(C)}(x)\)</span></p></li>
+<li><p>Puntuación: <span class="math display">\[s(x,y;\hat{p}) = \sum_{k=1}^{\sigma^{-1}(y)} \hat{p}_{\sigma(k)}(x)
+\quad\text{(suma acumulada hasta la clase verdadera)}\]</span></p></li>
+<li><p>Conjunto de predicción para <span class="math inline">\(X_{n+1}\)</span>: <span class="math display">\[\hat{C}_\alpha(X_{n+1}) = \bigl\{\sigma_{X_{n+1}}(1),\ldots, \sigma_{X_{n+1}}(r^*)\bigr\}\]</span> donde <span class="math inline">\(r^* = \arg\max_r\left\{\sum_{k=1}^r \hat{p}_{\sigma(k)}(X_{n+1}) &lt; \hat{q}\right\} + 1\)</span></p></li>
+</ol>
+<div class="successbox">
+<p><strong>Ventaja APS:</strong> los conjuntos son más pequeños para puntos fáciles (alta confianza) y más grandes para puntos difíciles (baja confianza) — mejor cobertura condicional <em>empírica</em>.</p>
+</div>
+</section></section>
+<section>
+<section id="predicción-conforme-completa-full-cp" class="title-slide slide level1 center">
+<h1>Predicción Conforme Completa (Full CP)</h1>
+
+</section>
+<section id="full-cp-idea-y-motivación" class="slide level2">
+<h2>Full CP: Idea y Motivación</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>Desventaja de la SCP:</strong> <span class="math inline">\(\hat{\mu}\)</span> menos preciso por la división de datos.</p>
+<div class="methodbox">
+<p><strong>Pregunta natural</strong></p>
+<p>¿Podemos usar <strong>todos los datos</strong> para ajustar <span class="math inline">\(\hat{\mu}\)</span> y mantener las garantías teóricas?</p>
+</div>
+<p><strong>Supuesto adicional necesario:</strong></p>
+<div class="definicion">
+<div class="box-title">
+<p>Definición: Algoritmo simétrico</p>
+</div>
+<p>Para cualquier permutación <span class="math inline">\(\sigma\)</span> de <span class="math inline">\(\{1,\ldots,m\}\)</span>: <span class="math display">\[\mathcal{A}(Z_1,\ldots,Z_m) = \mathcal{A}(Z_{\sigma(1)},\ldots,Z_{\sigma(m)})\]</span></p>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="infobox smaller">
+<p><strong>Intuición</strong></p>
+<p><strong>SCP:</strong> ajusta <span class="math inline">\(\hat{\mu}\)</span> en parte de los datos <span class="math inline">\(\Rightarrow\)</span> scores intercambiables por construcción</p>
+<p><strong>Full CP:</strong> usa <em>todos</em> los datos para <span class="math inline">\(\hat{\mu}\)</span>, pero necesita simetría del algoritmo para garantizar intercambiabilidad de los scores.</p>
+</div>
+</div></div>
+</section>
+<section id="algoritmo-full-cp" class="slide level2">
+<h2>Algoritmo Full CP</h2>
+<p><strong>Idea (versión oráculo):</strong> si pudiéramos observar <span class="math inline">\(Y_{n+1}\)</span>…</p>
+<ol type="1">
+<li>Ajustar <span class="math inline">\(\hat{\mu} = \mathcal{A}(Z_1,\ldots,Z_n,(X_{n+1},Y_{n+1}))\)</span></li>
+<li>Calcular residuos <span class="math inline">\(S_i = |Y_i - \hat{\mu}(X_i)|\)</span>, <span class="math inline">\(i=1,\ldots,n+1\)</span></li>
+<li>Verificar si <span class="math inline">\(S_{n+1} \le \operatorname{Cuantil}_{(1-\alpha)(1+1/n)}(S_1,\ldots,S_n)\)</span></li>
+</ol>
+<p><strong>En la práctica</strong> (no observamos <span class="math inline">\(Y_{n+1}\)</span>):</p>
+<ol type="1">
+<li>Para cada valor candidato <span class="math inline">\(y \in \mathcal{Y}\)</span>: ajustar <span class="math inline">\(\hat{\mu}^y = \mathcal{A}(Z_1,\ldots,Z_n,(X_{n+1},y))\)</span></li>
+<li>Calcular <span class="math inline">\(S_i^y = |Y_i - \hat{\mu}^y(X_i)|\)</span> y <span class="math inline">\(S_{n+1}^y = |y - \hat{\mu}^y(X_{n+1})|\)</span></li>
+<li><span class="math inline">\(y \in C(X_{n+1})\)</span> si y solo si <span class="math inline">\(S_{n+1}^y \le \operatorname{Cuantil}_{(1-\alpha)(1+1/n)}(S_1^y,\ldots,S_n^y)\)</span></li>
+</ol>
+<div class="alertbox">
+<p><strong>Coste computacional</strong></p>
+<p>Requiere re-ajustar el modelo para cada valor <span class="math inline">\(y \in \mathcal{Y}\)</span> — muy costoso para respuestas continuas. <strong>Soluciones prácticas:</strong> restringir a una rejilla de <span class="math inline">\(y\)</span> (sin garantías) o usar métodos especializados para Ridge, Lasso, etc.</p>
+</div>
+</section>
+<section id="garantía-full-cp-y-comparativa" class="slide level2">
+<h2>Garantía Full CP y Comparativa</h2>
+<div class="teorema">
+<div class="box-title">
+<p>Teorema: Validez Full CP (Vovk et al., 2005)</p>
+</div>
+<p>Si <span class="math inline">\(Z_1,\ldots,Z_{n+1}\)</span> son intercambiables y <span class="math inline">\(\mathcal{A}\)</span> es simétrico, entonces:</p>
+<p><span class="math display">\[\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1-\alpha\]</span></p>
+</div>
+<div class="columns">
+<div class="column" style="width:48%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>SCP</strong></th>
+<th><strong>Full CP</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Garantía</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr class="even">
+<td>Eficiencia <span class="math inline">\(\hat{\mu}\)</span></td>
+<td>Reducida</td>
+<td>Máxima</td>
+</tr>
+<tr class="odd">
+<td>Coste computacional</td>
+<td>Bajo</td>
+<td>Muy alto</td>
+</tr>
+<tr class="even">
+<td>Requisito</td>
+<td>Exch.</td>
+<td>Exch.+Simétrico</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:48%;">
+<div class="warningbox smaller">
+<p><strong>Compromiso:</strong> SCP es menos preciso pero computacionalmente barato. Full CP es preciso pero prohibitivo para modelos ML.</p>
+<p>¿Existe un punto intermedio? <span class="math inline">\(\Rightarrow\)</span> Validación cruzada conforme.</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="jackknife-y-validación-cruzada-conforme" class="title-slide slide level1 center">
+<h1>Jackknife+ y Validación Cruzada Conforme</h1>
+
+</section>
+<section id="jackknife-clásico-y-sus-limitaciones" class="slide level2">
+<h2>Jackknife Clásico y sus Limitaciones</h2>
+<p><strong>Jackknife (dejar-uno-fuera):</strong></p>
+<p><span class="math display">\[C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \operatorname{Cuantil}_{1-\alpha}\bigl(|Y_i - \hat{\mu}_{-i}(X_i)|_{i=1,\ldots,n}\bigr)\]</span></p>
+<p>donde <span class="math inline">\(\hat{\mu}_{-i}\)</span> se ajusta sobre <span class="math inline">\(\{(X_j,Y_j)\}_{j\neq i}\)</span>.</p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="alertbox">
+<p><strong>Problema teórico</strong></p>
+<p>El jackknife <strong>no</strong> tiene garantías libres de distribución. Puede tener cobertura cero en el peor caso.</p>
+<p><strong>¿Por qué?</strong> Cada <span class="math inline">\(S_i = |Y_i - \hat{\mu}_{-i}(X_i)|\)</span> se ajusta con datos distintos <span class="math inline">\(\Rightarrow\)</span> los <span class="math inline">\(S_i\)</span> <strong>no</strong> son intercambiables con <span class="math inline">\(S_{n+1} = |Y_{n+1} - \hat{\mu}(X_{n+1})|\)</span>.</p>
+</div>
+</div><div class="column" style="width:40%;">
+<p><strong>Simulación</strong> (regresión lineal, <span class="math inline">\(d=50\)</span>, <span class="math inline">\(n=100\)</span>):</p>
+<ul>
+<li>Cobertura media <span class="math inline">\(= 89\%\)</span> (generalmente bien)</li>
+<li>Con modelos inestables (<span class="math inline">\(d \approx n\)</span>): infra-cobertura severa</li>
+</ul>
+</div></div>
+</section>
+<section id="jackknife-barber-et-al.-2021" class="slide level2">
+<h2>Jackknife+ (Barber et al., 2021)</h2>
+<p><strong>Modificación clave:</strong> usar la predicción del modelo dejando-uno-fuera también para el punto de test.</p>
+<div class="methodbox">
+<p><strong>Algoritmo Jackknife+</strong></p>
+<p><span class="math display">\[C(X_{n+1}) = \left[
+-\operatorname{Cuantil}_{(1-\alpha)(1+1/n)}\bigl(-\hat{\mu}_{-i}(X_{n+1})+S_i\bigr),\;
+\operatorname{Cuantil}_{(1-\alpha)(1+1/n)}\bigl(\hat{\mu}_{-i}(X_{n+1})+S_i\bigr)
+\right]\]</span></p>
+<p>donde <span class="math inline">\(S_i = |Y_i - \hat{\mu}_{-i}(X_i)|\)</span>.</p>
+</div>
+<div class="teorema">
+<div class="box-title">
+<p>Teorema: Cobertura Jackknife+ (Barber et al., 2021)</p>
+</div>
+<p>Si <span class="math inline">\(Z_1,\ldots,Z_{n+1}\)</span> son intercambiables y <span class="math inline">\(\mathcal{A}\)</span> es simétrico:</p>
+<p><span class="math display">\[\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1 - 2\alpha\]</span></p>
+<p>(en contraste con el jackknife que puede tener cobertura cero)</p>
+</div>
+<div class="successbox">
+<p><strong>CV+:</strong> generalización a validación cruzada de <span class="math inline">\(K\)</span> folds con misma garantía <span class="math inline">\(\ge 1-2\alpha\)</span>, y <span class="math inline">\(\ge 1-2\alpha - 2/\sqrt{n}\)</span> uniformemente en <span class="math inline">\(K\)</span>.</p>
+</div>
+</section>
+<section id="predicción-conforme-cruzada" class="slide level2">
+<h2>Predicción Conforme Cruzada</h2>
+<div class="methodbox">
+<p><strong>Cross-conformal prediction (Vovk 2015; Barber et al., 2021)</strong></p>
+<ol type="1">
+<li>Dividir <span class="math inline">\(\{1,\ldots,n\}\)</span> en <span class="math inline">\(K\)</span> folds <span class="math inline">\(A_1\cup\cdots\cup A_K\)</span></li>
+<li>Ajustar <span class="math inline">\(s^{(k)} = \mathcal{A}(\{(X_i,Y_i): i\notin A_k\})\)</span></li>
+<li>Para <span class="math inline">\(i \in A_k\)</span>: <span class="math inline">\(S_i = s^{(k)}(X_i, Y_i)\)</span></li>
+<li>Devolver: <span class="math display">\[C(X_{n+1}) = \left\{y : \sum_{k=1}^K\sum_{i\in A_k} \mathbf{1}\{S_i \ge s^{(k)}(X_{n+1},y)\} \ge \alpha(n+1)\right\}\]</span></li>
+</ol>
+</div>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Para score residual:</strong> <span class="math inline">\(C_{\text{cross}} \subseteq C_{CV+}\)</span></p>
+<ul>
+<li>Cross-conformal: más flexible (cualquier score)</li>
+<li>CV+: siempre devuelve un intervalo</li>
+</ul>
+</div><div class="column" style="width:48%;">
+<div class="infobox">
+<p><strong>Ventaja:</strong> evita la división datos, usa todos para ajuste. <strong>Coste:</strong> <span class="math inline">\(K\)</span> ajustes del modelo en lugar de uno.</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="desafíos-validez-condicional" class="title-slide slide level1 center">
+<h1>Desafíos: Validez Condicional</h1>
+
+</section>
+<section id="validez-marginal-vs.-validez-condicional" class="slide level2">
+<h2>Validez Marginal vs.&nbsp;Validez Condicional</h2>
+<p><strong>Lo que garantiza la SCP:</strong></p>
+<p><span class="math display">\[\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1-\alpha\]</span></p>
+<p><strong>Lo que nos gustaría tener:</strong></p>
+<p><span class="math display">\[\mathbb{P}\{Y_{n+1} \in C(X_{n+1}) \mid X_{n+1} = x, \text{Cal}\} \ge 1-\alpha \quad \forall x\]</span></p>
+<div class="columns">
+<div class="column" style="width:52%;">
+<div class="alertbox">
+<p><strong>Resultado de imposibilidad</strong></p>
+<p>La validez condicional en <span class="math inline">\(X_{n+1}\)</span> de forma informativa es <strong>imposible</strong> en general (Barber et al., 2021a; Lei &amp; Wasserman, 2014).</p>
+<p><em>Siempre puede haber subpoblaciones que sufran infra- o sobre-cobertura.</em></p>
+</div>
+</div><div class="column" style="width:44%;">
+<div class="methodbox">
+<p><strong>Qué sí es posible</strong></p>
+<ul>
+<li>Validez condicional por <strong>grupos</strong> (group-conditional)</li>
+<li>Resultados asintóticos con regresor cuantílico universal</li>
+<li>Cotas <strong>PAC</strong>: con alta probabilidad sobre Cal, la cobertura condicional es <span class="math inline">\(\ge 1-\alpha\)</span></li>
+<li>Garantías para la cobertura <strong>condicional a la calibración</strong></li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="noción-débil-de-validez-condicional" class="slide level2">
+<h2>Noción Débil de Validez Condicional</h2>
+<div class="methodbox">
+<p><strong>Validez <span class="math inline">\(X\)</span>-condicional débil (Barber et al., 2021a)</strong></p>
+<p>Para cualquier función test <span class="math inline">\(g: \mathcal{X} \to \{0,1\}\)</span>:</p>
+<p><span class="math display">\[\left|\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} - (1-\alpha)\right| \le \varepsilon(n,\delta)\]</span></p>
+<p>con alta probabilidad sobre Cal, donde <span class="math inline">\(\varepsilon(n,\delta) \to 0\)</span> conforme <span class="math inline">\(n \to \infty\)</span>.</p>
+</div>
+<p><strong>Métricas de cobertura condicional en la práctica:</strong></p>
+<ul>
+<li><strong>Cobertura por grupos</strong>: verificar <span class="math inline">\(\mathbb{P}(Y \in C(X) \mid G)\)</span> para grupos predefinidos <span class="math inline">\(G\)</span></li>
+<li><strong>Tamaño promedio del conjunto</strong> (RAPS): proxy de adaptatividad</li>
+<li><strong>Cobertura condicional a la calibración</strong> (PAC): con prob. <span class="math inline">\(\ge 1-\delta\)</span>, <span class="math inline">\(\mathbb{P}(Y_{n+1}\in C(X_{n+1})\mid\text{Cal}) \ge 1-\alpha\)</span></li>
+</ul>
+<div class="warningbox">
+<p><strong>Recomendación práctica:</strong> usar CQR o APS para mejorar la adaptatividad empírica, incluso sin garantías teóricas condicionales.</p>
+</div>
+</section></section>
+<section>
+<section id="más-allá-de-la-intercambiabilidad" class="title-slide slide level1 center">
+<h1>Más Allá de la Intercambiabilidad</h1>
+
+</section>
+<section id="cuando-falla-la-intercambiabilidad" class="slide level2">
+<h2>Cuando Falla la Intercambiabilidad</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Escenarios donde la intercambiabilidad no se cumple:</strong></p>
+<ul>
+<li><strong>Desplazamiento de covariables</strong> (<em>covariate shift</em>): la distribución de <span class="math inline">\(X\)</span> cambia entre entrenamiento y test</li>
+<li><strong>Deriva temporal</strong>: datos de series temporales</li>
+<li><strong>Datos de grupos</strong>: clusters o efectos de diseño</li>
+<li><strong>Distribución diferente</strong>: entrenamiento y test proceden de poblaciones distintas</li>
+</ul>
+</div><div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>Extensiones principales</strong></p>
+<p><strong>Covariate shift</strong> (Tibshirani et al., 2019): Reponderar con <span class="math inline">\(w(x) = p_{\text{test}}(x)/p_{\text{train}}(x)\)</span></p>
+<p><strong>Conformal online adaptativo</strong> (ACI, Gibbs &amp; Candès, 2021): Actualizar <span class="math inline">\(\alpha_t\)</span> de forma adaptativa para datos en flujo</p>
+<p><strong>Partición temporal</strong> (Online Sequential SCP): Usar ventanas o splits temporales</p>
+</div>
+</div></div>
+</section>
+<section id="desplazamiento-de-covariables-covariate-shift" class="slide level2">
+<h2>Desplazamiento de Covariables (Covariate Shift)</h2>
+<p><strong>Supuesto:</strong> <span class="math inline">\(P_{\text{train}}(Y|X) = P_{\text{test}}(Y|X)\)</span> pero <span class="math inline">\(P_{\text{train}}(X) \neq P_{\text{test}}(X)\)</span>.</p>
+<div class="methodbox">
+<p><strong>SCP con pesos de importancia (Tibshirani et al., 2019)</strong></p>
+<p>Ponderar los scores de calibración:</p>
+<p><span class="math display">\[\hat{q} = \text{cuantil de} \sum_{i\in\text{Cal}} \frac{w(X_i)}{\sum_j w(X_j) + w(X_{n+1})} \delta_{S_i}
++ \frac{w(X_{n+1})}{\sum_j w(X_j) + w(X_{n+1})} \delta_{+\infty}\]</span></p>
+<p>donde <span class="math inline">\(w(x) = p_{\text{test}}(x)/p_{\text{train}}(x)\)</span> (razón de densidad).</p>
+</div>
+<div class="successbox">
+<p><strong>Resultado:</strong> bajo covariate shift y conociendo los pesos <span class="math inline">\(w\)</span>, se recupera la garantía de cobertura marginal.</p>
+<p>En la práctica: estimar <span class="math inline">\(w\)</span> con clasificación o modelos de densidad.</p>
+</div>
+</section>
+<section id="inferencia-conforme-adaptativa-online-aci" class="slide level2">
+<h2>Inferencia Conforme Adaptativa Online (ACI)</h2>
+<p><strong>Problema:</strong> datos en flujo con posible deriva de distribución.</p>
+<div class="methodbox">
+<p><strong>ACI (Gibbs &amp; Candès, 2021)</strong></p>
+<p>Actualizar el nivel <span class="math inline">\(\alpha_t\)</span> de forma dinámica:</p>
+<p><span class="math display">\[\alpha_{t+1} = \alpha_t + \gamma\bigl(\alpha - \mathbf{1}\{Y_t \notin C_t(X_t)\}\bigr)\]</span></p>
+<p>donde <span class="math inline">\(\gamma &gt; 0\)</span> es la tasa de aprendizaje.</p>
+</div>
+<div class="columns">
+<div class="column" style="width:52%;">
+<ul>
+<li>Si hay infra-cobertura reciente: <span class="math inline">\(\alpha_t\)</span> aumenta (intervalos más anchos)</li>
+<li>Si hay sobre-cobertura reciente: <span class="math inline">\(\alpha_t\)</span> disminuye (intervalos más estrechos)</li>
+<li>Garantías de cobertura <em>promedio</em> a largo plazo</li>
+</ul>
+</div><div class="column" style="width:44%;">
+<div class="warningbox smaller">
+<p><strong>Aplicación:</strong> predicción de precios de electricidad, epidemiología en tiempo real, pronóstico meteorológico.</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="aplicaciones-y-casos-de-uso" class="title-slide slide level1 center">
+<h1>Aplicaciones y Casos de Uso</h1>
+
+</section>
+<section id="casos-de-uso-en-la-práctica" class="slide level2">
+<h2>Casos de Uso en la Práctica</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>Ciencias biomédicas</strong></p>
+<ul>
+<li>Predicción de toxicidad de fármacos</li>
+<li>Intervalos de predicción para biomarcadores</li>
+<li>Diagnóstico médico: conjuntos de diagnósticos plausibles</li>
+<li>Imagen médica: segmentación con incertidumbre</li>
+</ul>
+</div>
+<div class="methodbox">
+<p><strong>Previsión energética</strong></p>
+<ul>
+<li>Previsión de precios de electricidad (mercado spot)</li>
+<li>Regresión imagen-a-imagen con CQR</li>
+<li>Pronósticos con datos temporales (ACI)</li>
+</ul>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>Visión por computadora y ML</strong></p>
+<ul>
+<li>Detección de objetos con conjuntos de predicción</li>
+<li>Clasificación robusta con APS</li>
+<li>Grandes modelos de lenguaje (LLMs): conjuntos de respuestas plausibles</li>
+</ul>
+</div>
+<div class="infobox smaller">
+<p><strong>Inferencia causal:</strong> efectos de tratamiento heterogéneos con predicción conforme (Romano et al., 2019; Lei &amp; Candès, 2021)</p>
+</div>
+</div></div>
+</section>
+<section id="paquetes-de-software" class="slide level2">
+<h2>Paquetes de Software</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Python:</strong></p>
+<ul>
+<li><code>MAPIE</code>: SCP, CV+, CQR — scikit-learn compatible</li>
+<li><code>crepes</code>: Full CP, cross-conformal</li>
+<li><code>nonconformist</code>: implementaciones básicas</li>
+<li><code>conformal-prediction</code>: tutoriales y notebooks</li>
+</ul>
+<p><strong>R:</strong></p>
+<ul>
+<li><code>cfr</code>: conformal regression (CRAN)</li>
+<li><code>conformalInference</code>: paquete de Tibshirani et al.</li>
+<li><code>grf</code>: random forests para CQR</li>
+</ul>
+</div><div class="column" style="width:48%;">
+<div class="methodbox">
+<p><strong>Libro de referencia</strong></p>
+<p><em>Theoretical Foundations of Conformal Prediction</em> Angelopoulos, Barber, Bates (Cambridge UP, forthcoming)</p>
+<p>Disponible: 75% en arXiv</p>
+</div>
+<div class="methodbox">
+<p><strong>Tutorial accesible</strong></p>
+<p><em>A Gentle Introduction to Conformal Prediction</em> Angelopoulos &amp; Bates (2023), arXiv:2107.07511</p>
+</div>
+</div></div>
+</section></section>
+<section>
+<section id="resumen-y-conclusiones" class="title-slide slide level1 center">
+<h1>Resumen y Conclusiones</h1>
+
+</section>
+<section id="resumen-la-arquitectura-de-la-predicción-conforme" class="slide level2">
+<h2>Resumen: La Arquitectura de la Predicción Conforme</h2>
+
+<img data-src="../Figures/CINF-TUTORIAL/tikz_1.svg" style="width:90.0%" class="r-stretch quarto-figure-center"><p class="caption">Diagrama de arquitectura: cadena de garantías de la predicción conforme</p><div class="columns">
+<div class="column" style="width:32%;">
+<p><strong>SCP:</strong> simple, eficiente, requiere división de datos</p>
+</div><div class="column" style="width:32%;">
+<p><strong>Full CP:</strong> usa todos los datos, computacionalmente costoso</p>
+</div><div class="column" style="width:32%;">
+<p><strong>Jackknife+/CV+:</strong> balance entre eficiencia y coste</p>
+</div></div>
+</section>
+<section id="ventajas-e-inconvenientes" class="slide level2">
+<h2>Ventajas e Inconvenientes</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="successbox">
+<p><strong>Ventajas</strong></p>
+<ul>
+<li>✓ Garantías finito-muestrales, sin supuestos paramétricos</li>
+<li>✓ Funciona con <em>cualquier</em> modelo de predicción</li>
+<li>✓ Computacionalmente eficiente (SCP)</li>
+<li>✓ Fácil de implementar</li>
+<li>✓ Aplicable a regresión, clasificación, y más</li>
+<li>✓ Extensiones para covariate shift, datos online</li>
+</ul>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="dangerbox smaller">
+<p><strong>Limitaciones</strong></p>
+<ul>
+<li>✗ Garantía <strong>marginal</strong>, no condicional</li>
+<li>✗ Cobertura condicional en <span class="math inline">\(X\)</span> informativa es imposible</li>
+<li>✗ SCP: anchura constante (sin CQR/LW)</li>
+<li>✗ Full CP: prohibitivo computacionalmente</li>
+<li>✗ Requiere intercambiabilidad (series temporales requieren adaptaciones)</li>
+<li>✗ Jackknife+: garantía <span class="math inline">\(1-2\alpha\)</span> (no <span class="math inline">\(1-\alpha\)</span>)</li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="mensajes-clave" class="slide level2">
+<h2>Mensajes Clave</h2>
+<div class="spaced-list">
+<ol type="1">
+<li><p><strong>La intercambiabilidad reemplaza los supuestos paramétricos:</strong> El Lema del Cuantil garantiza cobertura marginal exacta sin conocer la distribución.</p></li>
+<li><p><strong>La elección de la puntuación determina la eficiencia:</strong> Cualquier función <span class="math inline">\(s(x,y)\)</span> produce predicción conforme válida; CQR y LW mejoran la adaptatividad.</p></li>
+<li><p><strong>Hay un trilema SCP/Full CP/Jackknife+:</strong> Eficiencia estadística <span class="math inline">\(\leftrightarrow\)</span> coste computacional <span class="math inline">\(\leftrightarrow\)</span> garantía teórica.</p></li>
+<li><p><strong>Validez condicional es un objetivo difícil:</strong> Es teóricamente imposible en general, pero hay alternativas prácticas útiles (APS, CQR, PAC).</p></li>
+<li><p><strong>Las extensiones cubren desviaciones de i.i.d.:</strong> Covariate shift, datos temporales, entornos online — todos tienen adaptaciones conformes.</p></li>
+</ol>
+</div>
+</section></section>
+<section>
+<section id="referencias" class="title-slide slide level1 center">
+<h1>Referencias</h1>
+
+</section>
+<section id="referencias-principales" class="slide level2 smaller">
+<h2>Referencias Principales</h2>
+<div class="references">
+<p>Vovk, V., Gammerman, A., &amp; Shafer, G. (2005). <em>Algorithmic Learning in a Random World</em>. Springer.</p>
+<p>Lei, J., G’Sell, M., Rinaldo, A., Tibshirani, R.J., &amp; Wasserman, L. (2018). Distribution-free predictive inference for regression. <em>Journal of the American Statistical Association</em>, 113(523), 1094–1111.</p>
+<p>Romano, Y., Patterson, E., &amp; Candès, E.J. (2019). Conformalized quantile regression. <em>NeurIPS 2019</em>.</p>
+<p>Angelopoulos, A., Bates, S., Jordan, M., &amp; Malik, J. (2020). Uncertainty sets for image classifiers using conformal prediction. <em>ICLR 2021</em>.</p>
+<p>Barber, R.F., Candès, E.J., Ramdas, A., &amp; Tibshirani, R.J. (2021). Predictive inference with the jackknife+. <em>Annals of Statistics</em>, 49(1), 486–507.</p>
+<p>Tibshirani, R.J., Barber, R.F., Candès, E.J., &amp; Ramdas, A. (2019). Conformal prediction under covariate shift. <em>NeurIPS 2019</em>.</p>
+<p>Gibbs, I., &amp; Candès, E.J. (2021). Adaptive conformal inference under distribution shift. <em>NeurIPS 2021</em>.</p>
+<p>Angelopoulos, A.N., &amp; Bates, S. (2023). A gentle introduction to conformal prediction and distribution-free uncertainty quantification. <em>arXiv:2107.07511</em>.</p>
+<p>Angelopoulos, A.N., Barber, R.F., &amp; Bates, S. (forthcoming). <em>Theoretical Foundations of Conformal Prediction</em>. Cambridge University Press.</p>
+<p>Lei, L., &amp; Candès, E.J. (2021). Conformal inference of counterfactuals and individual treatment effects. <em>Journal of the Royal Statistical Society: Series B</em>, 83(5), 911–938.</p>
+</div>
+</section>
+<section id="section" class="slide level2 center">
+<h2></h2>
+<div style="text-align: center; padding: 2em 0;">
+<p><strong>Gracias</strong></p>
+<p><span style="font-family: monospace; font-size: 0.9em;">mluquefe@go.ugr.es</span></p>
+</div>
+<div class="logo-pair">
+<p><img data-src="../Figures/logo_ugr.png" height="55"> <img data-src="../Figures/lshtm_logo.jpg" height="50"></p>
+</div>
+<div class="note" style="text-align: center; margin-top: 1em; font-size: 0.75em;">
+<p>Basado en: <em>CIRM Tutorial Part 1</em> — Rina Foygel Barber (University of Chicago), Diciembre 2024 <em>CIRM Tutorial Part 2</em> — Aymeric Dieuleveut (École Polytechnique), Julio 2025</p>
+</div>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../Figures/logo_ugr.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Predicción Conforme — MALF, UGR/LSHTM — Mayo 2026</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="ConformalPrediction_Tutorial_ES_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'fast',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 8.0e-2,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

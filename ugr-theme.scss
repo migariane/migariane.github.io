@@ -1,0 +1,661 @@
+/*-- scss:defaults --*/
+
+// ==============================================================================
+// UGR INSTITUTIONAL COLORS
+// ==============================================================================
+// Universidad de Granada brand palette
+
+$ugr-blue: #00488C;           // UGR primary blue (ugr_blue: RGB 0,72,140)
+$ugr-green: #008050;          // UGR green (ugr_green: RGB 0,128,80)
+$ugr-orange: #D26400;         // UGR orange (ugr_orange: RGB 210,100,0)
+$ugr-gray: #646464;           // UGR gray (ugr_gray: RGB 100,100,100)
+
+// Map to template variables
+$primary-blue: $ugr-blue;
+$primary-gold: $ugr-orange;   // use orange as accent (no gold in UGR palette)
+$highlight-yellow: #F2A900;
+$light-bg: #E8EDF5;
+
+// Semantic color mapping
+$jet: #1a1a1a;
+$accent: $ugr-blue;
+$accent2: $ugr-orange;
+$right-arrow: "\2192";
+
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", sans-serif !default;
+$presentation-heading-font: "Source Sans Pro", "Helvetica Neue", sans-serif !default;
+$presentation-heading-color: $ugr-blue !default;
+$presentation-heading-font-weight: 600;
+$presentation-font-size-root: 28px;
+
+// Spacing
+$presentation-block-margin: 10px;
+$presentation-h2-font-size: 1.35em;
+
+// Colors
+$body-color: $jet !default;
+$link-color: $ugr-blue !default;
+$selection-bg: $ugr-orange !default;
+
+
+/*-- scss:rules --*/
+
+// ==============================================================================
+// SLIDE LAYOUT
+// ==============================================================================
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  padding: 0.4em 0.9em;
+  top: 0 !important;
+}
+
+.reveal a {
+  line-height: 1.3em;
+  text-decoration: none;
+  border-bottom: 1px dotted $ugr-orange;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-bottom-color: $ugr-blue;
+  }
+}
+
+.reveal p {
+  font-weight: 300;
+  margin-top: 0.45em;
+  margin-bottom: 0.3em;
+  line-height: 1.4;
+}
+
+.reveal p + ul,
+.reveal p + ol {
+  margin-top: 0.25em;
+}
+
+// ==============================================================================
+// TITLE SLIDE
+// ==============================================================================
+
+#title-slide {
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  background: linear-gradient(180deg, white 0%, $light-bg 100%);
+
+  .title {
+    color: $ugr-blue;
+    font-size: 2.0em;
+    font-weight: 700;
+    margin-bottom: 0.2em;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: $ugr-orange;
+    font-style: italic;
+    margin-top: 0.3em;
+    margin-bottom: 1.0em;
+    font-weight: 400;
+    font-size: 1.1em;
+  }
+
+  .author,
+  .quarto-title-author-name {
+    color: $ugr-blue;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-top: 0.5em;
+  }
+
+  .institute,
+  .quarto-title-affiliation,
+  .quarto-title-author-email {
+    font-style: italic;
+    color: #555;
+    margin-top: 0.3em;
+    font-size: 0.95em;
+  }
+
+  .date,
+  .quarto-title-meta-contents {
+    color: $ugr-orange;
+    font-weight: 600;
+    margin-top: 1.2em;
+    font-size: 1.0em;
+  }
+
+  .quarto-title-authors {
+    display: block;
+    text-align: center;
+
+    .quarto-title-author {
+      padding: 0;
+      width: 100%;
+    }
+  }
+}
+
+// ==============================================================================
+// HEADINGS
+// ==============================================================================
+
+.reveal h2 {
+  color: $ugr-blue;
+  font-weight: 600;
+  font-size: 1.4em;
+  margin-bottom: 0.6em;
+  padding-bottom: 0.2em;
+  border-bottom: 2px solid rgba($ugr-orange, 0.3);
+}
+
+.reveal h3 {
+  color: $ugr-orange;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1em;
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
+}
+
+.reveal h4 {
+  color: $ugr-blue;
+  font-weight: 600;
+  font-size: 0.9em;
+  margin-top: 0.7em;
+  margin-bottom: 0.3em;
+}
+
+// ==============================================================================
+// COLOR UTILITY CLASSES
+// ==============================================================================
+
+.alert { color: $ugr-orange; }
+.ugr-blue { color: $ugr-blue; }
+.ugr-green { color: $ugr-green; }
+.ugr-orange { color: $ugr-orange; }
+
+.positive {
+  color: $ugr-green !important;
+  font-weight: 600;
+}
+
+.negative {
+  color: #b91c1c !important;
+  font-weight: 600;
+}
+
+.neutral {
+  color: #525252 !important;
+}
+
+.hi { font-weight: 600; color: $ugr-blue !important; }
+.hi-orange { font-weight: 600; color: $ugr-orange !important; }
+.hi-green { font-weight: 600; color: $ugr-green !important; }
+.hi-red { font-weight: 600; color: #C41E3A !important; }
+
+// ==============================================================================
+// LISTS
+// ==============================================================================
+
+.reveal ul {
+  font-weight: 300;
+  padding-left: 1.4em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+
+  li {
+    margin-bottom: 0.3em;
+    line-height: 1.35;
+    padding-left: 0.25em;
+  }
+
+  li::marker {
+    color: $ugr-blue;
+    font-size: 0.9em;
+  }
+}
+
+.reveal ul ul {
+  list-style: none;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding-left: 1.1em;
+
+  li {
+    margin-bottom: 0.2em;
+    position: relative;
+    padding-left: 0.2em;
+  }
+
+  li:before {
+    content: $right-arrow;
+    color: $ugr-orange;
+    position: absolute;
+    left: -1.0em;
+    font-size: 0.9em;
+  }
+}
+
+.reveal ol {
+  font-weight: 300;
+  padding-left: 1.4em;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+
+  li {
+    margin-bottom: 0.3em;
+    line-height: 1.35;
+    padding-left: 0.25em;
+  }
+
+  li::marker {
+    color: $ugr-blue;
+    font-weight: 700;
+  }
+}
+
+// ==============================================================================
+// BOX ENVIRONMENTS (matching Beamer tcolorbox environments)
+// ==============================================================================
+
+// Generic method/algorithm box (matches Beamer \begin{block})
+.methodbox {
+  background-color: rgba($ugr-blue, 0.06);
+  border-left: 4px solid $ugr-blue;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  strong:first-child, .box-title {
+    display: block;
+    color: $ugr-blue;
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    font-size: 0.95em;
+  }
+}
+
+// Theorem box (matches Beamer \begin{teorema}, blue)
+.teorema {
+  background-color: rgba($ugr-blue, 0.05);
+  border: 2px solid $ugr-blue;
+  border-left: 6px solid $ugr-blue;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+
+  .box-title {
+    color: $ugr-blue;
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    font-style: italic;
+  }
+}
+
+// Definition box (matches Beamer \begin{definicion}, green)
+.definicion {
+  background-color: rgba($ugr-green, 0.05);
+  border: 2px solid $ugr-green;
+  border-left: 6px solid $ugr-green;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+
+  .box-title {
+    color: $ugr-green;
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    font-style: italic;
+  }
+}
+
+// Lemma box (matches Beamer \begin{lema}, orange)
+.lema {
+  background-color: rgba($ugr-orange, 0.05);
+  border: 2px solid $ugr-orange;
+  border-left: 6px solid $ugr-orange;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+
+  .box-title {
+    color: $ugr-orange;
+    font-weight: 700;
+    margin-bottom: 0.3em;
+    font-style: italic;
+  }
+}
+
+// Alert box (matches Beamer \begin{alertblock})
+.alertbox {
+  background-color: rgba(#b91c1c, 0.05);
+  border-left: 4px solid #b91c1c;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+
+  .box-title {
+    color: #b91c1c;
+    font-weight: 700;
+    margin-bottom: 0.3em;
+  }
+}
+
+// Info box with blue background (matches ugr_blue tcolorbox)
+.infobox {
+  background-color: rgba($ugr-blue, 0.08);
+  border-left: 4px solid $ugr-blue;
+  padding: 0.6em 0.9em;
+  margin: 0.6em 0;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+
+// Success/green box (matches ugr_green tcolorbox)
+.successbox {
+  background-color: rgba($ugr-green, 0.06);
+  border-left: 4px solid $ugr-green;
+  padding: 0.6em 0.9em;
+  margin: 0.6em 0;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+
+// Warning/orange box (matches ugr_orange tcolorbox)
+.warningbox {
+  background-color: rgba($ugr-orange, 0.08);
+  border-left: 4px solid $ugr-orange;
+  padding: 0.6em 0.9em;
+  margin: 0.6em 0;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+
+// Red/danger box (matches red tcolorbox)
+.dangerbox {
+  background-color: rgba(#b91c1c, 0.06);
+  border-left: 4px solid #b91c1c;
+  padding: 0.6em 0.9em;
+  margin: 0.6em 0;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+
+// Generic highlight box
+.highlightbox {
+  background-color: rgba($highlight-yellow, 0.08);
+  border-left: 4px solid $highlight-yellow;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+// Key box
+.keybox {
+  background-color: rgba($ugr-orange, 0.10);
+  border-left: 4px solid $ugr-orange;
+  padding: 0.7em 1.0em;
+  margin: 0.8em 0;
+  border-radius: 6px;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+// ==============================================================================
+// TABLES
+// ==============================================================================
+
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 0.78em;
+}
+
+.reveal table th,
+.reveal table td {
+  border: none;
+  padding: .2em .5em;
+  text-align: left;
+  font-weight: 300;
+}
+
+.reveal table thead th,
+.reveal .slides table tr:last-child td,
+.reveal .slides table {
+  border-bottom: 2px solid $ugr-blue;
+}
+
+.reveal table thead th {
+  font-weight: 600;
+  color: $ugr-blue;
+}
+
+// ==============================================================================
+// SECTION SLIDES
+// ==============================================================================
+
+.reveal .slide-background-content {
+  background-color: white;
+}
+
+.reveal section h1 {
+  color: $ugr-blue;
+  text-align: center;
+  font-size: 2.0em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  border-bottom: none;
+}
+
+.reveal .slides section.level1 {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  text-align: center !important;
+  top: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(135deg, white 0%, $light-bg 100%);
+}
+
+// ==============================================================================
+// FONT SIZE UTILITIES
+// ==============================================================================
+
+.bigger { font-size: 115%; }
+
+.smaller {
+  font-size: 82%;
+
+  p { margin-top: 0.3em; margin-bottom: 0.25em; line-height: 1.3; }
+
+  ul, ol {
+    margin-top: 0.3em; margin-bottom: 0.3em;
+    li { margin-bottom: 0.2em; line-height: 1.3; }
+  }
+
+  .infobox, .successbox, .warningbox, .dangerbox,
+  .metodbox, .alertbox, .keybox {
+    padding: 0.4em 0.7em;
+    margin: 0.5em 0;
+    line-height: 1.3;
+  }
+}
+
+.smallest {
+  font-size: 76%;
+  p { margin-top: 0.25em; margin-bottom: 0.25em; }
+}
+
+// ==============================================================================
+// LAYOUT UTILITIES
+// ==============================================================================
+
+.compact {
+  p { margin-top: 0.35em; margin-bottom: 0.35em; }
+  ul, ol {
+    margin-top: 0.25em; margin-bottom: 0.4em;
+    li { margin-bottom: 0.2em; line-height: 1.35; }
+  }
+}
+
+.reveal .spaced-list ul li,
+.reveal .spaced-list ol li {
+  margin-bottom: 1.4em !important;
+}
+
+.mono { font-family: monospace; }
+.ul { text-decoration: underline; }
+.clear { clear: both; }
+
+.col-left { float: left; width: 47%; margin-top: 0; }
+.col-right { float: right; width: 47%; margin-top: 0; }
+.col-left-wide { float: left; width: 62%; }
+.col-right-narrow { float: right; width: 34%; }
+
+.footnote {
+  position: absolute;
+  bottom: 1em;
+  font-size: 68%;
+  color: #7f7f7f;
+}
+
+.note { font-style: italic; color: #666666; }
+
+// ==============================================================================
+// IMAGES AND FIGURES
+// ==============================================================================
+
+.reveal figure { margin: 0.7em 0; }
+.reveal img { max-height: 68vh; }
+.reveal p:has(> img) { text-align: center; }
+.reveal figcaption {
+  font-size: 0.72em;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.4em;
+  text-align: center;
+}
+
+// ==============================================================================
+// MATH
+// ==============================================================================
+
+.reveal .math { font-size: 0.92em; }
+.reveal .math.display { margin: 0.7em 0; }
+
+// ==============================================================================
+// COLUMNS
+// ==============================================================================
+
+.reveal .columns {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 1.5em;
+}
+
+.reveal .column {
+  flex: 1;
+  img { max-width: 100%; height: auto; }
+}
+
+// ==============================================================================
+// CODE
+// ==============================================================================
+
+.reveal code {
+  background-color: rgba($ugr-blue, 0.06);
+  padding: 0.12em 0.35em;
+  border-radius: 3px;
+  font-size: 0.83em;
+}
+
+.reveal pre {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 0.9em;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// ==============================================================================
+// REFERENCES
+// ==============================================================================
+
+#refs {
+  font-size: 0.5em;
+  line-height: 1.35;
+  column-count: 1;
+
+  div { margin-bottom: 0.5em; break-inside: avoid; }
+  p { margin: 0.2em 0; }
+}
+
+.references { font-size: 0.5em; line-height: 1.35; }
+
+// ==============================================================================
+// NAVIGATION
+// ==============================================================================
+
+.slide-logo {
+  display: block !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 10px !important;
+  max-width: 140px;
+  max-height: 45px;
+  width: auto !important;
+}
+
+.slide-number, .reveal.has-logo .slide-number {
+  bottom: 6px !important;
+  right: 10px !important;
+  top: unset !important;
+  color: #777777 !important;
+}
+
+// ==============================================================================
+// LOGO PAIR (title slide)
+// ==============================================================================
+
+.logo-pair {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3em;
+  margin-top: 1em;
+
+  img {
+    max-height: 60px;
+    width: auto;
+  }
+}
+
+// ==============================================================================
+// ACCESSIBILITY
+// ==============================================================================
+
+.reveal a:focus,
+.reveal button:focus {
+  outline: 2px solid $ugr-orange;
+  outline-offset: 2px;
+}

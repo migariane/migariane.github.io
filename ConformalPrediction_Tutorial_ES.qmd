@@ -1,0 +1,895 @@
+---
+title: "Predicción Conforme e Inferencia Libre de Distribución"
+subtitle: "Tutorial Integrado"
+author:
+  - name: "Miguel Ángel Luque Fernández"
+    affiliation: |
+      Dpto. de Estadística e Investigación Operativa, Universidad de Granada
+      &
+      Department of Non-communicable Disease Epidemiology, London School of Hygiene & Tropical Medicine
+    email: "mluquefe@go.ugr.es"
+date: "Mayo 2026"
+format:
+  revealjs:
+    theme: [default, ugr-theme.scss]
+    slide-number: true
+    progress: true
+    history: false
+    transition: fade
+    transition-speed: fast
+    width: 1280
+    height: 720
+    margin: 0.08
+    code-line-numbers: false
+    highlight-style: github
+    chalkboard: false
+    logo: "../Figures/logo_ugr.png"
+    footer: "Predicción Conforme — MALF, UGR/LSHTM — Mayo 2026"
+execute:
+  echo: false
+  warning: false
+---
+
+## {#title-logos}
+
+::: {.logo-pair}
+![](../Figures/logo_ugr.png){height=60px}
+![](../Figures/lshtm_logo.jpg){height=55px}
+:::
+
+::: {.note}
+*Basado en los tutoriales CIRM de R.F. Barber (UChicago) y A. Dieuleveut (École Polytechnique)*
+:::
+
+---
+
+## Contenido {#toc}
+
+1. Motivación: ¿Por qué cuantificar la incertidumbre?
+2. Intercambiabilidad: El Fundamento Teórico
+3. Predicción Conforme Particionada (SCP)
+4. Regresión Cuantílica Conformizada (CQR)
+5. Clasificación Conforme
+6. Predicción Conforme Completa (Full CP)
+7. Jackknife+ y Validación Cruzada Conforme
+8. Desafíos: Validez Condicional
+9. Más Allá de la Intercambiabilidad
+10. Aplicaciones y Casos de Uso
+11. Resumen y Conclusiones
+
+# Motivación: ¿Por qué cuantificar la incertidumbre?
+
+## El problema de la predicción supervisada
+
+:::: {.columns}
+::: {.column width="55%"}
+**Configuración estándar:**
+
+- Datos de entrenamiento $(X_1,Y_1),\ldots,(X_n,Y_n) \in \mathcal{X}\times\mathcal{Y}$
+- Objetivo: dado $X_{n+1}$, predecir $Y_{n+1}$
+
+**¿Predicción puntual o inferencia predictiva?**
+
+$$\underbrace{\hat{\mu}(X_{n+1})}_{\text{predicción puntual}}
+\quad \text{vs.} \quad
+\underbrace{Y_{n+1} \in \hat{\mu}(X_{n+1}) \pm \text{(margen)}}_{\text{intervalo de predicción}}$$
+:::
+::: {.column width="42%"}
+::: {.infobox}
+**Incertidumbre importa**
+
+Misma predicción $\hat{Y}$, tres fenómenos distintos. La incertidumbre transmite información fundamental.
+:::
+
+::: {.smaller}
+Aplicaciones: meteorología, medicina, mercados financieros, visión por computadora
+:::
+:::
+::::
+
+## Enfoques clásicos y sus limitaciones
+
+:::: {.columns}
+::: {.column width="48%"}
+**Paramétrico:**
+
+$$Y = X^\top\beta + \mathcal{N}(0,\sigma^2)$$
+
+$\Rightarrow$ Intervalo: $X_{n+1}^\top\hat\beta \pm \cdots$
+
+**No paramétrico:**
+$\hat{\mu}(x) =$ estimador suavizado de $\mathbb{E}[Y|X=x]$
+
+**ML / sobreparametrizado:**
+Red neuronal en $\{(X_i,Y_i)\}$, luego cuantificación basada en datos
+:::
+::: {.column width="48%"}
+::: {.dangerbox}
+**¿Qué puede fallar?**
+
+- Paramétrico: el modelo puede ser incorrecto
+- No paramétrico: las hipótesis (p.ej. suavidad) pueden no cumplirse
+- ML: ¿garantiza la inferencia basada en datos respuestas válidas?
+:::
+
+::: {.successbox}
+**Solución:** métodos que no dependen de hipótesis (o sólo de hipótesis más débiles)
+:::
+:::
+::::
+
+## El problema del sobreajuste en la calibración
+
+**Idea ingenua:** $C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \operatorname{Cuantil}_{1-\alpha}(|Y_i - \hat{\mu}(X_i)|_{i=1}^n)$
+
+::: {.alertbox}
+**Problema: sobreajuste**
+
+Si $\hat{\mu}$ sobreajusta: el error de test supera al de entrenamiento.
+**Simulación:** cobertura en entrenamiento $= 90\%$, cobertura en test $= 78\%$
+:::
+
+::: {.methodbox}
+**Solución: conjunto de calibración (*holdout*)**
+
+- Dividir: $n = n_0$ (preentrenamiento) $+ n_1$ (calibración)
+- Ajustar $\hat{\mu}$ sobre $\{(X_i,Y_i)\}_{i\le n_0}$; calcular residuos en calibración
+
+$\Rightarrow$ Cobertura en test $\approx 89\%$ (bien calibrada, aunque intervalos más anchos)
+:::
+
+# Intercambiabilidad: El Fundamento Teórico
+
+## De i.i.d. a intercambiabilidad
+
+::: {.definicion}
+::: {.box-title}
+Definición: Intercambiabilidad
+:::
+Sea $Z_i = (X_i, Y_i)$. Los datos $(Z_1,\ldots,Z_n)$ son **intercambiables** si, para toda permutación $\sigma$:
+
+$$
+(Z_1, \ldots, Z_m) \overset{d}{=} (Z_{\sigma(1)}, \ldots, Z_{\sigma(m)})
+$$
+
+para todo $m$ y toda permutación $\sigma$.
+:::
+
+:::: {.columns}
+::: {.column width="48%"}
+::: {.methodbox}
+**El caso i.i.d.**
+
+Los datos i.i.d. son un caso especial.
+
+- Sin supuestos sobre $P$
+- No permite dependencia temporal
+:::
+:::
+::: {.column width="48%"}
+::: {.methodbox}
+**Caso i.i.d. condicional**
+
+Los datos i.i.d. condicionalmente también son intercambiables. Secuencias finitas pueden ser intercambiables sin ser i.i.d.
+:::
+:::
+::::
+
+::: {.infobox}
+**Idea clave:** la predicción conforme usa la intercambiabilidad como única hipótesis sobre los datos.
+:::
+
+## Lema del Cuantil: La Herramienta Central
+
+::: {.lema}
+::: {.box-title}
+Lema del Cuantil
+:::
+Si $(U_1,\ldots,U_n, U_{n+1})$ son intercambiables, entonces para $\beta \in (0,1)$:
+
+$$\mathbb{P}\!\left(U_{n+1} \le q_\beta(U_1,\ldots,U_n,+\infty)\right) \ge \beta$$
+
+Además, si los $U_i$ son casi-seguramente distintos:
+
+$$\mathbb{P}\!\left(U_{n+1} \le q_\beta(U_1,\ldots,U_n,+\infty)\right) \le \beta + \frac{1}{n+1}$$
+:::
+
+:::: {.columns}
+::: {.column width="55%"}
+**Demostración (cota inferior):**
+
+Por intercambiabilidad, $\mathbb{P}(U_{n+1} \le q_\beta) = \mathbb{P}(U_i \le q_\beta)$ para todo $i$. Luego:
+
+$$\mathbb{P}(U_{n+1} \le q_\beta) = \frac{1}{n+1}\sum_{i=1}^{n+1}\mathbb{P}(U_i \le q_\beta) \ge \frac{\lceil\beta(n+1)\rceil}{n+1} \ge \beta$$
+:::
+::: {.column width="40%"}
+::: {.warningbox}
+Este lema es la **piedra angular** de toda la teoría de predicción conforme.
+:::
+:::
+::::
+
+# Predicción Conforme Particionada (SCP)
+
+## Predicción Conforme Particionada — Algoritmo
+
+:::: {.columns}
+::: {.column width="52%"}
+::: {.methodbox}
+**Algoritmo SCP (Vovk et al., 2005)**
+
+1. Con datos de preentrenamiento $Z_1,\ldots,Z_{n_0}$, ajustar modelo $\hat{\mu} = \mathcal{A}(Z_1,\ldots,Z_{n_0})$
+
+2. Calcular el cuantil $\hat{q}$ de los residuos en la calibración:
+$$\hat{q} = \operatorname{Cuantil}_{(1-\alpha)(1+1/n_1)}\!\bigl(\{|Y_i - \hat{\mu}(X_i)|\}_{n_0<i\le n}\bigr)$$
+
+3. Para el punto de test $n+1$, devolver:
+$$C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}$$
+:::
+:::
+::: {.column width="45%"}
+![Diagrama SCP: partición preentrenamiento/calibración](../Figures/CINF-TUTORIAL/tikz_0.svg){width=100%}
+
+::: {.dangerbox .smaller}
+**Ventaja:** funciona con *cualquier* algoritmo de regresión
+**Coste:** $\hat{\mu}$ menos preciso por la división
+:::
+:::
+::::
+
+## Garantía Teórica de la SCP
+
+::: {.teorema}
+::: {.box-title}
+Teorema: Validez marginal de la SCP (Vovk et al., 2005)
+:::
+Si $Z_1,\ldots,Z_{n+1}$ son intercambiables, la predicción conforme particionada satisface:
+
+$$\boxed{\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1 - \alpha}$$
+
+Si además los scores $\{S_i\}_{i \in \text{Cal}} \cup \{S_{n+1}\}$ son c.s. distintos:
+
+$$\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \le 1 - \alpha + \frac{1}{n_1+1}$$
+:::
+
+**Idea de la demostración:** $S_i = |Y_i - \hat{\mu}(X_i)|$ para $i \in \text{Cal}\cup\{n+1\}$. Como $\hat{\mu}$ se ajusta sólo sobre preentrenamiento, los scores son intercambiables $\Rightarrow$ Lema del Cuantil da la cota. $\square$
+
+::: {.infobox}
+**Garantía libre de distribución:** válida para *cualquier* $P$, sin supuestos paramétricos.
+:::
+
+## La Función de Puntuación Conforme
+
+**SCP general:** en lugar de residuos absolutos, usar cualquier *función de puntuación* $s: \mathcal{X}\times\mathcal{Y}\to\mathbb{R}$:
+
+:::: {.columns}
+::: {.column width="50%"}
+::: {.methodbox}
+**Algoritmo SCP (versión general)**
+
+1. Ajustar $s$ sobre datos de preentrenamiento
+2. $\hat{q} = \operatorname{Cuantil}_{(1-\alpha)(1+1/n_1)}(\{s(X_i,Y_i)\}_{i\in\text{Cal}})$
+3. Devolver $C(X_{n+1}) = \{y: s(X_{n+1},y) \le \hat{q}\}$
+:::
+:::
+::: {.column width="46%"}
+::: {.methodbox}
+**Ejemplos de puntuación**
+
+**Residuo simple:**
+$$s(x,y) = |y - \hat{\mu}(x)|$$
+
+**Residuo escalado** (Lei et al., 2018):
+$$s(x,y) = \frac{|y - \hat{\mu}(x)|}{\hat{\sigma}(x)}$$
+
+$\Rightarrow C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}\cdot\hat{\sigma}(X_{n+1})$
+:::
+:::
+::::
+
+::: {.alertbox}
+**Limitación del residuo simple**
+
+$C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \hat{q}$ tiene **anchura constante**: no se adapta a la heteroscedasticidad.
+:::
+
+# Regresión Cuantílica Conformizada (CQR)
+
+## CQR: Motivación y Algoritmo
+
+:::: {.columns}
+::: {.column width="52%"}
+**Problema de la SCP estándar:** intervalos de anchura constante, no adaptativos.
+
+::: {.methodbox}
+**Conformalized Quantile Regression (Romano et al., 2019)**
+
+1. Ajustar regresores cuantílicos $\widehat{Q}_\alpha^{lo}(x)$ y $\widehat{Q}_\alpha^{hi}(x)$
+
+2. Puntuación de conformidad:
+$$s(x,y) = \max\!\bigl(\widehat{Q}^{lo}(x)-y,\; y-\widehat{Q}^{hi}(x)\bigr)$$
+
+3. Intervalo de predicción:
+$$\hat{C}_\alpha(x) = \bigl[\widehat{Q}^{lo}(x) - \hat{q},\; \widehat{Q}^{hi}(x) + \hat{q}\bigr]$$
+:::
+:::
+::: {.column width="44%"}
+::: {.successbox}
+**Propiedades CQR**
+
+- ✓ Validez marginal garantizada (mismo teorema)
+- ✓ **Adaptativo**: anchura varía con $x$
+- ✓ Más informativo en zonas de alta varianza
+- ✗ No es una caja negra alrededor de $\hat{\mu}$
+:::
+
+::: {.smaller}
+**Validez:** $\{Y_{n+1} \in \hat{C}_\alpha(X_{n+1})\} = \{S_{n+1} \le q_{1-\alpha}(S)\}$
+$\Rightarrow$ garantía marginal se mantiene por el Lema del Cuantil.
+:::
+:::
+::::
+
+## Comparativa de Puntuaciones para Regresión
+
+| **Método** | **Puntuación $s(x,y)$** | **Intervalo $\hat{C}_\alpha(x)$** | **Adaptativo** |
+|-----------|------------------------|----------------------------------|----------------|
+| SCP estándar | $\|\hat{\mu}(x)-y\|$ | $[\hat{\mu}(x) \pm \hat{q}]$ | No |
+| SCP local | $\|\hat{\mu}(x)-y\|/\hat{\sigma}(x)$ | $[\hat{\mu}(x) \pm \hat{q}\hat{\sigma}(x)]$ | Sí |
+| CQR | $\max(\hat{Q}^{lo}-y,\, y-\hat{Q}^{hi})$ | $[\hat{Q}^{lo}(x)-\hat{q},\, \hat{Q}^{hi}(x)+\hat{q}]$ | Sí |
+
+:::: {.columns}
+::: {.column width="48%"}
+::: {.infobox}
+**Todos** los métodos anteriores disfrutan de la misma garantía de validez marginal, gracias a la intercambiabilidad de los scores.
+:::
+:::
+::: {.column width="48%"}
+::: {.warningbox}
+La elección de la puntuación determina la **eficiencia** (anchura promedio), no la **validez**.
+:::
+:::
+::::
+
+# Clasificación Conforme
+
+## SCP para Clasificación Multiclase
+
+**Configuración:** $Y \in \{1,\ldots,C\}$, probabilidades estimadas $\hat{p}_k(X)$ para $k=1,\ldots,C$.
+
+:::: {.columns}
+::: {.column width="50%"}
+::: {.methodbox}
+**SCP estándar para clasificación**
+
+**Puntuación:**
+$$s(\hat{A}(X), Y) = 1 - \hat{p}_Y(X)$$
+
+**Conjunto de predicción:**
+$$\hat{C}_\alpha(X_{n+1}) = \{y : s(\hat{A}(X_{n+1}),y) \le \hat{q}\}$$
+
+i.e., incluir todas las clases con probabilidad estimada suficientemente alta.
+:::
+:::
+::: {.column width="46%"}
+::: {.successbox .smaller}
+**Propiedad:** eficiente en términos de tamaño promedio del conjunto (Sadinle et al., 2018)
+
+**Limitación:** no distingue entre puntos "fáciles" y "difíciles" — sobrecobertura para fáciles, infracobertura para difíciles.
+:::
+
+::: {.smaller}
+**Ejemplo** ($\alpha=0.1$, 3 clases):
+Si $\hat{q} = 0.65$, se incluye cualquier clase con $\hat{p}_k(X_{n+1}) \ge 0.35$.
+:::
+:::
+::::
+
+## Conjuntos de Predicción Adaptativos (RAPS/APS)
+
+**Puntuaciones acumulativas adaptativas** (Angelopoulos et al., 2020):
+
+1. Ordenar clases por probabilidad descendente: $\hat{p}_{\sigma(1)}(x) \ge \ldots \ge \hat{p}_{\sigma(C)}(x)$
+
+2. Puntuación:
+$$s(x,y;\hat{p}) = \sum_{k=1}^{\sigma^{-1}(y)} \hat{p}_{\sigma(k)}(x)
+\quad\text{(suma acumulada hasta la clase verdadera)}$$
+
+3. Conjunto de predicción para $X_{n+1}$:
+$$\hat{C}_\alpha(X_{n+1}) = \bigl\{\sigma_{X_{n+1}}(1),\ldots, \sigma_{X_{n+1}}(r^*)\bigr\}$$
+donde $r^* = \arg\max_r\left\{\sum_{k=1}^r \hat{p}_{\sigma(k)}(X_{n+1}) < \hat{q}\right\} + 1$
+
+::: {.successbox}
+**Ventaja APS:** los conjuntos son más pequeños para puntos fáciles (alta confianza) y más grandes para puntos difíciles (baja confianza) — mejor cobertura condicional *empírica*.
+:::
+
+# Predicción Conforme Completa (Full CP)
+
+## Full CP: Idea y Motivación
+
+:::: {.columns}
+::: {.column width="55%"}
+**Desventaja de la SCP:** $\hat{\mu}$ menos preciso por la división de datos.
+
+::: {.methodbox}
+**Pregunta natural**
+
+¿Podemos usar **todos los datos** para ajustar $\hat{\mu}$ y mantener las garantías teóricas?
+:::
+
+**Supuesto adicional necesario:**
+
+::: {.definicion}
+::: {.box-title}
+Definición: Algoritmo simétrico
+:::
+Para cualquier permutación $\sigma$ de $\{1,\ldots,m\}$:
+$$\mathcal{A}(Z_1,\ldots,Z_m) = \mathcal{A}(Z_{\sigma(1)},\ldots,Z_{\sigma(m)})$$
+:::
+:::
+::: {.column width="40%"}
+::: {.infobox .smaller}
+**Intuición**
+
+**SCP:** ajusta $\hat{\mu}$ en parte de los datos $\Rightarrow$ scores intercambiables por construcción
+
+**Full CP:** usa *todos* los datos para $\hat{\mu}$, pero necesita simetría del algoritmo para garantizar intercambiabilidad de los scores.
+:::
+:::
+::::
+
+## Algoritmo Full CP
+
+**Idea (versión oráculo):** si pudiéramos observar $Y_{n+1}$...
+
+1. Ajustar $\hat{\mu} = \mathcal{A}(Z_1,\ldots,Z_n,(X_{n+1},Y_{n+1}))$
+2. Calcular residuos $S_i = |Y_i - \hat{\mu}(X_i)|$, $i=1,\ldots,n+1$
+3. Verificar si $S_{n+1} \le \operatorname{Cuantil}_{(1-\alpha)(1+1/n)}(S_1,\ldots,S_n)$
+
+**En la práctica** (no observamos $Y_{n+1}$):
+
+1. Para cada valor candidato $y \in \mathcal{Y}$: ajustar $\hat{\mu}^y = \mathcal{A}(Z_1,\ldots,Z_n,(X_{n+1},y))$
+2. Calcular $S_i^y = |Y_i - \hat{\mu}^y(X_i)|$ y $S_{n+1}^y = |y - \hat{\mu}^y(X_{n+1})|$
+3. $y \in C(X_{n+1})$ si y solo si $S_{n+1}^y \le \operatorname{Cuantil}_{(1-\alpha)(1+1/n)}(S_1^y,\ldots,S_n^y)$
+
+::: {.alertbox}
+**Coste computacional**
+
+Requiere re-ajustar el modelo para cada valor $y \in \mathcal{Y}$ — muy costoso para respuestas continuas.
+**Soluciones prácticas:** restringir a una rejilla de $y$ (sin garantías) o usar métodos especializados para Ridge, Lasso, etc.
+:::
+
+## Garantía Full CP y Comparativa
+
+::: {.teorema}
+::: {.box-title}
+Teorema: Validez Full CP (Vovk et al., 2005)
+:::
+Si $Z_1,\ldots,Z_{n+1}$ son intercambiables y $\mathcal{A}$ es simétrico, entonces:
+
+$$\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1-\alpha$$
+:::
+
+:::: {.columns}
+::: {.column width="48%"}
+
+| | **SCP** | **Full CP** |
+|---|---|---|
+| Garantía | ✓ | ✓ |
+| Eficiencia $\hat{\mu}$ | Reducida | Máxima |
+| Coste computacional | Bajo | Muy alto |
+| Requisito | Exch. | Exch.+Simétrico |
+
+:::
+::: {.column width="48%"}
+::: {.warningbox .smaller}
+**Compromiso:** SCP es menos preciso pero computacionalmente barato. Full CP es preciso pero prohibitivo para modelos ML.
+
+¿Existe un punto intermedio? $\Rightarrow$ Validación cruzada conforme.
+:::
+:::
+::::
+
+# Jackknife+ y Validación Cruzada Conforme
+
+## Jackknife Clásico y sus Limitaciones
+
+**Jackknife (dejar-uno-fuera):**
+
+$$C(X_{n+1}) = \hat{\mu}(X_{n+1}) \pm \operatorname{Cuantil}_{1-\alpha}\bigl(|Y_i - \hat{\mu}_{-i}(X_i)|_{i=1,\ldots,n}\bigr)$$
+
+donde $\hat{\mu}_{-i}$ se ajusta sobre $\{(X_j,Y_j)\}_{j\neq i}$.
+
+:::: {.columns}
+::: {.column width="55%"}
+::: {.alertbox}
+**Problema teórico**
+
+El jackknife **no** tiene garantías libres de distribución. Puede tener cobertura cero en el peor caso.
+
+**¿Por qué?** Cada $S_i = |Y_i - \hat{\mu}_{-i}(X_i)|$ se ajusta con datos distintos $\Rightarrow$ los $S_i$ **no** son intercambiables con $S_{n+1} = |Y_{n+1} - \hat{\mu}(X_{n+1})|$.
+:::
+:::
+::: {.column width="40%"}
+**Simulación** (regresión lineal, $d=50$, $n=100$):
+
+- Cobertura media $= 89\%$ (generalmente bien)
+- Con modelos inestables ($d \approx n$): infra-cobertura severa
+:::
+::::
+
+## Jackknife+ (Barber et al., 2021)
+
+**Modificación clave:** usar la predicción del modelo dejando-uno-fuera también para el punto de test.
+
+::: {.methodbox}
+**Algoritmo Jackknife+**
+
+$$C(X_{n+1}) = \left[
+-\operatorname{Cuantil}_{(1-\alpha)(1+1/n)}\bigl(-\hat{\mu}_{-i}(X_{n+1})+S_i\bigr),\;
+\operatorname{Cuantil}_{(1-\alpha)(1+1/n)}\bigl(\hat{\mu}_{-i}(X_{n+1})+S_i\bigr)
+\right]$$
+
+donde $S_i = |Y_i - \hat{\mu}_{-i}(X_i)|$.
+:::
+
+::: {.teorema}
+::: {.box-title}
+Teorema: Cobertura Jackknife+ (Barber et al., 2021)
+:::
+Si $Z_1,\ldots,Z_{n+1}$ son intercambiables y $\mathcal{A}$ es simétrico:
+
+$$\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1 - 2\alpha$$
+
+(en contraste con el jackknife que puede tener cobertura cero)
+:::
+
+::: {.successbox}
+**CV+:** generalización a validación cruzada de $K$ folds con misma garantía $\ge 1-2\alpha$, y $\ge 1-2\alpha - 2/\sqrt{n}$ uniformemente en $K$.
+:::
+
+## Predicción Conforme Cruzada
+
+::: {.methodbox}
+**Cross-conformal prediction (Vovk 2015; Barber et al., 2021)**
+
+1. Dividir $\{1,\ldots,n\}$ en $K$ folds $A_1\cup\cdots\cup A_K$
+2. Ajustar $s^{(k)} = \mathcal{A}(\{(X_i,Y_i): i\notin A_k\})$
+3. Para $i \in A_k$: $S_i = s^{(k)}(X_i, Y_i)$
+4. Devolver:
+$$C(X_{n+1}) = \left\{y : \sum_{k=1}^K\sum_{i\in A_k} \mathbf{1}\{S_i \ge s^{(k)}(X_{n+1},y)\} \ge \alpha(n+1)\right\}$$
+:::
+
+:::: {.columns}
+::: {.column width="48%"}
+**Para score residual:** $C_{\text{cross}} \subseteq C_{CV+}$
+
+- Cross-conformal: más flexible (cualquier score)
+- CV+: siempre devuelve un intervalo
+:::
+::: {.column width="48%"}
+::: {.infobox}
+**Ventaja:** evita la división datos, usa todos para ajuste. **Coste:** $K$ ajustes del modelo en lugar de uno.
+:::
+:::
+::::
+
+# Desafíos: Validez Condicional
+
+## Validez Marginal vs. Validez Condicional
+
+**Lo que garantiza la SCP:**
+
+$$\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} \ge 1-\alpha$$
+
+**Lo que nos gustaría tener:**
+
+$$\mathbb{P}\{Y_{n+1} \in C(X_{n+1}) \mid X_{n+1} = x, \text{Cal}\} \ge 1-\alpha \quad \forall x$$
+
+:::: {.columns}
+::: {.column width="52%"}
+::: {.alertbox}
+**Resultado de imposibilidad**
+
+La validez condicional en $X_{n+1}$ de forma informativa es **imposible** en general (Barber et al., 2021a; Lei & Wasserman, 2014).
+
+*Siempre puede haber subpoblaciones que sufran infra- o sobre-cobertura.*
+:::
+:::
+::: {.column width="44%"}
+::: {.methodbox}
+**Qué sí es posible**
+
+- Validez condicional por **grupos** (group-conditional)
+- Resultados asintóticos con regresor cuantílico universal
+- Cotas **PAC**: con alta probabilidad sobre Cal, la cobertura condicional es $\ge 1-\alpha$
+- Garantías para la cobertura **condicional a la calibración**
+:::
+:::
+::::
+
+## Noción Débil de Validez Condicional
+
+::: {.methodbox}
+**Validez $X$-condicional débil (Barber et al., 2021a)**
+
+Para cualquier función test $g: \mathcal{X} \to \{0,1\}$:
+
+$$\left|\mathbb{P}\{Y_{n+1} \in C(X_{n+1})\} - (1-\alpha)\right| \le \varepsilon(n,\delta)$$
+
+con alta probabilidad sobre Cal, donde $\varepsilon(n,\delta) \to 0$ conforme $n \to \infty$.
+:::
+
+**Métricas de cobertura condicional en la práctica:**
+
+- **Cobertura por grupos**: verificar $\mathbb{P}(Y \in C(X) \mid G)$ para grupos predefinidos $G$
+- **Tamaño promedio del conjunto** (RAPS): proxy de adaptatividad
+- **Cobertura condicional a la calibración** (PAC): con prob. $\ge 1-\delta$, $\mathbb{P}(Y_{n+1}\in C(X_{n+1})\mid\text{Cal}) \ge 1-\alpha$
+
+::: {.warningbox}
+**Recomendación práctica:** usar CQR o APS para mejorar la adaptatividad empírica, incluso sin garantías teóricas condicionales.
+:::
+
+# Más Allá de la Intercambiabilidad
+
+## Cuando Falla la Intercambiabilidad
+
+:::: {.columns}
+::: {.column width="48%"}
+**Escenarios donde la intercambiabilidad no se cumple:**
+
+- **Desplazamiento de covariables** (*covariate shift*): la distribución de $X$ cambia entre entrenamiento y test
+- **Deriva temporal**: datos de series temporales
+- **Datos de grupos**: clusters o efectos de diseño
+- **Distribución diferente**: entrenamiento y test proceden de poblaciones distintas
+:::
+::: {.column width="48%"}
+::: {.methodbox}
+**Extensiones principales**
+
+**Covariate shift** (Tibshirani et al., 2019):
+Reponderar con $w(x) = p_{\text{test}}(x)/p_{\text{train}}(x)$
+
+**Conformal online adaptativo** (ACI, Gibbs & Candès, 2021):
+Actualizar $\alpha_t$ de forma adaptativa para datos en flujo
+
+**Partición temporal** (Online Sequential SCP):
+Usar ventanas o splits temporales
+:::
+:::
+::::
+
+## Desplazamiento de Covariables (Covariate Shift)
+
+**Supuesto:** $P_{\text{train}}(Y|X) = P_{\text{test}}(Y|X)$ pero $P_{\text{train}}(X) \neq P_{\text{test}}(X)$.
+
+::: {.methodbox}
+**SCP con pesos de importancia (Tibshirani et al., 2019)**
+
+Ponderar los scores de calibración:
+
+$$\hat{q} = \text{cuantil de} \sum_{i\in\text{Cal}} \frac{w(X_i)}{\sum_j w(X_j) + w(X_{n+1})} \delta_{S_i}
++ \frac{w(X_{n+1})}{\sum_j w(X_j) + w(X_{n+1})} \delta_{+\infty}$$
+
+donde $w(x) = p_{\text{test}}(x)/p_{\text{train}}(x)$ (razón de densidad).
+:::
+
+::: {.successbox}
+**Resultado:** bajo covariate shift y conociendo los pesos $w$, se recupera la garantía de cobertura marginal.
+
+En la práctica: estimar $w$ con clasificación o modelos de densidad.
+:::
+
+## Inferencia Conforme Adaptativa Online (ACI)
+
+**Problema:** datos en flujo con posible deriva de distribución.
+
+::: {.methodbox}
+**ACI (Gibbs & Candès, 2021)**
+
+Actualizar el nivel $\alpha_t$ de forma dinámica:
+
+$$\alpha_{t+1} = \alpha_t + \gamma\bigl(\alpha - \mathbf{1}\{Y_t \notin C_t(X_t)\}\bigr)$$
+
+donde $\gamma > 0$ es la tasa de aprendizaje.
+:::
+
+:::: {.columns}
+::: {.column width="52%"}
+- Si hay infra-cobertura reciente: $\alpha_t$ aumenta (intervalos más anchos)
+- Si hay sobre-cobertura reciente: $\alpha_t$ disminuye (intervalos más estrechos)
+- Garantías de cobertura *promedio* a largo plazo
+:::
+::: {.column width="44%"}
+::: {.warningbox .smaller}
+**Aplicación:** predicción de precios de electricidad, epidemiología en tiempo real, pronóstico meteorológico.
+:::
+:::
+::::
+
+# Aplicaciones y Casos de Uso
+
+## Casos de Uso en la Práctica
+
+:::: {.columns}
+::: {.column width="48%"}
+::: {.methodbox}
+**Ciencias biomédicas**
+
+- Predicción de toxicidad de fármacos
+- Intervalos de predicción para biomarcadores
+- Diagnóstico médico: conjuntos de diagnósticos plausibles
+- Imagen médica: segmentación con incertidumbre
+:::
+
+::: {.methodbox}
+**Previsión energética**
+
+- Previsión de precios de electricidad (mercado spot)
+- Regresión imagen-a-imagen con CQR
+- Pronósticos con datos temporales (ACI)
+:::
+:::
+::: {.column width="48%"}
+::: {.methodbox}
+**Visión por computadora y ML**
+
+- Detección de objetos con conjuntos de predicción
+- Clasificación robusta con APS
+- Grandes modelos de lenguaje (LLMs): conjuntos de respuestas plausibles
+:::
+
+::: {.infobox .smaller}
+**Inferencia causal:** efectos de tratamiento heterogéneos con predicción conforme (Romano et al., 2019; Lei & Candès, 2021)
+:::
+:::
+::::
+
+## Paquetes de Software
+
+:::: {.columns}
+::: {.column width="48%"}
+**Python:**
+
+- `MAPIE`: SCP, CV+, CQR — scikit-learn compatible
+- `crepes`: Full CP, cross-conformal
+- `nonconformist`: implementaciones básicas
+- `conformal-prediction`: tutoriales y notebooks
+
+**R:**
+
+- `cfr`: conformal regression (CRAN)
+- `conformalInference`: paquete de Tibshirani et al.
+- `grf`: random forests para CQR
+:::
+::: {.column width="48%"}
+::: {.methodbox}
+**Libro de referencia**
+
+*Theoretical Foundations of Conformal Prediction*
+Angelopoulos, Barber, Bates (Cambridge UP, forthcoming)
+
+Disponible: 75% en arXiv
+:::
+
+::: {.methodbox}
+**Tutorial accesible**
+
+*A Gentle Introduction to Conformal Prediction*
+Angelopoulos & Bates (2023), arXiv:2107.07511
+:::
+:::
+::::
+
+# Resumen y Conclusiones
+
+## Resumen: La Arquitectura de la Predicción Conforme
+
+![Diagrama de arquitectura: cadena de garantías de la predicción conforme](../Figures/CINF-TUTORIAL/tikz_1.svg){width=90% fig-align="center"}
+
+:::: {.columns}
+::: {.column width="32%"}
+**SCP:** simple, eficiente, requiere división de datos
+:::
+::: {.column width="32%"}
+**Full CP:** usa todos los datos, computacionalmente costoso
+:::
+::: {.column width="32%"}
+**Jackknife+/CV+:** balance entre eficiencia y coste
+:::
+::::
+
+## Ventajas e Inconvenientes
+
+:::: {.columns}
+::: {.column width="48%"}
+::: {.successbox}
+**Ventajas**
+
+- ✓ Garantías finito-muestrales, sin supuestos paramétricos
+- ✓ Funciona con *cualquier* modelo de predicción
+- ✓ Computacionalmente eficiente (SCP)
+- ✓ Fácil de implementar
+- ✓ Aplicable a regresión, clasificación, y más
+- ✓ Extensiones para covariate shift, datos online
+:::
+:::
+::: {.column width="48%"}
+::: {.dangerbox .smaller}
+**Limitaciones**
+
+- ✗ Garantía **marginal**, no condicional
+- ✗ Cobertura condicional en $X$ informativa es imposible
+- ✗ SCP: anchura constante (sin CQR/LW)
+- ✗ Full CP: prohibitivo computacionalmente
+- ✗ Requiere intercambiabilidad (series temporales requieren adaptaciones)
+- ✗ Jackknife+: garantía $1-2\alpha$ (no $1-\alpha$)
+:::
+:::
+::::
+
+## Mensajes Clave
+
+::: {.spaced-list}
+1. **La intercambiabilidad reemplaza los supuestos paramétricos:**
+   El Lema del Cuantil garantiza cobertura marginal exacta sin conocer la distribución.
+
+2. **La elección de la puntuación determina la eficiencia:**
+   Cualquier función $s(x,y)$ produce predicción conforme válida; CQR y LW mejoran la adaptatividad.
+
+3. **Hay un trilema SCP/Full CP/Jackknife+:**
+   Eficiencia estadística $\leftrightarrow$ coste computacional $\leftrightarrow$ garantía teórica.
+
+4. **Validez condicional es un objetivo difícil:**
+   Es teóricamente imposible en general, pero hay alternativas prácticas útiles (APS, CQR, PAC).
+
+5. **Las extensiones cubren desviaciones de i.i.d.:**
+   Covariate shift, datos temporales, entornos online — todos tienen adaptaciones conformes.
+:::
+
+# Referencias
+
+## Referencias Principales {.smaller}
+
+::: {.references}
+Vovk, V., Gammerman, A., & Shafer, G. (2005). *Algorithmic Learning in a Random World*. Springer.
+
+Lei, J., G'Sell, M., Rinaldo, A., Tibshirani, R.J., & Wasserman, L. (2018). Distribution-free predictive inference for regression. *Journal of the American Statistical Association*, 113(523), 1094–1111.
+
+Romano, Y., Patterson, E., & Candès, E.J. (2019). Conformalized quantile regression. *NeurIPS 2019*.
+
+Angelopoulos, A., Bates, S., Jordan, M., & Malik, J. (2020). Uncertainty sets for image classifiers using conformal prediction. *ICLR 2021*.
+
+Barber, R.F., Candès, E.J., Ramdas, A., & Tibshirani, R.J. (2021). Predictive inference with the jackknife+. *Annals of Statistics*, 49(1), 486–507.
+
+Tibshirani, R.J., Barber, R.F., Candès, E.J., & Ramdas, A. (2019). Conformal prediction under covariate shift. *NeurIPS 2019*.
+
+Gibbs, I., & Candès, E.J. (2021). Adaptive conformal inference under distribution shift. *NeurIPS 2021*.
+
+Angelopoulos, A.N., & Bates, S. (2023). A gentle introduction to conformal prediction and distribution-free uncertainty quantification. *arXiv:2107.07511*.
+
+Angelopoulos, A.N., Barber, R.F., & Bates, S. (forthcoming). *Theoretical Foundations of Conformal Prediction*. Cambridge University Press.
+
+Lei, L., & Candès, E.J. (2021). Conformal inference of counterfactuals and individual treatment effects. *Journal of the Royal Statistical Society: Series B*, 83(5), 911–938.
+:::
+
+---
+
+## {.center}
+
+::: {style="text-align: center; padding: 2em 0;"}
+**Gracias**
+
+[mluquefe@go.ugr.es]{style="font-family: monospace; font-size: 0.9em;"}
+:::
+
+::: {.logo-pair}
+![](../Figures/logo_ugr.png){height=55px}
+![](../Figures/lshtm_logo.jpg){height=50px}
+:::
+
+::: {.note style="text-align: center; margin-top: 1em; font-size: 0.75em;"}
+Basado en:
+*CIRM Tutorial Part 1* — Rina Foygel Barber (University of Chicago), Diciembre 2024
+*CIRM Tutorial Part 2* — Aymeric Dieuleveut (École Polytechnique), Julio 2025
+:::
