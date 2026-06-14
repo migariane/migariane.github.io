@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code en Windows · Tutorial para estadísticos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #0F2744;
+    --blue:   #1D5FAA;
+    --accent: #E07B39;
+    --accent2:#F9A85A;
+    --bg:     #F5F7FA;
+    --surface:#FFFFFF;
+    --border: #DDE3EC;
+    --text:   #1A2333;
+    --muted:  #5A6A7E;
+    --code-bg:#0D1B2A;
+    --code-fg:#CDD9E5;
+    --green:  #16A34A;
+    --green-bg:#F0FBF4;
+    --green-bd:#BBF0CD;
+    --amber:  #B45309;
+    --amber-bg:#FFFBEB;
+    --amber-bd:#FCD34D;
+    --info-bg:#EEF4FF;
+    --info-bd:#BFCFFF;
+    --info-tx:#2249A0;
+    --radius: 10px;
+    --shadow: 0 2px 12px rgba(15,39,68,.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(224,123,57,.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .03em;
+    color: rgba(255,255,255,.85);
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: .5rem;
+  }
+  header h1 span { color: var(--accent2); }
+  header p.subtitle {
+    color: rgba(255,255,255,.65);
+    font-size: 14px;
+    max-width: 520px;
+    margin-bottom: 1.5rem;
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,.82);
+  }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 180px);
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 0;
+  }
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .mobile-tabs { display: flex; }
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    padding: 0 1.25rem;
+    margin-bottom: .5rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: .55rem 1.25rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--muted);
+    transition: background .12s, color .12s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover { background: var(--bg); color: var(--text); }
+  .nav-item.active {
+    background: var(--info-bg);
+    color: var(--blue);
+    border-left-color: var(--blue);
+    font-weight: 500;
+  }
+  .nav-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+  .nav-item.active .nav-num {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  /* ── Mobile tabs ── */
+  .mobile-tabs {
+    display: none;
+    overflow-x: auto;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+    gap: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mobile-tabs::-webkit-scrollbar { display: none; }
+  .mob-tab {
+    flex-shrink: 0;
+    padding: .65rem .8rem;
+    font-size: 12.5px;
+    font-family: 'Inter', sans-serif;
+    border: none; background: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .mob-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+
+  /* ── Main content ── */
+  main { background: var(--bg); min-height: 100vh; }
+  .section { display: none; padding: 2rem 2.5rem 3rem; }
+  .section.active { display: block; }
+  @media (max-width: 700px) { .section { padding: 1.25rem 1rem 2.5rem; } }
+
+  .section-header { margin-bottom: 1.75rem; }
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--blue);
+    margin-bottom: .35rem;
+  }
+  .section-header h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: .4rem; }
+  .section-header p { color: var(--muted); font-size: 14px; }
+
+  /* ── Steps ── */
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: .85rem;
+  }
+  .step-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-head h3 { font-size: 15px; font-weight: 600; }
+  .step-head .step-tag {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--info-bg);
+    color: var(--info-tx);
+    border: 1px solid var(--info-bd);
+    white-space: nowrap;
+  }
+  .step p { font-size: 14px; color: var(--muted); margin-bottom: .75rem; line-height: 1.65; }
+  .step p:last-child { margin-bottom: 0; }
+  .step p strong { color: var(--text); font-weight: 500; }
+
+  /* ── Code ── */
+  .code-wrap {
+    position: relative;
+    background: var(--code-bg);
+    border-radius: 8px;
+    margin: .65rem 0;
+    overflow: hidden;
+  }
+  .code-lang {
+    position: absolute;
+    top: 0; left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,.35);
+    padding: 6px 10px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--code-fg);
+    padding: 2rem 1rem 1rem 1rem;
+    overflow-x: auto;
+    margin: 0;
+    white-space: pre;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 6px; right: 6px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 5px;
+    color: rgba(255,255,255,.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,.16); color: #fff; }
+  .copy-btn.ok { color: #6EE7A4; border-color: #6EE7A4; }
+
+  /* Syntax highlight */
+  .kw  { color: #79C0FF; }
+  .str { color: #A5D6FF; }
+  .cmt { color: #8B949E; font-style: italic; }
+  .fn  { color: #D2A8FF; }
+  .num { color: #79C0FF; }
+  .op  { color: #FF7B72; }
+
+  /* ── Callout boxes ── */
+  .callout {
+    display: flex; gap: 10px;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: .75rem 0;
+  }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout.info  { background: var(--info-bg);  border: 1px solid var(--info-bd);  color: var(--info-tx); }
+  .callout.warn  { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: var(--amber); }
+  .callout.ok    { background: var(--green-bg); border: 1px solid var(--green-bd); color: #155E34; }
+  .callout b { font-weight: 600; }
+
+  /* ── Cards grid ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+  .req-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .req-card .rc-icon { font-size: 22px; margin-bottom: 8px; }
+  .req-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .req-card p  { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Inline code ── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: #E8EEF7;
+    border: 1px solid #C5D3E6;
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #1D4A8A;
+  }
+
+  /* ── Flow diagram (simple) ── */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 1rem 0;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .flow-box {
+    background: var(--info-bg);
+    border: 1px solid var(--info-bd);
+    color: var(--blue);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  .flow-arrow { color: var(--muted); font-size: 14px; }
+
+  /* ── divider ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 12.5px;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header>
+  <div class="header-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Guía de instalación · Junio 2026
+  </div>
+  <h1>Claude Code en <span>Windows</span><br>para estadísticos</h1>
+  <p class="subtitle">Instala Claude Code, conecta GitHub y configura RStudio paso a paso — sin experiencia previa en terminal.</p>
+  <div class="pill-row">
+    <span class="pill">Windows 10 / 11</span>
+    <span class="pill">PowerShell</span>
+    <span class="pill">Git for Windows</span>
+    <span class="pill">GitHub</span>
+    <span class="pill">RStudio</span>
+  </div>
+</header>
+
+<!-- ════════ MOBILE TABS ════════ -->
+<div class="mobile-tabs" id="mob-tabs">
+  <button class="mob-tab active" data-tab="s0">Requisitos</button>
+  <button class="mob-tab" data-tab="s1">Terminal</button>
+  <button class="mob-tab" data-tab="s2">Claude Code</button>
+  <button class="mob-tab" data-tab="s3">Shell</button>
+  <button class="mob-tab" data-tab="s4">GitHub</button>
+  <button class="mob-tab" data-tab="s5">RStudio</button>
+</div>
+
+<!-- ════════ LAYOUT ════════ -->
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" aria-label="Secciones del tutorial">
+    <div class="sidebar-label">Contenido</div>
+    <button class="nav-item active" data-tab="s0"><span class="nav-num">0</span>Requisitos</button>
+    <button class="nav-item" data-tab="s1"><span class="nav-num">1</span>Terminal + Git</button>
+    <button class="nav-item" data-tab="s2"><span class="nav-num">2</span>Claude Code</button>
+    <button class="nav-item" data-tab="s3"><span class="nav-num">3</span>Shell básico</button>
+    <button class="nav-item" data-tab="s4"><span class="nav-num">4</span>GitHub</button>
+    <button class="nav-item" data-tab="s5"><span class="nav-num">5</span>RStudio + Git</button>
+    <hr style="margin:1rem 1.25rem;border-color:var(--border)">
+    <div class="sidebar-label">Recursos</div>
+    <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener"
+       style="display:flex;align-items:center;gap:8px;padding:.45rem 1.25rem;font-size:12.5px;color:var(--muted);text-decoration:none;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Docs oficiales
+    </a>
+    <a href="https://happygitwithr.com/" target="_blank" rel="noopener"
+       style="display:flex;align-items:center;gap:8px;padding:.45rem 1.25rem;font-size:12.5px;color:var(--muted);text-decoration:none;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Happy Git with R
+    </a>
+  </nav>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main>
+
+    <!-- ─── SECCIÓN 0: Requisitos ─── -->
+    <section id="s0" class="section active">
+      <div class="section-header">
+        <div class="section-eyebrow">Antes de empezar</div>
+        <h2>¿Qué necesitas?</h2>
+        <p>Comprueba estos cuatro puntos antes de instalar nada.</p>
+      </div>
+
+      <div class="card-grid">
+        <div class="req-card">
+          <div class="rc-icon">🖥️</div>
+          <h4>Windows 10 o 11</h4>
+          <p>Versión 1809 o superior. Compruébalo: <code>Win + R</code> → escribe <code>winver</code>.</p>
+        </div>
+        <div class="req-card">
+          <div class="rc-icon">🔑</div>
+          <h4>Cuenta Anthropic</h4>
+          <p>Necesitas suscripción <strong>Pro, Max, Teams</strong> o <strong>Enterprise</strong>. El plan gratuito no incluye Claude Code.</p>
+        </div>
+        <div class="req-card">
+          <div class="rc-icon">💾</div>
+          <h4>Hardware mínimo</h4>
+          <p>4 GB de RAM (8 GB recomendado). Procesador x64 o ARM64. Conexión a internet.</p>
+        </div>
+        <div class="req-card">
+          <div class="rc-icon">⚡</div>
+          <h4>Sin Node.js</h4>
+          <p>El instalador nativo (2026) es autocontenido. No necesitas Node.js ni npm.</p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><b>¿Qué es Claude Code?</b> Es una herramienta de línea de comandos creada por Anthropic que te permite hablar con Claude directamente desde tu terminal. Lee tu código, puede editarlo, encontrar errores y explicarlo — todo sin salir de la carpeta de tu proyecto.</div>
+      </div>
+
+      <div class="callout ok">
+        <span class="callout-icon">✅</span>
+        <div>Si tienes todo lo anterior, estás listo para el <b>Paso 1</b>. La instalación completa tarda unos 20 minutos.</div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-box">Terminal + Git</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box">Claude Code</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box">GitHub SSH</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box">RStudio + Git</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-box" style="background:#E8F8ED;border-color:#BBF0CD;color:#155E34;">¡Listo!</div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 1: Terminal ─── -->
+    <section id="s1" class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Paso 1 de 5</div>
+        <h2>Instalar Windows Terminal y Git</h2>
+        <p>Una terminal moderna y Git son la base de todo el flujo de trabajo.</p>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><b>¿Qué es PowerShell?</b> Es el intérprete de comandos moderno de Windows. Cuando abres un símbolo del sistema y ves <code>PS C:\&gt;</code> al inicio de la línea, estás en PowerShell.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">1</div>
+          <h3>Abrir PowerShell</h3>
+        </div>
+        <p>Pulsa la tecla <strong>Windows</strong>, escribe <strong>PowerShell</strong> y selecciona la aplicación. Aparecerá una ventana oscura con texto que empieza por <code>PS C:\Users\...</code>.</p>
+        <div class="callout warn">
+          <span class="callout-icon">⚠️</span>
+          <div>No cierres esta ventana durante la instalación. Cada vez que veas <code>PS C:\&gt;</code> significa que el comando terminó y puedes escribir el siguiente.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">2</div>
+          <h3>Instalar Windows Terminal</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Windows Terminal es una terminal mejorada con pestañas, mejor visualización y soporte para múltiples shells. Instálala así:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">winget</span> install Microsoft.WindowsTerminal</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <p>Cuando termine, busca <strong>Terminal</strong> en el menú inicio y ábrela. De ahora en adelante trabajarás desde aquí.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">3</div>
+          <h3>Instalar Git for Windows</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Git es el sistema de control de versiones que usarás para guardar el historial de tu código. Además, habilita el <strong>Bash tool</strong> dentro de Claude Code para usar comandos Unix:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">winget</span> install Git.Git</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <p><strong>Importante:</strong> cierra la terminal y vuelve a abrirla para que Git quede disponible en el PATH del sistema.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">4</div>
+          <h3>Verificar que Git está instalado</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Escribe este comando. Si ves un número de versión, Git está correctamente instalado:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">git</span> --version
+<span class="cmt"># Deberías ver algo como: git version 2.47.x.windows.x</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">5</div>
+          <h3>Configurar tu identidad en Git</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Git necesita saber quién eres para firmar tus commits. Reemplaza los valores con tu nombre y email real:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">git config</span> --global user.name  <span class="str">"Tu Nombre Completo"</span>
+<span class="kw">git config</span> --global user.email <span class="str">"tu@correo.com"</span>
+<span class="kw">git config</span> --global core.editor <span class="str">"nano"</span>
+
+<span class="cmt"># Verificar que quedó guardado:</span>
+<span class="kw">git config</span> --list</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <span class="callout-icon">✅</span>
+        <div><b>¡Paso 1 completado!</b> Ya tienes Windows Terminal y Git instalados. Continúa con el Paso 2 para instalar Claude Code.</div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 2: Claude Code ─── -->
+    <section id="s2" class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Paso 2 de 5</div>
+        <h2>Instalar y autenticar Claude Code</h2>
+        <p>Usa el instalador nativo oficial de Anthropic — sin Node.js ni dependencias externas.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">1</div>
+          <h3>Instalar con PowerShell (método recomendado)</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Abre Windows Terminal. Asegúrate de estar en PowerShell — el prompt empieza con <code>PS C:\</code>. Ejecuta:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre>irm https://claude.ai/install.ps1 | iex</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <p>El instalador descarga el binario nativo de Claude Code y lo añade al PATH de tu sistema automáticamente. Espera a que termine (suele tardar menos de un minuto).</p>
+        <div class="callout warn">
+          <span class="callout-icon">⚠️</span>
+          <div>Si ves el error <em>"'irm' is not recognized"</em>, estás en CMD, no en PowerShell. Cierra la ventana, busca "PowerShell" en el inicio y vuelve a intentarlo.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">2</div>
+          <h3>Alternativa: instalar con WinGet</h3>
+          <span class="step-tag">Opcional</span>
+        </div>
+        <p>Si prefieres WinGet (como hiciste con Git y Terminal), puedes usarlo también:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">winget</span> install Anthropic.ClaudeCode</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <div class="callout warn">
+          <span class="callout-icon">⚠️</span>
+          <div>Con WinGet las actualizaciones son <b>manuales</b>. Con el instalador nativo (paso 1), Claude Code se actualiza solo en segundo plano.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">3</div>
+          <h3>Verificar la instalación</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Cierra y vuelve a abrir la terminal. Luego ejecuta:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">claude</span> --version
+<span class="cmt"># → Claude Code 2.x.x</span>
+
+<span class="kw">claude</span> doctor
+<span class="cmt"># Diagnóstico completo: auth, PATH, Git, etc.</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">4</div>
+          <h3>Autenticarse con tu cuenta</h3>
+          <span class="step-tag">Navegador</span>
+        </div>
+        <p>Navega a cualquier carpeta de un proyecto y ejecuta <code>claude</code>. Se abrirá el navegador para autenticarte con tu cuenta Pro/Max/Teams de Anthropic:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="cmt"># Ve primero a la carpeta de tu proyecto</span>
+<span class="kw">cd</span> <span class="str">"C:\Users\TuNombre\proyectos\mi-proyecto"</span>
+
+<span class="cmt"># Lanza Claude Code (abre el navegador la primera vez)</span>
+<span class="kw">claude</span>
+<span class="cmt"># → Inicia sesión → autoriza → vuelve a la terminal</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <p>Una vez autenticado, verás un prompt interactivo donde puedes escribirle a Claude directamente desde la terminal. Escribe <code>/exit</code> o pulsa <code>Ctrl+C</code> para salir.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">5</div>
+          <h3>Alternativa: usar una API key</h3>
+          <span class="step-tag">Opcional</span>
+        </div>
+        <p>Si prefieres autenticarte con una clave de API del Console de Anthropic:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="cmt"># Sesión actual solamente</span>
+$env:ANTHROPIC_API_KEY = <span class="str">"sk-ant-tu-clave-aqui"</span>
+
+<span class="cmt"># Para que persista siempre, edita tu perfil de PowerShell:</span>
+<span class="kw">notepad</span> $PROFILE
+<span class="cmt"># Añade esta línea al archivo y guarda:</span>
+<span class="cmt"># $env:ANTHROPIC_API_KEY = "sk-ant-tu-clave-aqui"</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <span class="callout-icon">✅</span>
+        <div><b>¡Claude Code está listo!</b> Ya puedes hablarle desde la terminal. A continuación aprenderás los comandos de shell más útiles para el trabajo estadístico.</div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 3: Shell ─── -->
+    <section id="s3" class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Paso 3 de 5</div>
+        <h2>Shell básico para estadísticos</h2>
+        <p>Los comandos esenciales que usarás cada día en PowerShell y Git Bash.</p>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><b>Truco clave:</b> Claude Code lee todo el contenido del directorio donde lo lanzas. Siempre ejecuta <code>claude</code> desde la <b>carpeta raíz de tu proyecto</b> para que pueda ver todos tus scripts, datos y resultados.</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">·</div>
+          <h3>Navegar por carpetas</h3>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">bash / powershell</span>
+          <pre><span class="cmt"># ¿Dónde estoy ahora mismo?</span>
+<span class="kw">pwd</span>
+
+<span class="cmt"># Ver archivos y carpetas del directorio actual</span>
+<span class="kw">ls</span>
+
+<span class="cmt"># Entrar a una carpeta</span>
+<span class="kw">cd</span> <span class="str">"C:\Users\TuNombre\proyectos"</span>
+
+<span class="cmt"># Subir un nivel (ir a la carpeta padre)</span>
+<span class="kw">cd</span> ..
+
+<span class="cmt"># Ir directamente a tu carpeta de usuario (home)</span>
+<span class="kw">cd</span> ~</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">·</div>
+          <h3>Crear estructura de proyecto estadístico</h3>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">bash / powershell</span>
+          <pre><span class="cmt"># Crear carpeta del proyecto y entrar</span>
+<span class="kw">mkdir</span> mi-estudio-tmle
+<span class="kw">cd</span>    mi-estudio-tmle
+
+<span class="cmt"># Crear subcarpetas típicas de un proyecto de R</span>
+<span class="kw">mkdir</span> data scripts results figures
+
+<span class="cmt"># Ver la estructura creada</span>
+<span class="kw">ls</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">·</div>
+          <h3>Lanzar Claude Code en tu proyecto</h3>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">bash / powershell</span>
+          <pre><span class="cmt"># Ir al proyecto y lanzar Claude</span>
+<span class="kw">cd</span> <span class="str">"C:\Users\TuNombre\proyectos\mi-estudio-tmle"</span>
+<span class="kw">claude</span>
+
+<span class="cmt"># Lanzar Claude con una tarea directa</span>
+<span class="kw">claude</span> <span class="str">"revisa mi script sim.R y explica qué hace cada función"</span>
+
+<span class="cmt"># Ejemplos de peticiones útiles para estadísticos:</span>
+<span class="cmt"># "busca errores en este script de simulación"</span>
+<span class="cmt"># "añade comentarios al código"</span>
+<span class="cmt"># "explica qué hace la función tmle() de este código"</span>
+
+<span class="cmt"># Salir de Claude Code</span>
+<span class="cmt"># Escribe /exit o pulsa Ctrl+C</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">·</div>
+          <h3>Comandos de verificación del sistema</h3>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="cmt"># Diagnóstico completo de Claude Code</span>
+<span class="kw">claude</span> doctor
+
+<span class="cmt"># Versión instalada</span>
+<span class="kw">claude</span> --version
+
+<span class="cmt"># Actualizar manualmente (si no se actualiza solo)</span>
+<span class="kw">claude</span> update</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 4: GitHub ─── -->
+    <section id="s4" class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Paso 4 de 5</div>
+        <h2>Conectar con GitHub</h2>
+        <p>GitHub es el sitio donde vivirá tu código en la nube. Aprende a conectarlo de forma segura con SSH.</p>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">ℹ️</span>
+        <div><b>¿Qué es SSH?</b> Es una forma de conectarte a GitHub de manera segura sin tener que escribir tu contraseña cada vez. Funciona con un par de llaves: una privada (solo en tu ordenador) y una pública (la registras en GitHub).</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">1</div>
+          <h3>Crear cuenta en GitHub</h3>
+        </div>
+        <p>Visita <a href="https://github.com" target="_blank" rel="noopener" style="color:var(--blue)">github.com</a> y regístrate con tu email institucional. Una vez dentro, activa la autenticación en dos pasos: <strong>Settings → Password and authentication → Two-factor authentication</strong>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">2</div>
+          <h3>Generar tu clave SSH</h3>
+          <span class="step-tag">Git Bash</span>
+        </div>
+        <p>Abre <strong>Git Bash</strong> (búscalo en el menú inicio, no PowerShell) y ejecuta. Reemplaza el email con el tuyo:</p>
+        <div class="code-wrap">
+          <span class="code-lang">git bash</span>
+          <pre><span class="cmt"># Generar par de claves SSH (algoritmo moderno ed25519)</span>
+<span class="kw">ssh-keygen</span> -t ed25519 -C <span class="str">"tu@correo.com"</span>
+
+<span class="cmt"># Pulsa Enter para aceptar la ubicación por defecto</span>
+<span class="cmt"># Añade una frase de seguridad (recomendado) o Enter para ninguna</span>
+
+<span class="cmt"># Iniciar el agente SSH</span>
+<span class="kw">eval</span> "$(ssh-agent -s)"
+
+<span class="cmt"># Añadir la clave al agente</span>
+<span class="kw">ssh-add</span> ~/.ssh/id_ed25519
+
+<span class="cmt"># Mostrar la clave PÚBLICA (la que copiarás a GitHub)</span>
+<span class="kw">cat</span> ~/.ssh/id_ed25519.pub
+<span class="cmt"># Copia TODO el texto que aparece (empieza por ssh-ed25519...)</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">3</div>
+          <h3>Registrar la clave en GitHub</h3>
+          <span class="step-tag">Navegador</span>
+        </div>
+        <p>En GitHub: <strong>Settings → SSH and GPG keys → New SSH key</strong>. Pega el texto copiado en el campo <em>Key</em>, dale un nombre descriptivo (ej: "Mi portátil Windows") y haz clic en <strong>Add SSH key</strong>.</p>
+        <div class="code-wrap">
+          <span class="code-lang">git bash</span>
+          <pre><span class="cmt"># Verificar que la conexión SSH funciona</span>
+<span class="kw">ssh</span> -T git@github.com
+<span class="cmt"># Deberías ver:</span>
+<span class="cmt"># Hi tu-usuario! You've successfully authenticated...</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">4</div>
+          <h3>Subir tu primer proyecto a GitHub</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Desde la carpeta de tu proyecto, ejecuta estos comandos en orden:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell / git bash</span>
+          <pre><span class="cmt"># 1. Ir al proyecto</span>
+<span class="kw">cd</span> <span class="str">"C:\Users\TuNombre\proyectos\mi-estudio-tmle"</span>
+
+<span class="cmt"># 2. Inicializar Git en la carpeta</span>
+<span class="kw">git init</span>
+<span class="kw">git branch</span> -M main
+
+<span class="cmt"># 3. Crear .gitignore para R (ignora archivos temporales)</span>
+<span class="fn">echo</span> <span class="str">"*.Rhistory
+*.RData
+.Rproj.user/"</span> > .gitignore
+
+<span class="cmt"># 4. Añadir todos los archivos y hacer el primer commit</span>
+<span class="kw">git add</span> .
+<span class="kw">git commit</span> -m <span class="str">"Inicio del proyecto: estructura base"</span>
+
+<span class="cmt"># 5. Conectar con tu repositorio de GitHub</span>
+<span class="cmt">#    (crea primero el repo vacío en github.com y copia la URL SSH)</span>
+<span class="kw">git remote add</span> origin git@github.com:<span class="str">tu-usuario/mi-estudio-tmle.git</span>
+<span class="kw">git push</span> -u origin main</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">5</div>
+          <h3>Flujo de trabajo diario con Git</h3>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">powershell / git bash</span>
+          <pre><span class="cmt"># Ver qué archivos han cambiado</span>
+<span class="kw">git status</span>
+
+<span class="cmt"># Añadir cambios al área de preparación</span>
+<span class="kw">git add</span> scripts/sim.R      <span class="cmt"># un archivo específico</span>
+<span class="kw">git add</span> .                  <span class="cmt"># todos los archivos cambiados</span>
+
+<span class="cmt"># Guardar los cambios con un mensaje descriptivo</span>
+<span class="kw">git commit</span> -m <span class="str">"fix: corrige ecuación de score en TMLE"</span>
+
+<span class="cmt"># Subir a GitHub</span>
+<span class="kw">git push</span>
+
+<span class="cmt"># Bajar cambios de GitHub (desde otro PC o colaborador)</span>
+<span class="kw">git pull</span>
+
+<span class="cmt"># Ver historial de commits</span>
+<span class="kw">git log</span> --oneline --graph</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <span class="callout-icon">✅</span>
+        <div><b>¡GitHub conectado!</b> Tu código ya vive en la nube con historial de cambios. Ahora integraremos todo esto con RStudio.</div>
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN 5: RStudio ─── -->
+    <section id="s5" class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Paso 5 de 5</div>
+        <h2>RStudio + GitHub</h2>
+        <p>Integra Git directamente en RStudio para el flujo de trabajo estadístico completo.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">1</div>
+          <h3>Instalar R y RStudio</h3>
+          <span class="step-tag">PowerShell</span>
+        </div>
+        <p>Si aún no tienes R y RStudio, instálalos con WinGet:</p>
+        <div class="code-wrap">
+          <span class="code-lang">powershell</span>
+          <pre><span class="kw">winget</span> install RProject.R
+<span class="kw">winget</span> install Posit.RStudio</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+        <p>O descárgalos manualmente: R desde <a href="https://cran.r-project.org" target="_blank" rel="noopener" style="color:var(--blue)">cran.r-project.org</a> y RStudio desde <a href="https://posit.co/download/rstudio-desktop" target="_blank" rel="noopener" style="color:var(--blue)">posit.co</a>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">2</div>
+          <h3>Instalar los paquetes de integración Git</h3>
+          <span class="step-tag">Consola de R</span>
+        </div>
+        <p>Abre RStudio y en la consola de R (panel inferior izquierdo) ejecuta:</p>
+        <div class="code-wrap">
+          <span class="code-lang">r</span>
+          <pre><span class="cmt"># Paquetes para integrar Git y GitHub desde R</span>
+<span class="fn">install.packages</span>(<span class="str">"usethis"</span>)
+<span class="fn">install.packages</span>(<span class="str">"gitcreds"</span>)
+
+<span class="cmt"># Verificar que Git está detectado por R</span>
+usethis::<span class="fn">git_sitrep</span>()
+<span class="cmt"># Debe mostrar tu nombre, email y que Git está disponible</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">3</div>
+          <h3>Configurar Git desde R y conectar GitHub</h3>
+          <span class="step-tag">Consola de R</span>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">r</span>
+          <pre><span class="cmt"># Configurar tu identidad Git desde R</span>
+usethis::<span class="fn">use_git_config</span>(
+  user.name  = <span class="str">"Tu Nombre Completo"</span>,
+  user.email = <span class="str">"tu@correo.com"</span>
+)
+
+<span class="cmt"># Crear token de acceso en GitHub (abre el navegador)</span>
+usethis::<span class="fn">create_github_token</span>()
+<span class="cmt"># Copia el token generado (empieza por ghp_...)</span>
+
+<span class="cmt"># Guardar el token de forma segura en tu sistema</span>
+gitcreds::<span class="fn">gitcreds_set</span>()
+<span class="cmt"># Pega el token cuando se te pida</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">4</div>
+          <h3>Crear un proyecto R nuevo vinculado a GitHub</h3>
+          <span class="step-tag">Consola de R</span>
+        </div>
+        <div class="code-wrap">
+          <span class="code-lang">r</span>
+          <pre><span class="cmt"># Opción A: Proyecto nuevo → Git → GitHub (todo desde R)</span>
+usethis::<span class="fn">create_project</span>(<span class="str">"C:/Users/TuNombre/proyectos/nuevo-estudio"</span>)
+usethis::<span class="fn">use_git</span>()       <span class="cmt"># inicializa Git en la carpeta</span>
+usethis::<span class="fn">use_github</span>()    <span class="cmt"># crea el repositorio en GitHub automáticamente</span>
+
+<span class="cmt"># Opción B: Clonar un repositorio existente de GitHub</span>
+usethis::<span class="fn">create_from_github</span>(
+  <span class="str">"tu-usuario/mi-estudio-tmle"</span>,
+  destdir = <span class="str">"C:/Users/TuNombre/proyectos"</span>
+)</pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">5</div>
+          <h3>Usar el panel Git de RStudio</h3>
+        </div>
+        <p>RStudio tiene un panel Git visual en la pestaña <strong>"Git"</strong> (arriba a la derecha). Desde ahí puedes hacer <em>Stage</em>, <em>Commit</em>, <em>Push</em> y <em>Pull</em> con clics, sin escribir comandos.</p>
+        <div class="callout info">
+          <span class="callout-icon">💡</span>
+          <div>Para comandos avanzados, usa el <b>Terminal integrado de RStudio</b> (Tools → Terminal → New Terminal). Este terminal ya está situado en la carpeta de tu proyecto.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-circle">6</div>
+          <h3>Lanzar Claude Code desde RStudio</h3>
+          <span class="step-tag">Terminal de RStudio</span>
+        </div>
+        <p>Abre el Terminal integrado de RStudio (Tools → Terminal → New Terminal) y lanza Claude Code. Ya está en la carpeta del proyecto:</p>
+        <div class="code-wrap">
+          <span class="code-lang">bash</span>
+          <pre><span class="cmt"># El terminal de RStudio ya está en tu proyecto</span>
+<span class="kw">claude</span>
+
+<span class="cmt"># Ejemplos de peticiones para tu trabajo estadístico:</span>
+<span class="cmt"># "analiza sim.R y encuentra el bug en la ecuación de score"</span>
+<span class="cmt"># "añade documentación roxygen a todas las funciones"</span>
+<span class="cmt"># "revisa el README y mejóralo para publicar en GitHub"</span>
+<span class="cmt"># "compara los resultados de TMLE vs AIPW en results/"</span></pre>
+          <button class="copy-btn" onclick="cp(this)">Copiar</button>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="callout ok">
+        <span class="callout-icon">🎉</span>
+        <div><b>¡Flujo completo activo!</b> Ahora puedes editar en RStudio → Claude Code analiza y corrige → Git registra los cambios → GitHub almacena y versiona todo tu proyecto.</div>
+      </div>
+
+      <div style="margin-top:1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow);">
+        <p style="font-size:13px;font-weight:600;margin-bottom:8px;">Resumen del flujo completo</p>
+        <div class="flow" style="background:var(--bg);margin:0">
+          <div class="flow-box">Editas en RStudio</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">Claude revisa</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">git add + commit</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">git push</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box" style="background:#E8F8ED;border-color:#BBF0CD;color:#155E34;">GitHub ☁️</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <p>Tutorial elaborado con <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> · Docs oficiales: <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">code.claude.com</a> · Referencia Git+R: <a href="https://happygitwithr.com/" target="_blank" rel="noopener">happygitwithr.com</a></p>
+</footer>
+
+<script>
+(function(){
+  var tabs   = Array.from(document.querySelectorAll('[data-tab]'));
+  var sections = {};
+  document.querySelectorAll('.section').forEach(s => sections[s.id] = s);
+
+  function activate(id){
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    Object.keys(sections).forEach(k => sections[k].classList.toggle('active', k === id));
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.tab)));
+
+  /* copy buttons */
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      var pre = this.closest('.code-wrap').querySelector('pre');
+      var text = pre.innerText || pre.textContent;
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        var orig = this.textContent;
+        this.textContent = '✓ Copiado';
+        this.classList.add('ok');
+        setTimeout(() => { this.textContent = orig; this.classList.remove('ok'); }, 1600);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
