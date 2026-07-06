@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.30">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Miguel Angel Luque-Fernández, MA, MSc, MPH, PhD — migariane">
+<meta name="dcterms.date" content="2026-07-06">
+
+<title>Metalearners vs ELTMLE for Heterogeneous Treatment Effect Estimation</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="CATE_h2oml_files/libs/clipboard/clipboard.min.js"></script>
+<script src="CATE_h2oml_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="CATE_h2oml_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="CATE_h2oml_files/libs/quarto-html/popper.min.js"></script>
+<script src="CATE_h2oml_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="CATE_h2oml_files/libs/quarto-html/anchor.min.js"></script>
+<link href="CATE_h2oml_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="CATE_h2oml_files/libs/quarto-html/quarto-syntax-highlighting-b6a8276bf55561bdbc268162d41bd1f7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="CATE_h2oml_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="CATE_h2oml_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="CATE_h2oml_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Metalearners vs ELTMLE for Heterogeneous Treatment Effect Estimation</h1>
+<p class="subtitle lead">Adapted from Stata Blog (2025-10-22) — S-, T-, X-Learners (h2o + R) + ELTMLE (Stata) — Luque-Fernández et al.</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://migariane.github.io">Miguel Angel Luque-Fernández, MA, MSc, MPH, PhD — migariane</a> <a href="https://orcid.org/0000-0003-3552-4458" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            <a href="https://www.ugr.es">
+            Universidad de Granada (UGR)
+            </a>
+          </p>
+        <p class="affiliation">
+            <a href="https://www.lshtm.ac.uk">
+            London School of Hygiene &amp; Tropical Medicine (LSHTM)
+            </a>
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 6, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="theoretical-framework" class="level2">
+<h2 class="anchored" data-anchor-id="theoretical-framework">Theoretical Framework</h2>
+<section id="from-ate-to-cate-the-heterogeneity-problem" class="level3">
+<h3 class="anchored" data-anchor-id="from-ate-to-cate-the-heterogeneity-problem">From ATE to CATE: The Heterogeneity Problem</h3>
+<p>The <strong>Average Treatment Effect</strong> (ATE) summarizes the causal effect across the entire population:</p>
+<p><span class="math display">\[\text{ATE} = E[Y(1) - Y(0)] = E[\tau_i]\]</span></p>
+<p>The ATE is a single number. It answers: <em>“Does the treatment work, on average?”</em> But it masks crucial variation: the same treatment may benefit some subgroups, harm others, and have no effect on the rest. This is <strong>treatment effect heterogeneity</strong>.</p>
+<p>The <strong>Conditional Average Treatment Effect</strong> (CATE) addresses this:</p>
+<p><span class="math display">\[\tau(x) = E[Y(1) - Y(0) \mid X = x]\]</span></p>
+<p>CATE answers: <em>“For a person with characteristics <span class="math inline">\(x\)</span>, what is the expected effect?”</em> It is the workhorse of personalized medicine, targeted policy, and precision public health.</p>
+</section>
+<section id="the-fundamental-problem-and-the-role-of-models" class="level3">
+<h3 class="anchored" data-anchor-id="the-fundamental-problem-and-the-role-of-models">The Fundamental Problem and the Role of Models</h3>
+<p>The <strong>fundamental problem of causal inference</strong> (Holland, 1986) is that we never observe both <span class="math inline">\(Y_i(1)\)</span> and <span class="math inline">\(Y_i(0)\)</span> for the same unit. The observed outcome is:</p>
+<p><span class="math display">\[Y_i = T_i Y_i(1) + (1 - T_i) Y_i(0)\]</span></p>
+<p>To estimate <span class="math inline">\(\tau(x)\)</span>, we must <strong>impute the missing counterfactual</strong> using a model for the conditional expectations:</p>
+<p><span class="math display">\[\mu_t(x) = E[Y \mid X = x, T = t], \quad t \in \{0, 1\}\]</span></p>
+<p>The quality of any CATE estimator hinges on how well it estimates these <strong>nuisance functions</strong> <span class="math inline">\(\mu_0(x)\)</span> and <span class="math inline">\(\mu_1(x)\)</span> — plus, for doubly-robust methods, the <strong>propensity score</strong> <span class="math inline">\(g(x) = P(T = 1 \mid X = x)\)</span>.</p>
+</section>
+<section id="identification-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="identification-assumptions">Identification Assumptions</h3>
+<p>CATE is identified under three standard assumptions:</p>
+<ol type="1">
+<li><p><strong>Unconfoundedness</strong> (conditional exchangeability): <span class="math inline">\((Y(0), Y(1)) \perp T \mid X\)</span>. All confounders are measured and included in <span class="math inline">\(X\)</span>. This is the central — and untestable — assumption in observational causal inference.</p></li>
+<li><p><strong>Overlap</strong> (positivity): <span class="math inline">\(0 &lt; P(T = 1 \mid X = x) &lt; 1\)</span> for all <span class="math inline">\(x\)</span>. There are no subgroups where everyone (or no one) receives treatment. Violations lead to extrapolation — predicting outcomes in regions with no data.</p></li>
+<li><p><strong>SUTVA</strong> (Stable Unit Treatment Value Assumption): each unit’s potential outcomes depend only on its own treatment, not on others’. Rules out spillover, contagion, and general equilibrium effects.</p></li>
+</ol>
+</section>
+<section id="why-not-just-regression" class="level3">
+<h3 class="anchored" data-anchor-id="why-not-just-regression">Why Not Just Regression?</h3>
+<p>A natural question: <em>why not just fit <span class="math inline">\(E[Y \mid X, T]\)</span> with interactions <span class="math inline">\(T \times X\)</span>?</em></p>
+<p>Three problems:</p>
+<ol type="1">
+<li><strong>Model misspecification</strong>: parametric forms (linear, logistic) rarely hold exactly. ML methods relax this but introduce regularization bias.</li>
+<li><strong>Regularization bias</strong>: penalized/ensemble methods shrink estimates toward zero. The bias in <span class="math inline">\(\hat{\mu}_t(x)\)</span> propagates to <span class="math inline">\(\hat{\tau}(x)\)</span>.</li>
+<li><strong>The wrong objective</strong>: minimizing prediction error for <span class="math inline">\(Y\)</span> does not minimize error for <span class="math inline">\(\tau = \mu_1 - \mu_0\)</span>. A model that predicts <span class="math inline">\(Y\)</span> well may estimate <span class="math inline">\(\tau\)</span> poorly.</li>
+</ol>
+<p>Metalearners and TMLE address these problems through different strategies.</p>
+</section>
+<section id="cate-estimation-strategies-a-taxonomy" class="level3">
+<h3 class="anchored" data-anchor-id="cate-estimation-strategies-a-taxonomy">CATE Estimation Strategies: A Taxonomy</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Examples</th>
+<th>Key Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Outcome modeling</strong></td>
+<td>S-learner, T-learner</td>
+<td>Estimate <span class="math inline">\(\mu_t(x)\)</span> directly; take difference</td>
+</tr>
+<tr class="even">
+<td><strong>Pseudo-outcome regression</strong></td>
+<td>X-learner, R-learner, DR-learner</td>
+<td>Construct proxy outcomes that behave like <span class="math inline">\(\tau_i\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Targeted smoothing</strong></td>
+<td>TMLE, AIPW</td>
+<td>Correct initial ML estimates with an efficient influence function step</td>
+</tr>
+<tr class="even">
+<td><strong>Tree/forest-based</strong></td>
+<td>Causal trees, causal forest (grf)</td>
+<td>Partition <span class="math inline">\(X\)</span>-space to maximize treatment effect heterogeneity</td>
+</tr>
+</tbody>
+</table>
+<p>This document implements the first three approaches using GBM as base learner (metalearners) and the default Super Learner (ELTMLE/tmle).</p>
+</section>
+<section id="software-frameworks" class="level3">
+<h3 class="anchored" data-anchor-id="software-frameworks">Software Frameworks</h3>
+<section id="h2o.ai-rpythonjava" class="level4">
+<h4 class="anchored" data-anchor-id="h2o.ai-rpythonjava">H2O.ai (R/Python/Java)</h4>
+<p><a href="https://h2o.ai">H2O</a> is an open-source, distributed ML platform. Its R interface (<code>h2o</code> package, <a href="https://docs.h2o.ai">docs.h2o.ai</a>) provides:</p>
+<ul>
+<li><strong>In-memory cluster</strong>: Java backend; <code>h2o.init()</code> starts a local cluster. Data lives in H2O frames, not R memory.</li>
+<li><strong>AutoML + GBM, RF, GLM, Deep Learning</strong>: gradient boosting (<code>h2o.gbm</code>) used here as base learner.</li>
+<li><strong>Scalability</strong>: designed for N &gt; 10M. Handles factor/categorical encoding automatically.</li>
+<li><strong>Integration</strong>: data flows R → H2O via <code>as.h2o()</code>, predictions back via <code>as.data.table()</code>.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Core workflow</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">h2o.init</span>()                     <span class="co"># Start local cluster</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>hdf <span class="ot">&lt;-</span> <span class="fu">as.h2o</span>(df, <span class="st">"frame_id"</span>)  <span class="co"># Upload to H2O</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(y, x, hdf)        <span class="co"># Train</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">h2o.predict</span>(m, newdata)   <span class="co"># Predict</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="eltmle-stata" class="level4">
+<h4 class="anchored" data-anchor-id="eltmle-stata">ELTMLE (Stata)</h4>
+<p><code>eltmle</code> (<a href="https://ideas.repec.org/c/boc/bocode/s458337.html">SSC</a>, <a href="https://github.com/migariane/eltmle">GitHub</a>) is a Stata/R wrapper implementing TMLE with Super Learner. Syntax:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ssc</span> install eltmle</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>eltmle Y X Z [, tmle tmlebgam tmleglsrf bal elements cvtmle cvtmlebgam cvtmleglsrf cvfolds(#) <span class="dv">seed</span>(#)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>where <strong>Y</strong> = binary/continuous outcome, <strong>X</strong> = binary treatment (0/1), <strong>Z</strong> = covariates.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 60%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Learners added to default*</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tmle</code> (default)</td>
+<td>SL: stepwise + GLM + GLM-poly-int</td>
+<td>N &lt; 50K, baseline</td>
+</tr>
+<tr class="even">
+<td><code>tmlebgam</code></td>
+<td>+ Bayes GLM + GAM</td>
+<td>Non-linear effects</td>
+</tr>
+<tr class="odd">
+<td><code>tmleglsrf</code></td>
+<td>+ Lasso + RF + GAM</td>
+<td>Heterogeneous effects</td>
+</tr>
+</tbody>
+</table>
+<p>*Default Super Learner: stepwise selection, GLM, GLM with 2nd-order polynomials + two-way interactions. Cross-validated variants: <code>cvtmle</code>, <code>cvtmlebgam</code>, <code>cvtmleglsrf</code>.</p>
+</section>
+</section>
+<section id="metalearners" class="level3">
+<h3 class="anchored" data-anchor-id="metalearners">Metalearners</h3>
+<p>A <strong>metalearner</strong> decomposes CATE estimation into supervised regression tasks solved by off-the-shelf ML models (base learners). This document adapts the tutorial from the <a href="https://blog.stata.com/2025/10/22/heterogeneous-treatment-effect-estimation-with-s-t-and-x-learners-using-h2oml/">Stata Blog (2025-10-22)</a>, translating the original Stata/h2oml code to R/h2o and adding an ELTMLE comparison. Three metalearners using gradient boosting (GBM) via <code>h2o</code> are compared:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Learner</th>
+<th>Strategy</th>
+<th>Strength</th>
+<th>Weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>S-learner</strong></td>
+<td>Single model: <span class="math inline">\(Y \sim X + T\)</span></td>
+<td>Simple, efficient</td>
+<td>May ignore <span class="math inline">\(T\)</span> in high-dimensional <span class="math inline">\(X\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>T-learner</strong></td>
+<td>Two models: <span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\mu_1\)</span> on separate groups</td>
+<td>Treatment always considered</td>
+<td>Less data per model</td>
+</tr>
+<tr class="odd">
+<td><strong>X-learner</strong></td>
+<td>Cross-estimation + imputed <span class="math inline">\(\tau\)</span></td>
+<td>Adapts to imbalance; uses full data</td>
+<td>More complex, more steps</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-gerber-green-larimer-2008" class="level3">
+<h3 class="anchored" data-anchor-id="data-gerber-green-larimer-2008">Data: Gerber, Green &amp; Larimer (2008)</h3>
+<p>Field experiment on social pressure and voter turnout. Michigan households, August 2006 primary. <strong>Treatment:</strong> self-and-neighbors mailer. <strong>Outcome:</strong> <code>voted</code> (binary). <strong>N =</strong> 229,461 (191,243 control + 38,218 treated).</p>
+<hr>
+</section>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>Data loading and preprocessing: remove <code>haven_labelled</code> class (incompatible with <code>h2o</code>), create prior voting score (<code>totalvote</code>, 0–5), and upload to the H2O cluster.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(h2o)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">h2o.init</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+H2O is not running yet, starting it now...
+
+Note:  In case of errors look at the following log files:
+    /var/folders/g6/7c7m4dys6zv2g1p1dmk8xgv40000gp/T//Rtmp07pzEM/file1482b2f1f4785/h2o_MALF_started_from_r.out
+    /var/folders/g6/7c7m4dys6zv2g1p1dmk8xgv40000gp/T//Rtmp07pzEM/file1482b2e9084ee/h2o_MALF_started_from_r.err
+
+
+Starting H2O JVM and connecting: ... Connection successful!
+
+R is connected to the H2O cluster: 
+    H2O cluster uptime:         3 seconds 156 milliseconds 
+    H2O cluster timezone:       Europe/Madrid 
+    H2O data parsing timezone:  UTC 
+    H2O cluster version:        3.46.0.11 
+    H2O cluster version age:    1 month and 14 days 
+    H2O cluster name:           H2O_started_from_R_MALF_bfy070 
+    H2O cluster total nodes:    1 
+    H2O cluster total memory:   3.54 GB 
+    H2O cluster total cores:    8 
+    H2O cluster allowed cores:  8 
+    H2O cluster healthy:        TRUE 
+    H2O Connection ip:          localhost 
+    H2O Connection port:        54321 
+    H2O Connection proxy:       NA 
+    H2O Internal Security:      FALSE 
+    R Version:                  R version 4.6.0 (2026-04-24) </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load: zap_labels() strips haven_labelled class (h2o incompatible)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"socialpressure.dta"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">zap_labels</span>(df)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>totalvote <span class="ot">&lt;-</span> df<span class="sc">$</span>g2000 <span class="sc">+</span> df<span class="sc">$</span>g2002 <span class="sc">+</span> df<span class="sc">$</span>p2000 <span class="sc">+</span> df<span class="sc">$</span>p2002 <span class="sc">+</span> df<span class="sc">$</span>p2004</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>voted <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>voted)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>treatment)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">setDT</span>(df)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictors: demographics + voting history + treatment</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"gender"</span>, <span class="st">"g2000"</span>, <span class="st">"g2002"</span>, <span class="st">"p2000"</span>, <span class="st">"p2002"</span>, <span class="st">"p2004"</span>, <span class="st">"treatment"</span>, <span class="st">"age"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Upload to H2O (local Java cluster)</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>hdf <span class="ot">&lt;-</span> <span class="fu">as.h2o</span>(df, <span class="st">"social"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+</div>
+<p><strong>Predictor variables</strong>: gender, general election turnout (2000, 2002), primary turnout (2000, 2002, 2004), treatment arm, age. <strong>Outcome</strong>: <code>voted</code> (voted in August 2006 primary).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Reproducibility">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reproducibility
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Data</strong>: <code>socialpressure.dta</code> included in repository. Direct download: <a href="https://www.stata-press.com/data/r18/socialpressure.dta">stata-press.com/data/r18/socialpressure.dta</a></p>
+<p><strong>Requirements</strong>: R ≥ 4.0, packages <a href="https://docs.h2o.ai"><code>h2o</code></a> (≥ 3.40), <code>data.table</code>, <code>haven</code>. Java 8+ required by H2O.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="s-learner" class="level2">
+<h2 class="anchored" data-anchor-id="s-learner">S-learner</h2>
+<section id="strategy" class="level3">
+<h3 class="anchored" data-anchor-id="strategy">Strategy</h3>
+<p>The S-learner (“Single”) trains <strong>a single model</strong> that includes <span class="math inline">\(T\)</span> as just another predictor:</p>
+<p><span class="math display">\[\hat{\mu}(x, t) = E[Y \mid X = x, T = t]\]</span></p>
+<p>CATE is estimated via counterfactual difference:</p>
+<p><span class="math display">\[\hat{\tau}_S(x) = \hat{\mu}(x, T = 1) - \hat{\mu}(x, T = 0)\]</span></p>
+<p>For each unit, we predict <span class="math inline">\(\hat{Y}\)</span> twice: once forcing <span class="math inline">\(T = 1\)</span> and once forcing <span class="math inline">\(T = 0\)</span>, using the same model.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Train a single GBM with treatment as a predictor</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>s_model <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"voted"</span>, <span class="at">x =</span> predictors,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> hdf, <span class="at">seed =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |=======================================                               |  56%
+  |                                                                            
+  |===================================================================   |  96%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Build counterfactual frames (same data, T fixed)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>hdf1 <span class="ot">&lt;-</span> <span class="fu">h2o.assign</span>(hdf, <span class="st">"social1"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>hdf1[<span class="st">"treatment"</span>] <span class="ot">&lt;-</span> <span class="st">"1"</span>   <span class="co"># Everyone treated</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>hdf0 <span class="ot">&lt;-</span> <span class="fu">h2o.assign</span>(hdf, <span class="st">"social0"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>hdf0[<span class="st">"treatment"</span>] <span class="ot">&lt;-</span> <span class="st">"0"</span>   <span class="co"># Everyone control</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Predict under both scenarios</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(s_model, hdf1))  <span class="co"># Estimated Y(1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(s_model, hdf0))  <span class="co"># Estimated Y(0)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: CATE = difference in predicted probabilities</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>catehat_S <span class="ot">&lt;-</span> p1<span class="sc">$</span>p1 <span class="sc">-</span> p0<span class="sc">$</span>p1</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>catehat_S)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-0.13235  0.02806  0.04296  0.04375  0.05948  0.16940 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df[, .(<span class="at">mean_cate =</span> <span class="fu">mean</span>(catehat_S), <span class="at">n =</span> .N), by <span class="ot">=</span> totalvote]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   totalvote  mean_cate     n
+       &lt;num&gt;      &lt;num&gt; &lt;int&gt;
+1:         0 0.01267690 14574
+2:         3 0.05508800 90669
+3:         1 0.02709066 17316
+4:         2 0.04432946 53795
+5:         5 0.01730887  9313
+6:         4 0.04213964 43794</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
+<p>The S-learner estimates a mean effect of <strong>0.0438</strong> (difference in voting probability). Its limitation: when <span class="math inline">\(X\)</span> is high-dimensional, the model may “ignore” <span class="math inline">\(T\)</span> and produce <span class="math inline">\(\hat{\tau} \approx 0\)</span>. The table shows how CATE varies with prior turnout (<code>totalvote</code>).</p>
+<hr>
+</section>
+</section>
+<section id="t-learner" class="level2">
+<h2 class="anchored" data-anchor-id="t-learner">T-learner</h2>
+<section id="strategy-1" class="level3">
+<h3 class="anchored" data-anchor-id="strategy-1">Strategy</h3>
+<p>The T-learner (“Two”) trains <strong>two separate models</strong>:</p>
+<p><span class="math display">\[\hat{\mu}_1(x) = E[Y \mid X = x, T = 1] \quad \text{(treated only)}\]</span> <span class="math display">\[\hat{\mu}_0(x) = E[Y \mid X = x, T = 0] \quad \text{(controls only)}\]</span></p>
+<p>CATE is obtained directly:</p>
+<p><span class="math display">\[\hat{\tau}_T(x) = \hat{\mu}_1(x) - \hat{\mu}_0(x)\]</span></p>
+<p><strong>Advantage</strong>: <span class="math inline">\(T\)</span> is never diluted among predictors. <strong>Disadvantage</strong>: each model uses only a subset of data (efficiency loss).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Split data by treatment group</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>treated_rows <span class="ot">&lt;-</span> <span class="fu">which</span>(df<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"1"</span>)   <span class="co"># 38,218 observations</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>control_rows <span class="ot">&lt;-</span> <span class="fu">which</span>(df<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"0"</span>)   <span class="co"># 191,243 observations</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>hdf0 <span class="ot">&lt;-</span> <span class="fu">as.h2o</span>(df[control_rows, ], <span class="st">"social0"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>hdf1 <span class="ot">&lt;-</span> <span class="fu">as.h2o</span>(df[treated_rows, ], <span class="st">"social1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Train two independent GBMs</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"voted"</span>, <span class="at">x =</span> predictors,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> hdf0, <span class="at">seed =</span> <span class="dv">19</span>)   <span class="co"># Control model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in .h2o.processResponseWarnings(res): Dropping bad and constant columns: [treatment].</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |=======================================                               |  56%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"voted"</span>, <span class="at">x =</span> predictors,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> hdf1, <span class="at">seed =</span> <span class="dv">19</span>)   <span class="co"># Treated model</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in .h2o.processResponseWarnings(res): Dropping bad and constant columns: [treatment].</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Predict on full dataset with each model</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(m0, hdf))   <span class="co"># μ̂₀ for all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(m1, hdf))   <span class="co"># μ̂₁ for all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: CATE as difference of predictions</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>catehat_T <span class="ot">&lt;-</span> p1<span class="sc">$</span>p1 <span class="sc">-</span> p0<span class="sc">$</span>p1</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>catehat_T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-0.32362  0.02734  0.04743  0.04759  0.06682  0.38167 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df[, .(<span class="at">mean_cate =</span> <span class="fu">mean</span>(catehat_T), <span class="at">n =</span> .N), by <span class="ot">=</span> totalvote]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   totalvote  mean_cate     n
+       &lt;num&gt;      &lt;num&gt; &lt;int&gt;
+1:         0 0.01697673 14574
+2:         3 0.05570800 90669
+3:         1 0.03152575 17316
+4:         2 0.04895940 53795
+5:         5 0.02322014  9313
+6:         4 0.05080652 43794</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretation-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-1">Interpretation</h3>
+<p>Mean CATE (T-learner): <strong>0.0476</strong>. By using separate models, the T-learner captures heterogeneity better when response surfaces <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\mu_1\)</span> have very different shapes. Compared to the S-learner, estimates tend to be more variable (each model sees fewer data points).</p>
+<hr>
+</section>
+</section>
+<section id="x-learner" class="level2">
+<h2 class="anchored" data-anchor-id="x-learner">X-learner</h2>
+<section id="strategy-2" class="level3">
+<h3 class="anchored" data-anchor-id="strategy-2">Strategy</h3>
+<p>The X-learner (Künzel et al., 2019) leverages <strong>all available information</strong> in 5 steps:</p>
+<ol type="1">
+<li><strong>Estimate <span class="math inline">\(\hat{\mu}_0\)</span>, <span class="math inline">\(\hat{\mu}_1\)</span></strong> with separate models (same as T-learner)</li>
+<li><strong>Impute individual effects</strong> where unobserved:
+<ul>
+<li>For treated: <span class="math inline">\(\tilde{D}_i^1 = Y_i(1) - \hat{\mu}_0(X_i)\)</span> (observed outcome minus estimated control)</li>
+<li>For controls: <span class="math inline">\(\tilde{D}_i^0 = \hat{\mu}_1(X_i) - Y_i(0)\)</span> (estimated treatment minus observed control)</li>
+</ul></li>
+<li><strong>Model <span class="math inline">\(\hat{\tau}_1(x) = E[\tilde{D}^1 \mid X = x]\)</span></strong> and <span class="math inline">\(\hat{\tau}_0(x) = E[\tilde{D}^0 \mid X = x]\)</span></li>
+<li><strong>Weight by propensity score</strong>: <span class="math inline">\(\hat{\tau}_X(x) = g(x)\hat{\tau}_0(x) + (1 - g(x))\hat{\tau}_1(x)\)</span> where <span class="math inline">\(g(x) = P(T = 1 \mid X = x)\)</span></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Cross-prediction (control model → treated, and vice versa)</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>p0_on_1 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(m0, hdf1))  <span class="co"># μ̂₀ predicted on treated</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>p1_on_0 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(m1, hdf0))  <span class="co"># μ̂₁ predicted on controls</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Impute individual effects (D̃)</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>voted[treated_rows] <span class="sc">==</span> <span class="st">"1"</span>) <span class="sc">-</span> p0_on_1<span class="sc">$</span>p1  <span class="co"># Treated: Y(1) - μ̂₀</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>D0 <span class="ot">&lt;-</span> p1_on_0<span class="sc">$</span>p1 <span class="sc">-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>voted[control_rows] <span class="sc">==</span> <span class="st">"1"</span>)  <span class="co"># Controls: μ̂₁ - Y(0)</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Estimate propensity score g(x) = P(T=1 | X)</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>ps_model <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"treatment"</span>, <span class="at">x =</span> <span class="fu">setdiff</span>(predictors, <span class="st">"treatment"</span>),</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> hdf, <span class="at">seed =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>gx <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(ps_model, hdf))<span class="sc">$</span>p1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Model τ̂₀(x) and τ̂₁(x) on imputed effects</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>dt1 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">D1 =</span> D1, df[treated_rows, <span class="fu">setdiff</span>(predictors, <span class="st">"treatment"</span>), <span class="at">with =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>dt0 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">D0 =</span> D0, df[control_rows, <span class="fu">setdiff</span>(predictors, <span class="st">"treatment"</span>), <span class="at">with =</span> <span class="cn">FALSE</span>])</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>tau1_model <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"D1"</span>, <span class="at">x =</span> <span class="fu">setdiff</span>(predictors, <span class="st">"treatment"</span>),</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> <span class="fu">as.h2o</span>(dt1), <span class="at">seed =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |====================================                                  |  52%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>tau0_model <span class="ot">&lt;-</span> <span class="fu">h2o.gbm</span>(<span class="at">y =</span> <span class="st">"D0"</span>, <span class="at">x =</span> <span class="fu">setdiff</span>(predictors, <span class="st">"treatment"</span>),</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">training_frame =</span> <span class="fu">as.h2o</span>(dt0), <span class="at">seed =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%
+
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |============================                                          |  40%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Predict and weight by propensity score</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>tau1 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(tau1_model, hdf))<span class="sc">$</span>predict</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>tau0 <span class="ot">&lt;-</span> <span class="fu">as.data.table</span>(<span class="fu">h2o.predict</span>(tau0_model, hdf))<span class="sc">$</span>predict</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>catehat_X <span class="ot">&lt;-</span> gx <span class="sc">*</span> tau0 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> gx) <span class="sc">*</span> tau1</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>catehat_X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-0.14054  0.03547  0.04700  0.04759  0.06348  0.17082 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>df[, .(<span class="at">mean_cate =</span> <span class="fu">mean</span>(catehat_X), <span class="at">n =</span> .N), by <span class="ot">=</span> totalvote]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   totalvote  mean_cate     n
+       &lt;num&gt;      &lt;num&gt; &lt;int&gt;
+1:         0 0.01633792 14574
+2:         3 0.05409059 90669
+3:         1 0.03512254 17316
+4:         2 0.04749251 53795
+5:         5 0.04308156  9313
+6:         4 0.05052974 43794</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretation-2" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-2">Interpretation</h3>
+<p>Mean CATE (X-learner): <strong>0.0476</strong>. The X-learner is especially useful with <strong>imbalanced groups</strong> (here the ratio is ~5:1 control/treated). By imputing effects in both directions, it uses data more efficiently. Propensity score weighting gives more weight to <span class="math inline">\(\hat{\tau}_1\)</span> where <span class="math inline">\(g(x)\)</span> is low (few treated units).</p>
+<hr>
+</section>
+</section>
+<section id="eltmle" class="level2">
+<h2 class="anchored" data-anchor-id="eltmle">ELTMLE: Ensemble Learning Targeted Maximum Likelihood Estimation</h2>
+<section id="theoretical-framework-1" class="level3">
+<h3 class="anchored" data-anchor-id="theoretical-framework-1">Theoretical Framework</h3>
+<p><strong>ELTMLE</strong> (<a href="https://github.com/migariane/eltmle"><code>eltmle</code></a> for Stata; Luque-Fernández et al., 2018, 2023) combines two innovations:</p>
+<ol type="1">
+<li><p><strong>Targeted Maximum Likelihood Estimation (TMLE)</strong>: a semiparametric estimator that corrects first-stage bias via a directed fluctuation (<em>targeting step</em>) on the initial estimate of <span class="math inline">\(\mu_t(x)\)</span>. It is <strong>doubly robust</strong>: consistent if at least one of the two nuisance models — outcome <span class="math inline">\(\mu_t(x)\)</span> or propensity <span class="math inline">\(g(x)\)</span> — is correctly specified. It is also <strong>asymptotically efficient</strong> and <strong>substitution-compatible</strong> (respects parameter bounds, e.g., probabilities in [0,1]).</p></li>
+<li><p><strong>Ensemble Learning (Super Learner)</strong>: a cross-validated weighted combination of multiple candidate algorithms. <code>eltmle</code> offers:</p>
+<ul>
+<li><code>tmle</code> (default): Super Learner with SL: stepwise + GLM + GLM with polynomials and interactions</li>
+<li><code>tmlebgam</code>: adds Bayes GLM and GAM — suitable for non-linear effects</li>
+<li><code>tmleglsrf</code>: adds Lasso, Random Forest and GAM — suitable for heterogeneous effects</li>
+</ul></li>
+</ol>
+</section>
+<section id="stata-code-full-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="stata-code-full-dataset">Stata Code (Full Dataset)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"/Applications/Stata/StataMP.app/Contents/MacOS:</span><span class="va">$PATH</span><span class="st">"</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="ex">stata-mp</span> <span class="at">-b</span> <span class="at">-e</span> <span class="st">'</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="st">  use socialpressure.dta, clear</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="st">  generate totalvote = g2000 + g2002 + p2000 + p2002 + p2004</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="st">  global covariates gender g2000 g2002 p2000 p2002 p2004 age</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="st">  eltmle voted treatment $covariates, tmle elements</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="st">  generate catehat_TMLE = _POM1 - _POM0</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="st">  summarize catehat_TMLE</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="st">  save tmle_full.dta, replace</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>N = 229,461</strong>. The <code>elements</code> option retains <code>_POM1</code>, <code>_POM0</code>, and <code>_ps</code> variables, allowing computation of individual <span class="math inline">\(\hat{\tau}_i\)</span>. Requires ~32 GB RAM for the Super Learner (10-fold CV × multiple algorithms). On machines with ≤ 16 GB, use <code>cvfolds(3)</code> or a 5% sample. The code block above is set to <code>eval=FALSE</code> due to memory constraints.</p>
+</div>
+</div>
+</section>
+<section id="eltmle-results-tmle-5-sample" class="level3">
+<h3 class="anchored" data-anchor-id="eltmle-results-tmle-5-sample">ELTMLE Results (tmle, 5% sample)</h3>
+<p>Run with <code>cvfolds(3)</code> on a 5% random sample (N = 11,473):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Estimate</th>
+<th>SE</th>
+<th>95% CI</th>
+<th>p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ATE (TMLE)</strong></td>
+<td><strong>0.057</strong></td>
+<td>0.011</td>
+<td>(0.034, 0.079)</td>
+<td>&lt;0.001</td>
+</tr>
+<tr class="even">
+<td>Causal Risk Ratio</td>
+<td>1.19</td>
+<td>—</td>
+<td>(1.12, 1.28)</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>Marginal OR</td>
+<td>1.30</td>
+<td>—</td>
+<td>(1.17, 1.44)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>POM1</strong> (<span class="math inline">\(E[Y(1)]\)</span>): 0.347 — mean voting probability if everyone were treated</li>
+<li><strong>POM0</strong> (<span class="math inline">\(E[Y(0)]\)</span>): 0.291 — mean voting probability if everyone were control</li>
+<li><strong>Propensity score</strong>: range [0.143, 0.183] — adequate overlap</li>
+</ul>
+<p><strong>Interpretation</strong>: the social pressure mailer increases voting probability by <strong>5.7 percentage points</strong> (95% CI: 3.4–7.9). The causal risk ratio of 1.19 indicates a 19% higher probability of voting under treatment.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reproducible execution (5% sample)</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"/Applications/Stata/StataMP.app/Contents/MacOS:</span><span class="va">$PATH</span><span class="st">"</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="ex">stata-mp</span> <span class="at">-b</span> <span class="at">-e</span> <span class="st">'</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="st">  use socialpressure.dta, clear</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="st">  set seed 19</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="st">  sample 5</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="st">  generate totalvote = g2000 + g2002 + p2000 + p2002 + p2004</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="st">  global covariates gender g2000 g2002 p2000 p2002 p2004 age</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="st">  eltmle voted treatment $covariates, tmle elements cvfolds(3)</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="st">  generate catehat_TMLE = _POM1 - _POM0</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="st">  graph box catehat_TMLE, over(totalvote) yline(0) name(eltmle_plot, replace)</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="st">  graph export eltmle_boxplot.png, replace width(1200)</span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="eltmle-vs-metalearners-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="eltmle-vs-metalearners-comparison">ELTMLE vs Metalearners Comparison</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 42%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dimension</th>
+<th>S/T/X-learners (h2o GBM)</th>
+<th>ELTMLE (Super Learner)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Base learner</strong></td>
+<td>GBM (single algorithm)</td>
+<td>GLM + GBM + RF + … (ensemble)</td>
+</tr>
+<tr class="even">
+<td><strong>Robustness</strong></td>
+<td>Depends on correct <span class="math inline">\(\mu\)</span> specification</td>
+<td>Doubly robust (<span class="math inline">\(\mu\)</span> or <span class="math inline">\(g\)</span>)</td>
+</tr>
+<tr class="odd">
+<td><strong>Inference</strong></td>
+<td>Point estimates only</td>
+<td>Asymptotic CI and p-values</td>
+</tr>
+<tr class="even">
+<td><strong>Efficiency</strong></td>
+<td>Not guaranteed</td>
+<td>Asymptotically efficient</td>
+</tr>
+<tr class="odd">
+<td><strong>CATE</strong></td>
+<td>By strata (totalvote bins)</td>
+<td>Continuous CATE in <span class="math inline">\(X\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Software</strong></td>
+<td>R (h2o)</td>
+<td>Stata (eltmle)</td>
+</tr>
+<tr class="odd">
+<td><strong>Computational load</strong></td>
+<td>Moderate (~30s with GBM)</td>
+<td>High (CV + ensemble × K folds)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="when-to-use-each-approach" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-each-approach">When to Use Each Approach</h3>
+<ul>
+<li><strong>S/T/X-learners</strong>: rapid heterogeneity exploration, prototyping, teaching. The X-learner is the most robust of the three for observational data with imbalance.</li>
+<li><strong>ELTMLE (TMLE + Super Learner)</strong>: formal inference, publication, ATE/ATT estimation with valid CIs. Requires more computation but provides frequentist guarantees under weaker conditions.</li>
+</ul>
+</section>
+<section id="ate-summary-by-method" class="level3">
+<h3 class="anchored" data-anchor-id="ate-summary-by-method">ATE Summary by Method</h3>
+<div class="columns">
+<div class="column" style="width:60%;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>ATE</th>
+<th>95% CI</th>
+<th>N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>S-learner (GBM)</td>
+<td>0.044</td>
+<td>—</td>
+<td>229,461</td>
+</tr>
+<tr class="even">
+<td>T-learner (GBM)</td>
+<td>0.048</td>
+<td>—</td>
+<td>229,461</td>
+</tr>
+<tr class="odd">
+<td>X-learner (GBM)</td>
+<td>0.048</td>
+<td>—</td>
+<td>229,461</td>
+</tr>
+<tr class="even">
+<td><strong>ELTMLE (tmle)</strong></td>
+<td><strong>0.057</strong></td>
+<td>(0.034, 0.079)</td>
+<td>11,473</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:40%;">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Note</strong>: S/T/X-learners do not provide CIs by construction — their ATEs are means of individual CATEs. ELTMLE is the only method with formal inference.</p>
+<p>Agreement of ~0.07–0.08 across methods suggests the effect is robust.</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="comparacion-visual" class="level2">
+<h2 class="anchored" data-anchor-id="comparacion-visual">Visual Comparison</h2>
+<section id="metalearners-s-t-x" class="level3">
+<h3 class="anchored" data-anchor-id="metalearners-s-t-x">Metalearners (S, T, X)</h3>
+<p>CATE by prior turnout level (N = 229,461). Dashed red line: zero effect.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(catehat_S <span class="sc">~</span> totalvote, <span class="at">data =</span> df, <span class="at">main =</span> <span class="st">"S-learner (GBM, N=229K)"</span>,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"CATE"</span>, <span class="at">xlab =</span> <span class="st">"Prior turnout (0-5)"</span>, <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"steelblue"</span>)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(catehat_T <span class="sc">~</span> totalvote, <span class="at">data =</span> df, <span class="at">main =</span> <span class="st">"T-learner (GBM, N=229K)"</span>,</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"CATE"</span>, <span class="at">xlab =</span> <span class="st">"Prior turnout (0-5)"</span>, <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"darkgreen"</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(catehat_X <span class="sc">~</span> totalvote, <span class="at">data =</span> df, <span class="at">main =</span> <span class="st">"X-learner (GBM, N=229K)"</span>,</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"CATE"</span>, <span class="at">xlab =</span> <span class="st">"Prior turnout (0-5)"</span>, <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"darkorange"</span>)</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CATE_h2oml_files/figure-html/plot-metals-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="eltmle-tmle-5-sample" class="level3">
+<h3 class="anchored" data-anchor-id="eltmle-tmle-5-sample">ELTMLE (tmle, 5% sample)</h3>
+<p>Individual CATE obtained via the <code>elements</code> option: <span class="math inline">\(\hat{\tau}_i =\)</span> <code>_POM1</code> <span class="math inline">\(-\)</span> <code>_POM0</code> (N = 11,473).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>tmle_df <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"tmle_results.dta"</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(catehat_TMLE <span class="sc">~</span> totalvote, <span class="at">data =</span> tmle_df,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"ELTMLE — tmle (N=11K, 5% sample)"</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"CATE"</span>, <span class="at">xlab =</span> <span class="st">"Prior turnout (0-5)"</span>, <span class="at">las =</span> <span class="dv">1</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">"#8B0000"</span>)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CATE_h2oml_files/figure-html/plot-eltmle-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="reading-the-charts" class="level3">
+<h3 class="anchored" data-anchor-id="reading-the-charts">Reading the Charts</h3>
+<ul>
+<li>Each boxplot shows the distribution of <span class="math inline">\(\hat{\tau}(x)\)</span> for units at a given level of prior turnout.</li>
+<li><strong>Expected pattern</strong>: the treatment effect (social pressure mailer) is larger for those with medium-high voting history (3–4 prior elections) and smaller at the extremes (0 or 5).</li>
+<li><strong>Differences across learners</strong>: the S-learner compresses effects toward zero; the T-learner shows more dispersion; the X-learner balances both tendencies.</li>
+<li><strong>ELTMLE</strong>: the ELTMLE panel shows individual CATE as <span class="math inline">\(\hat{\tau}_i =\)</span> <code>_POM1</code> <span class="math inline">\(-\)</span> <code>_POM0</code> via the <code>elements</code> option. The pattern across <code>totalvote</code> is consistent with the metalearners — effect increasing up to 3–4 prior elections — though the scale is smaller when using a 5% sample.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<section id="which-metalearner-to-choose" class="level3">
+<h3 class="anchored" data-anchor-id="which-metalearner-to-choose">Which Metalearner to Choose?</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Criterion</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Homogeneous or near-zero effect</td>
+<td><strong>S-learner</strong> — more efficient</td>
+</tr>
+<tr class="even">
+<td>Strong expected heterogeneity</td>
+<td><strong>T-learner</strong> — separate models capture different functional forms</td>
+</tr>
+<tr class="odd">
+<td>Highly imbalanced groups</td>
+<td><strong>X-learner</strong> — imputes effects in both directions</td>
+</tr>
+<tr class="even">
+<td>Small sample / high dimensionality</td>
+<td><strong>S-learner</strong> — shares information across groups</td>
+</tr>
+<tr class="odd">
+<td>Formal inference (CI, p-values)</td>
+<td><strong>ELTMLE</strong> — doubly robust, efficient</td>
+</tr>
+<tr class="even">
+<td>Publication / regulatory</td>
+<td><strong>ELTMLE</strong> — accepted standard in causal epidemiology</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="limitations" class="level3">
+<h3 class="anchored" data-anchor-id="limitations">Limitations</h3>
+<ol type="1">
+<li><strong>Untestable unconfoundedness</strong>: we assume observed covariates block all confounding</li>
+<li><strong>Overlap</strong>: verify propensity score stays away from 0 and 1 across the support of <span class="math inline">\(X\)</span></li>
+<li><strong>GBM as base learner</strong>: sensitive to hyperparameters; an alternative is <code>grf::causal_forest</code> (R-learner, Athey, Tibshirani &amp; Wager, 2019)</li>
+<li><strong>Inference</strong>: S/T/X-learner standard errors require bootstrap; ELTMLE provides asymptotic CIs by construction</li>
+<li><strong>ELTMLE</strong>: computationally expensive with N &gt; 100K and multiple ensemble learners</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Gerber, A. S., Green, D. P., &amp; Larimer, C. W. (2008). Social pressure and voter turnout: Evidence from a large-scale field experiment. <em>American Political Science Review</em>, 102(1), 33–48.</li>
+<li>Künzel, S. R., Sekhon, J. S., Bickel, P. J., &amp; Yu, B. (2019). Metalearners for estimating heterogeneous treatment effects using machine learning. <em>Proceedings of the National Academy of Sciences</em>, 116(10), 4156–4165.</li>
+<li>Athey, S., Tibshirani, J., &amp; Wager, S. (2019). Generalized random forests. <em>Annals of Statistics</em>, 47(2), 1148–1178.</li>
+<li>Holland, P. W. (1986). Statistics and causal inference. <em>Journal of the American Statistical Association</em>, 81(396), 945–960.</li>
+<li>Luque-Fernandez, M. A., Schomaker, M., Rachet, B., &amp; Schnitzer, M. E. (2018). Targeted maximum likelihood estimation for a binary treatment: A tutorial. <em>Statistics in Medicine</em>, 37(16), 2530–2546.</li>
+<li>Stata Blog (2025-10-22). Heterogeneous treatment effect estimation with S-, T-, and X-learners using h2oml.</li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
