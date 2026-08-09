@@ -4,11 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Claude Code en Windows · Tutorial para estadísticos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
     --navy:   #0F2744;
     --blue:   #1D5FAA;
     --accent: #E07B39;
@@ -20,7 +19,6 @@
     --muted:  #5A6A7E;
     --code-bg:#0D1B2A;
     --code-fg:#CDD9E5;
-    --green:  #16A34A;
     --green-bg:#F0FBF4;
     --green-bd:#BBF0CD;
     --amber:  #B45309;
@@ -29,13 +27,10 @@
     --info-bg:#EEF4FF;
     --info-bd:#BFCFFF;
     --info-tx:#2249A0;
-    --radius: 10px;
-    --shadow: 0 2px 12px rgba(15,39,68,.10);
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
+    --radius: 6px;
+    --shadow: 0 1px 4px rgba(15,39,68,.08);
+
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     font-size: 15px;
@@ -47,16 +42,6 @@
     background: var(--navy);
     color: #fff;
     padding: 2.5rem 2rem 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  header::after {
-    content: '';
-    position: absolute;
-    right: -60px; top: -60px;
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(224,123,57,.25) 0%, transparent 70%);
-    pointer-events: none;
   }
   .header-badge {
     display: inline-flex;
@@ -73,7 +58,7 @@
     margin-bottom: 1rem;
   }
   header h1 {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-size: 1.8rem;
     font-weight: 600;
     line-height: 1.25;
     margin-bottom: .5rem;
@@ -139,10 +124,9 @@
     background: none;
     width: 100%;
     text-align: left;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     font-size: 13.5px;
     color: var(--muted);
-    transition: background .12s, color .12s;
     border-left: 3px solid transparent;
   }
   .nav-item:hover { background: var(--bg); color: var(--text); }
@@ -185,7 +169,7 @@
     flex-shrink: 0;
     padding: .65rem .8rem;
     font-size: 12.5px;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     border: none; background: none;
     color: var(--muted);
     cursor: pointer;
@@ -264,7 +248,7 @@
   .code-lang {
     position: absolute;
     top: 0; left: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: Consolas, 'Courier New', monospace;
     font-size: 10px;
     color: rgba(255,255,255,.35);
     padding: 6px 10px;
@@ -272,7 +256,7 @@
     text-transform: uppercase;
   }
   pre {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: Consolas, 'Courier New', monospace;
     font-size: 12.5px;
     line-height: 1.7;
     color: var(--code-fg);
@@ -288,11 +272,10 @@
     border: 1px solid rgba(255,255,255,.15);
     border-radius: 5px;
     color: rgba(255,255,255,.6);
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
     font-size: 11px;
     padding: 3px 10px;
     cursor: pointer;
-    transition: background .15s, color .15s;
   }
   .copy-btn:hover { background: rgba(255,255,255,.16); color: #fff; }
   .copy-btn.ok { color: #6EE7A4; border-color: #6EE7A4; }
@@ -340,7 +323,7 @@
 
   /* ── Inline code ── */
   code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: Consolas, 'Courier New', monospace;
     font-size: 12.5px;
     background: #E8EEF7;
     border: 1px solid #C5D3E6;
