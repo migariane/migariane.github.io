@@ -41,7 +41,13 @@
       line-height: 1.5;
       margin-bottom: 1rem;
     }
-    .header-links { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .header-links { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; }
+    .header-links .header-affil {
+      font-weight: 600;
+      font-size: .85rem;
+      color: #fff;
+      margin-right: .6rem;
+    }
     .header-links a {
       display: inline-block;
       background: rgba(255,255,255,.11);
@@ -261,10 +267,10 @@
     <h1 class="header-name">Miguel Angel Luque-Fernandez</h1>
     <p class="header-tagline">
       MA &middot; MSc &middot; MPH &middot; BSc &middot; PhD &ensp;|&ensp;
-      Full Professor, Dpt. of Statistics and Operations Research, Universidad de Granada &ensp;|&ensp;
-      Honorary Associate Professor of Biostatistics and Epidemiology, LSHTM
+      Full Professor, Dpt. of Statistics and Operations Research, Universidad de Granada
     </p>
     <div class="header-links">
+      <span class="header-affil">Honorary Associate Professor of Biostatistics and Epidemiology, LSHTM</span>
       <a href="https://github.com/migariane">&#x2B21; GitHub</a>
       <a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&amp;hl=en">Google Scholar</a>
       <a href="https://maluque.netlify.app/">Academic Site</a>
