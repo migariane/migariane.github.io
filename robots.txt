@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://migariane.github.io/sitemap.xml
