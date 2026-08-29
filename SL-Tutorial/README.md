@@ -40,10 +40,10 @@ Super Learner, ensemble learning, cross-validation, machine learning, epidemiolo
 
 ## Author and affiliation
 
-Miguel Angel Luque-Fernandez  
-Senior Researcher in Epidemiology and Biostatistics  
+Miguel Angel Luque Fernandez  
+Full Professor of Biostatistics  
 Department of Statistics and Operations Research  
-University of Granada (UGR), Spain  
+University of Granada, Spain  
 
 Personal website: https://migariane.github.io  
 Email: mluquefe@ugr.es  
