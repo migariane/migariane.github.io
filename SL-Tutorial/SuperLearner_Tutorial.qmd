@@ -92,7 +92,124 @@ The key theoretical result (van der Laan et al., 2007) is that Super Learner per
 **What this means for epidemiologists.** Rather than selecting a single "best" model, SL combines several into a weighted ensemble that can beat any one candidate, which matters when the true data-generating mechanism is unknown.
 :::
 
+## Statistical learning framework
+
+In clinical studies, a vector of covariates $W_i$ and an outcome $Y_i$ are
+observed for each subject $i$. The corresponding observation is represented as
+
+$$
+O_i = (W_i, Y_i), \qquad i = 1, \ldots, n.
+$$
+
+We assume that the observations arise from a data-generating process
+characterized by an unknown probability distribution $P_0$, such that
+
+$$
+O_1, \ldots, O_n \overset{\mathrm{i.i.d.}}{\sim} P_0.
+$$
+
+The prediction problem consists of learning a rule $\psi$ that maps covariate
+values $w$ to a prediction of the outcome,
+
+$$
+\psi : \mathcal{W} \rightarrow \mathbb{R},
+$$
+
+where $\psi(w)$ denotes the prediction corresponding to $W = w$.
+
+Prediction rules are compared through a loss function $L$. The risk of a
+prediction rule $\psi$ is defined as its expected loss,
+
+$$
+R(\psi)=E[L(Y,\psi(W))].
+$$
+
+where the expectation is taken under the true distribution $P_0$.
+
+The optimal prediction rule, with respect to the specified loss function, is
+defined as the rule that minimizes the expected risk,
+
+$$
+\psi_0=\arg\min_{\psi}R(\psi).
+$$
+Super Learner starts from a collection of candidate learning algorithms. Let
+$\mathcal A_k$, for $k = 1, \ldots, K$, denote a learning algorithm that, when
+trained on a data set, produces a fitted prediction rule $\widehat{\psi}_k$.
+The collection of candidate algorithms defines the library
+
+$$
+\mathcal L = \{\mathcal A_1, \ldots, \mathcal A_K\}.
+$$
+
+Since the true distribution $P_0$ is unknown, the population risk
+$R(\psi)$ cannot be evaluated directly. Super Learner therefore uses
+cross-validation to estimate the predictive performance of the candidate
+algorithms and determine their combination within the ensemble.
+
+### Super Learner formulation
+
+For each fold $v = 1, \ldots, V$, let $V(v)$ denote the validation set and
+$T(v)$ its complementary training set. Each candidate algorithm $\mathcal A_k$
+is fitted on $T(v)$ and generates predictions for the observations in
+$V(v)$. Because these predictions are obtained from models that were not
+fitted using the corresponding validation observations, they constitute
+cross-validated, or out-of-fold, predictions.
+
+The predictions obtained for the $K$ candidate algorithms are collected in an
+$n \times K$ matrix $Z$,
+
+$$
+Z=(Z_1,\ldots,Z_K),
+$$
+
+where $Z_k$ contains the cross-validated predictions from algorithm $\mathcal A_k$.
+
+Let $\alpha=(\alpha_1,\ldots,\alpha_K)$ denote the vector of weights assigned
+to the candidate algorithms. The meta-learner selects the weights that minimize
+the cross-validated risk,
+
+$$
+\widehat{\alpha}
+=
+\arg\min_{\alpha}R_{CV}(\alpha).
+$$
+where $R_{CV}(\alpha)$ denotes the cross-validated risk of the weighted
+combination under the specified performance criterion. The specific form of
+this criterion depends on the meta-learning procedure used to estimate the
+ensemble weights.
+For the standard convex combination, the weights satisfy
+
+$$
+\alpha_k\geq0,
+\qquad
+\sum_{k=1}^{K}\alpha_k=1.
+$$
+
+Once the weights have been estimated, each candidate algorithm is refitted
+using the full sample. For a new set of covariate values $w$, the final Super
+Learner prediction is
+
+$$
+\widehat{\psi}_{SL}(w)
+=
+\sum_{k=1}^{K}
+\widehat{\alpha}_k\widehat{\psi}_k(w).
+$$
+
+## Theoretical guarantee of Super Learner
+
+The main theoretical guarantee of Super Learner is based on an oracle-type
+result. In this setting, the oracle corresponds to the combination that
+achieves the lowest risk within the considered family of combinations. As
+described above, Super Learner uses cross-validation to learn the combination
+of the candidate algorithms; the oracle-type result establishes that its
+performance asymptotically approaches that of this reference.
+
+This guarantee is asymptotic and is expressed in terms of the risk associated with the specified loss function. Therefore, it does not imply that Super Learner must outperform every candidate algorithm in each finite sample.
+
 ## Why Super Learner for Epi / Biostatistics?
+
+The following table summarizes several practical motivations for using Super Learner in biostatistical and epidemiological applications.
 
 | Challenge | SL solution |
 |-----------|-------------|
@@ -105,7 +222,7 @@ The key theoretical result (van der Laan et al., 2007) is that Super Learner per
 
 ## How Super Learner works
 
-SL runs in six stages:
+In practice, SL runs in six stages:
 
 1. **Split** the data into V roughly equal folds.
 2. For each fold `v = 1, ..., V`:
@@ -430,7 +547,7 @@ AUC runs from 0.5 (no better than chance) to 1.0 (perfect discrimination). Here 
 
 # Cross-validated Super Learner
 
-A plain `SuperLearner()` does **not** give a valid estimate of the *ensemble's own* performance. For that we need an **external** layer of cross-validation using `CV.SuperLearner()`. The result is an honest estimate of how the final SL would perform on new data, plus a standard error.
+A plain `SuperLearner()` uses cross-validation internally to estimate the risk of the candidate algorithms and learn the ensemble weights. Because this cross-validation is part of the fitting procedure itself, it does **not** provide an external estimate of the *ensemble's own* predictive performance. For that, `CV.SuperLearner()` adds an **outer** layer of cross-validation, in which Super Learner is refitted within each training set and evaluated on the corresponding held-out observations. This provides a cross-validated estimate of how the complete Super Learner procedure would perform on new data, together with its standard error.
 
 ## Fit CV.SuperLearner
 
@@ -536,7 +653,7 @@ SL.randomForest_1
 
 ## Tune a whole grid of hyperparameters
 
-**Why and how.** Creating several variants in one call works for any hyperparameter; here `mtry` (the number of predictors each tree considers) is given three values. The first line computes the package default, `floor(sqrt(p))`, so the grid is centred on it and widened half a step each way. The library then contains the stock forest plus all three variants, and the outer CV decides the weights, not a human.
+**Why and how.** Creating several variants in one call works for any hyperparameter; here `mtry` (the number of predictors each tree considers) is given three values. The first line computes the package default, `floor(sqrt(p))`, so the grid is centred on it and widened half a step each way. The library then contains the stock forest plus all three variants, allowing Super Learner to learn their relative contributions from cross-validated performance rather than selecting a setting manually.
 
 ```{r tune-mtry}
 # Default mtry for classification is floor(sqrt(p))
