@@ -50,18 +50,25 @@
           async src="//gc.zgo.at/count.js"></script>
   <style>
     :root {
-      --paper: #F4F6F8;
+      --page: #E8EDF5;
+      --panel: #FFFFFF;
       --ink: #14171C;
       --muted: #58616E;
       --accent: #00488C;
       --accent-deep: #002D5A;
+      --accent-soft: #3C5A78;
       --signal: #D26400;
-      --rule: #DDE2E8;
-      --rule-strong: #C2CAD3;
+      --rule: #D3DEEA;
+      --rule-strong: #B4C6DA;
+      --on-blue: #FFFFFF;
+      --on-blue-soft: #DCE8F5;
+      --on-blue-faint: #BBD3EA;
+      --on-blue-kicker: #FFD9A8;
       --serif: "Newsreader", Georgia, "Times New Roman", serif;
       --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       --wrap: 1120px;
+      --radius: 4px;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -70,7 +77,7 @@
 
     body {
       margin: 0;
-      background: var(--paper);
+      background: var(--page);
       color: var(--ink);
       font-family: var(--sans);
       font-size: 16px;
@@ -88,7 +95,7 @@
       font-family: var(--mono);
       font-size: .86em;
       color: var(--ink);
-      background: rgba(0, 0, 0, .045);
+      background: rgba(0, 0, 0, .05);
       padding: .05em .32em;
       border-radius: 2px;
     }
@@ -107,16 +114,16 @@
     }
     .skip:focus { left: .6rem; top: .6rem; }
 
-    /* ---- Masthead ---- */
+    /* ---- Masthead: navy band ---- */
     .masthead {
-      background: var(--paper);
-      border-top: 7px solid var(--accent-deep);
+      background: var(--accent-deep);
+      border-top: 7px solid var(--signal);
+      border-bottom: 3px solid var(--accent);
     }
     .masthead__inner {
       max-width: var(--wrap);
       margin: 0 auto;
-      padding: 2.6rem 1.5rem 1.5rem;
-      border-bottom: 3px double var(--rule-strong);
+      padding: 2.5rem 1.5rem 1.6rem;
     }
     .masthead__name {
       margin: 0;
@@ -125,22 +132,22 @@
       font-size: clamp(2rem, 5.4vw, 3.2rem);
       line-height: 1.02;
       letter-spacing: -0.015em;
-      color: var(--accent-deep);
+      color: var(--on-blue);
     }
     .masthead__degrees {
-      margin: .55rem 0 1.15rem;
+      margin: .55rem 0 1.1rem;
       font-family: var(--mono);
       font-size: .63rem;
       letter-spacing: .16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--on-blue-faint);
     }
     .masthead__role {
       margin: 0 0 .18rem;
       font-size: .86rem;
-      color: var(--ink);
+      color: var(--on-blue-soft);
     }
-    .masthead__role--muted { color: var(--muted); }
+    .masthead__role--muted { color: #A9C4E0; }
     .masthead__links {
       display: flex;
       flex-wrap: wrap;
@@ -148,38 +155,37 @@
       gap: .3rem 1.35rem;
       margin-top: 1.3rem;
       padding-top: .95rem;
-      border-top: 1px solid var(--rule);
+      border-top: 1px solid rgba(255, 255, 255, .22);
     }
     .masthead__links a {
       font-family: var(--mono);
       font-size: .71rem;
       letter-spacing: .03em;
-      color: var(--accent);
+      color: #EAF1F8;
       text-decoration: none;
       border-bottom: 1px solid transparent;
       padding-bottom: 1px;
     }
     .masthead__links a:hover,
     .masthead__links a:focus-visible {
-      color: var(--accent-deep);
-      border-bottom-color: var(--accent-deep);
+      color: #fff;
+      border-bottom-color: #fff;
     }
 
     /* ---- Two-column layout with the contents rail ---- */
     .layout {
       max-width: var(--wrap);
       margin: 0 auto;
-      padding: 0 1.5rem;
+      padding: 2rem 1.5rem 0;
       display: grid;
       grid-template-columns: 208px minmax(0, 1fr);
-      column-gap: 3.5rem;
+      column-gap: 3rem;
     }
     .index {
       grid-column: 1;
       align-self: start;
       position: sticky;
       top: 1.25rem;
-      padding-top: 2.4rem;
     }
     .index__label {
       margin: 0 0 .8rem;
@@ -187,7 +193,7 @@
       font-size: .62rem;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--accent);
     }
     .index__list {
       list-style: none;
@@ -200,7 +206,7 @@
       font-family: var(--mono);
       font-size: .72rem;
       line-height: 1.35;
-      color: var(--muted);
+      color: var(--accent-soft);
       text-decoration: none;
       padding: .32rem .85rem;
       border-left: 2px solid transparent;
@@ -210,20 +216,27 @@
     .index__list a:focus-visible {
       color: var(--accent);
       border-left-color: var(--accent);
+      background: rgba(255, 255, 255, .7);
     }
 
-    main { grid-column: 2; min-width: 0; padding-top: 2.4rem; }
+    main { grid-column: 2; min-width: 0; }
 
-    /* ---- Lead items ---- */
-    .lead { padding-bottom: 1.6rem; }
-    .lead + .lead { padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+    /* ---- Featured blocks ---- */
+    .lead {
+      border-radius: var(--radius);
+      padding: 1.5rem 1.7rem;
+      margin-bottom: 1rem;
+      color: var(--on-blue);
+    }
+    .lead--blue { background: var(--accent); }
+    .lead--navy { background: var(--accent-deep); }
     .kicker {
       margin: 0 0 .5rem;
       font-family: var(--mono);
       font-size: .62rem;
       letter-spacing: .17em;
       text-transform: uppercase;
-      color: var(--signal);
+      color: var(--on-blue-kicker);
     }
     .lead__title {
       margin: 0 0 .5rem;
@@ -232,54 +245,61 @@
       font-size: clamp(1.45rem, 2.7vw, 1.95rem);
       line-height: 1.12;
       letter-spacing: -0.01em;
-      color: var(--accent-deep);
+      color: var(--on-blue);
     }
     .lead__desc {
-      margin: 0 0 .9rem;
+      margin: 0 0 .95rem;
       max-width: 44rem;
       font-size: .9rem;
       line-height: 1.62;
-      color: var(--muted);
+      color: var(--on-blue-soft);
     }
     .lead__links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1.5rem; }
 
     .link {
       font-size: .85rem;
       font-weight: 500;
-      color: var(--accent);
+      color: #fff;
       text-decoration: none;
-      border-bottom: 1px solid var(--rule-strong);
+      border-bottom: 1px solid rgba(255, 255, 255, .5);
       padding-bottom: 1px;
-      transition: color .15s ease, border-color .15s ease;
+      transition: border-color .15s ease;
     }
-    .link:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
-    .link--quiet { font-weight: 400; color: var(--muted); }
-    .link--quiet:hover { color: var(--accent); }
+    .link:hover { border-bottom-color: #fff; }
+    .link--quiet { font-weight: 400; color: var(--on-blue-soft); border-bottom-color: rgba(255, 255, 255, .3); }
+    .link--quiet:hover { color: #fff; border-bottom-color: #fff; }
     .new {
       font-family: var(--mono);
       font-size: .58rem;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: var(--signal);
+      color: var(--on-blue-kicker);
       margin-left: .4rem;
       vertical-align: 2px;
     }
 
-    /* ---- Reference-style section lists ---- */
-    .refs { margin-top: 2.9rem; }
+    /* ---- Section panels: blue header band + white body ---- */
+    .refs {
+      background: var(--panel);
+      border: 1px solid var(--rule-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 1.75rem;
+    }
+    .refs:first-of-type { margin-top: 2rem; }
     .refs__title {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 1rem;
-      margin: 0 0 .1rem;
-      padding-bottom: .6rem;
-      border-bottom: 2px solid var(--accent-deep);
+      margin: 0;
+      padding: .72rem 1.2rem;
+      background: var(--accent);
       font-family: var(--serif);
       font-weight: 500;
-      font-size: 1.35rem;
-      letter-spacing: -0.01em;
-      color: var(--ink);
+      font-size: 1.2rem;
+      letter-spacing: -0.005em;
+      color: var(--on-blue);
     }
     .refs__count {
       font-family: var(--mono);
@@ -287,7 +307,7 @@
       font-weight: 400;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--on-blue-faint);
       white-space: nowrap;
     }
     .refs__list { list-style: none; margin: 0; padding: 0; }
@@ -295,9 +315,11 @@
       display: grid;
       grid-template-columns: 8.5rem minmax(0, 1fr);
       column-gap: 1.6rem;
-      padding: 1.1rem 0;
+      padding: 1.05rem 1.2rem;
       border-bottom: 1px solid var(--rule);
     }
+    .ref:last-child { border-bottom: none; }
+    .ref:hover { background: #F4F8FC; }
     .ref__meta {
       padding-top: .28rem;
       font-family: var(--mono);
@@ -305,7 +327,7 @@
       line-height: 1.5;
       letter-spacing: .06em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--accent-soft);
     }
     .ref__title {
       margin: 0 0 .28rem;
@@ -334,27 +356,20 @@
       line-height: 1.58;
       color: var(--muted);
     }
-    .ref__doi {
-      display: inline-block;
-      margin-top: .4rem;
-      font-family: var(--mono);
-      font-size: .63rem;
-      letter-spacing: .04em;
-      color: var(--accent);
-      text-decoration: none;
-    }
-    .ref__doi:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .ref__doi { display: inline-block; margin-top: .5rem; line-height: 0; }
+    .ref__doi img { height: 20px; border: 0; vertical-align: middle; }
+    .ref__doi:focus-visible { outline-offset: 3px; }
 
     /* ---- Colophon ---- */
     .colophon {
       max-width: var(--wrap);
-      margin: 3.2rem auto 0;
+      margin: 3rem auto 0;
       padding: 1.5rem 1.5rem 2.8rem;
-      border-top: 3px double var(--rule-strong);
+      border-top: 1px solid var(--rule-strong);
       font-family: var(--mono);
       font-size: .68rem;
       letter-spacing: .03em;
-      color: var(--muted);
+      color: var(--accent-soft);
     }
     .colophon__quote {
       margin: 0 0 .15rem;
@@ -366,7 +381,7 @@
     .colophon__attrib { margin: 0 0 1.1rem; }
     .colophon__links { display: flex; flex-wrap: wrap; gap: .3rem 1.3rem; }
     .colophon__links a {
-      color: var(--muted);
+      color: var(--accent-soft);
       text-decoration: none;
       border-bottom: 1px solid var(--rule-strong);
       padding-bottom: 1px;
@@ -375,13 +390,12 @@
 
     /* ---- Small screens ---- */
     @media (max-width: 820px) {
-      .layout { grid-template-columns: 1fr; column-gap: 0; }
+      .layout { grid-template-columns: 1fr; column-gap: 0; padding-top: 1.25rem; }
       .masthead__inner { padding-top: 2rem; }
       .index {
         grid-column: 1;
         position: static;
-        padding: 1.3rem 0 1rem;
-        border-bottom: 1px solid var(--rule-strong);
+        padding-bottom: 1rem;
       }
       .index__label { display: none; }
       .index__list { display: flex; flex-wrap: wrap; gap: .3rem; border-left: none; }
@@ -390,10 +404,12 @@
         border-radius: 2px;
         padding: .22rem .55rem;
         margin-left: 0;
+        background: var(--panel);
       }
       .index__list a:hover { border-color: var(--accent); border-left-color: var(--accent); }
-      main { grid-column: 1; padding-top: 1.6rem; }
-      .ref { grid-template-columns: 1fr; row-gap: .35rem; padding: 1rem 0; }
+      main { grid-column: 1; }
+      .lead { padding: 1.25rem 1.15rem; }
+      .ref { grid-template-columns: 1fr; row-gap: .35rem; padding: 1rem 1.05rem; }
       .ref__meta { display: flex; flex-wrap: wrap; gap: .35rem 1rem; padding-top: 0; }
     }
   </style>
@@ -438,7 +454,7 @@
 
   <main id="main">
 
-    <section class="lead" id="conformal">
+    <section class="lead lead--blue" id="conformal">
       <p class="kicker">Featured</p>
       <h2 class="lead__title">Conformal Statistical Inference</h2>
       <p class="lead__desc">
@@ -452,7 +468,7 @@
       </p>
     </section>
 
-    <section class="lead" id="book">
+    <section class="lead lead--navy" id="book">
       <p class="kicker">New Book</p>
       <h2 class="lead__title">Computational Causal Inference for Applied Researchers</h2>
       <p class="lead__desc">
@@ -725,7 +741,7 @@
           <div>
             <h3 class="ref__title"><a href="https://migariane.github.io/Causal-Inference-Book/">Computational Causal Inference for Applied Researchers</a></h3>
             <p class="ref__desc">Nine chapters covering potential outcomes, DAGs, G-formula, propensity scores, AIPW, TMLE, longitudinal data, mediation, and sensitivity analysis. About 65 examples in R and Stata.</p>
-            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677995">DOI 10.5281/zenodo.20677995</a>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677995" aria-label="DOI: 10.5281/zenodo.20677995"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20677995.svg" alt="DOI: 10.5281/zenodo.20677995" loading="lazy"></a>
           </div>
         </li>
 
@@ -734,7 +750,7 @@
           <div>
             <h3 class="ref__title"><a href="https://github.com/migariane/MatematicaEstadisticaMedicinaR">Mathematical Statistics with R (Matem&aacute;tica Estad&iacute;stica con R)</a></h3>
             <p class="ref__desc">Open-access textbook on mathematical statistics for medicine and the health sciences. R and Quarto throughout. In Spanish.</p>
-            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677785">DOI 10.5281/zenodo.20677785</a>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677785" aria-label="DOI: 10.5281/zenodo.20677785"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20677785.svg" alt="DOI: 10.5281/zenodo.20677785" loading="lazy"></a>
           </div>
         </li>
 
@@ -743,7 +759,7 @@
           <div>
             <h3 class="ref__title"><a href="https://migariane.github.io/Bioestadistica/">Advanced Methods for Biostatistics (Bioestad&iacute;stica Aplicada)</a></h3>
             <p class="ref__desc">Applied biostatistics: survival analysis, longitudinal models, causal inference, and diagnostic test evaluation. R implementations throughout.</p>
-            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.18277805">DOI 10.5281/zenodo.18277805</a>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.18277805" aria-label="DOI: 10.5281/zenodo.18277805"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18277805.svg" alt="DOI: 10.5281/zenodo.18277805" loading="lazy"></a>
           </div>
         </li>
 
