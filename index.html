@@ -9,221 +9,6 @@
   <meta property="og:title" content="Miguel Angel Luque-Fernandez | Tutorials &amp; Software">
   <meta property="og:description" content="Open-access tutorials on causal inference, conformal prediction, survival, and machine learning.">
   <meta property="og:url" content="https://migariane.github.io">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      color: #222;
-      background: #fafbfc;
-    }
-
-    a { color: #00488C; }
-
-    .site-header {
-      background: #002D5A;
-      color: #fff;
-      padding: 2.5rem 1.5rem 2rem;
-      border-bottom: 3px solid #00488C;
-    }
-    .site-header-inner { max-width: 1050px; margin: 0 auto; }
-    .header-name {
-      font-size: 1.65rem;
-      font-weight: 700;
-      margin-bottom: .25rem;
-      line-height: 1.2;
-    }
-    .header-tagline {
-      font-size: .85rem;
-      opacity: .82;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-    .header-links { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; }
-    .header-affil, .header-prof {
-      font-weight: 600;
-      font-size: .85rem;
-      color: #fff;
-      margin: 0 0 .45rem;
-    }
-    .header-degrees { font-size: .85rem; font-weight: inherit; color: inherit; }
-    .header-links a {
-      display: inline-block;
-      background: rgba(255,255,255,.11);
-      color: #fff;
-      padding: .28rem .7rem;
-      border-radius: 4px;
-      font-size: .8rem;
-      text-decoration: none;
-    }
-    .header-links a:hover { background: rgba(255,255,255,.22); }
-
-    .site-nav {
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .site-nav-inner {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .site-nav-inner::-webkit-scrollbar { display: none; }
-    .site-nav a {
-      display: block;
-      padding: .7rem .8rem;
-      font-size: .8rem;
-      color: #555;
-      text-decoration: none;
-      white-space: nowrap;
-      border-bottom: 2px solid transparent;
-    }
-    .site-nav a:hover { color: #00488C; border-bottom-color: #00488C; }
-
-    main { max-width: 1050px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-    .featured {
-      background: #00488C;
-      color: #fff;
-      border-radius: 6px;
-      padding: 1.75rem 2rem;
-      margin-bottom: 2.5rem;
-    }
-    .featured-book { background: #002D5A; }
-    .featured-label {
-      display: inline-block;
-      background: rgba(255,255,255,.16);
-      padding: .12rem .5rem;
-      border-radius: 4px;
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      margin-bottom: .5rem;
-    }
-    .featured h2 { font-size: 1.15rem; margin-bottom: .35rem; line-height: 1.3; }
-    .featured p {
-      font-size: .84rem;
-      opacity: .9;
-      line-height: 1.55;
-      max-width: 650px;
-      margin-bottom: 1rem;
-    }
-    .featured-links { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .btn {
-      display: inline-block;
-      padding: .42rem .9rem;
-      border-radius: 4px;
-      font-size: .82rem;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .btn-white { background: #fff; color: #00488C; }
-    .btn-white:hover { background: #eef3f8; }
-    .btn-outline {
-      background: rgba(255,255,255,.1);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.28);
-    }
-    .btn-outline:hover { background: rgba(255,255,255,.2); }
-    .btn-new {
-      font-size: .62rem;
-      font-weight: 700;
-      background: #D26400;
-      color: #fff;
-      padding: .06rem .3rem;
-      border-radius: 3px;
-      text-transform: uppercase;
-      margin-left: .1rem;
-      vertical-align: middle;
-    }
-
-    .section { margin-bottom: 2.5rem; }
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: .9rem;
-      padding-bottom: .45rem;
-      border-bottom: 2px solid #00488C;
-      color: #002D5A;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: .85rem;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e0e4e8;
-      border-left: 3px solid #00488C;
-      border-radius: 4px;
-      padding: 1rem 1.1rem;
-    }
-    .card-title {
-      font-size: .85rem;
-      font-weight: 600;
-      margin-bottom: .3rem;
-      line-height: 1.35;
-    }
-    .card-title a { color: #222; text-decoration: none; }
-    .card-title a:hover { color: #00488C; text-decoration: underline; }
-    .card-desc {
-      font-size: .78rem;
-      color: #555;
-      line-height: 1.5;
-      margin-bottom: .45rem;
-    }
-    .card-meta { display: flex; flex-wrap: wrap; gap: .2rem; align-items: center; }
-    .card-meta img { height: 20px; vertical-align: middle; }
-
-    .badge {
-      display: inline-block;
-      padding: .08rem .4rem;
-      border-radius: 3px;
-      font-size: .67rem;
-      font-weight: 600;
-    }
-    .badge-r      { background: #e8f4fd; color: #2563A0; }
-    .badge-stata  { background: #e6f5ee; color: #1F6E4A; }
-    .badge-python { background: #f0eaff; color: #5B3AA8; }
-    .badge-shiny  { background: #fff0e8; color: #C05621; }
-    .badge-slides { background: #eef0f4; color: #4A5568; }
-    .badge-es     { background: #fff9eb; color: #92400E; }
-    .badge-github { background: #f5f7fa; color: #333; border: 1px solid #ddd; }
-
-    footer {
-      background: #fff;
-      border-top: 3px solid #00488C;
-      text-align: center;
-      padding: 2rem 1.5rem;
-      color: #666;
-      font-size: .8rem;
-    }
-    footer .quote { font-style: italic; color: #999; }
-    footer .footer-links {
-      margin-top: .7rem;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: .2rem 1rem;
-    }
-    footer .footer-links a { color: #777; font-size: .78rem; }
-
-    @media (max-width: 640px) {
-      .header-name { font-size: 1.35rem; }
-      .grid { grid-template-columns: 1fr; }
-      .featured { padding: 1.25rem 1rem; }
-      main { padding: 1.5rem 1rem 3rem; }
-    }
-  </style>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Miguel Angel Luque-Fernandez">
   <meta property="og:locale" content="en_US">
@@ -258,381 +43,736 @@
     "identifier": { "@type": "PropertyValue", "propertyID": "ORCID", "value": "0000-0001-6683-5164" }
   }
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400&display=swap">
   <script data-goatcounter="https://mluquefe.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
+  <style>
+    :root {
+      --paper: #F4F6F8;
+      --ink: #14171C;
+      --muted: #58616E;
+      --accent: #00488C;
+      --accent-deep: #002D5A;
+      --signal: #D26400;
+      --rule: #DDE2E8;
+      --rule-strong: #C2CAD3;
+      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+      --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --wrap: 1120px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection { background: var(--accent); color: #fff; }
+
+    a { color: var(--accent); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    code {
+      font-family: var(--mono);
+      font-size: .86em;
+      color: var(--ink);
+      background: rgba(0, 0, 0, .045);
+      padding: .05em .32em;
+      border-radius: 2px;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 200;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: .72rem;
+      padding: .55rem .85rem;
+      text-decoration: none;
+    }
+    .skip:focus { left: .6rem; top: .6rem; }
+
+    /* ---- Masthead ---- */
+    .masthead {
+      background: var(--paper);
+      border-top: 7px solid var(--accent-deep);
+    }
+    .masthead__inner {
+      max-width: var(--wrap);
+      margin: 0 auto;
+      padding: 2.6rem 1.5rem 1.5rem;
+      border-bottom: 3px double var(--rule-strong);
+    }
+    .masthead__name {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(2rem, 5.4vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.015em;
+      color: var(--accent-deep);
+    }
+    .masthead__degrees {
+      margin: .55rem 0 1.15rem;
+      font-family: var(--mono);
+      font-size: .63rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .masthead__role {
+      margin: 0 0 .18rem;
+      font-size: .86rem;
+      color: var(--ink);
+    }
+    .masthead__role--muted { color: var(--muted); }
+    .masthead__links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: .3rem 1.35rem;
+      margin-top: 1.3rem;
+      padding-top: .95rem;
+      border-top: 1px solid var(--rule);
+    }
+    .masthead__links a {
+      font-family: var(--mono);
+      font-size: .71rem;
+      letter-spacing: .03em;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+    }
+    .masthead__links a:hover,
+    .masthead__links a:focus-visible {
+      color: var(--accent-deep);
+      border-bottom-color: var(--accent-deep);
+    }
+
+    /* ---- Two-column layout with the contents rail ---- */
+    .layout {
+      max-width: var(--wrap);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 208px minmax(0, 1fr);
+      column-gap: 3.5rem;
+    }
+    .index {
+      grid-column: 1;
+      align-self: start;
+      position: sticky;
+      top: 1.25rem;
+      padding-top: 2.4rem;
+    }
+    .index__label {
+      margin: 0 0 .8rem;
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .index__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-left: 1px solid var(--rule-strong);
+    }
+    .index__list a {
+      display: block;
+      font-family: var(--mono);
+      font-size: .72rem;
+      line-height: 1.35;
+      color: var(--muted);
+      text-decoration: none;
+      padding: .32rem .85rem;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+    }
+    .index__list a:hover,
+    .index__list a:focus-visible {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    main { grid-column: 2; min-width: 0; padding-top: 2.4rem; }
+
+    /* ---- Lead items ---- */
+    .lead { padding-bottom: 1.6rem; }
+    .lead + .lead { padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+    .kicker {
+      margin: 0 0 .5rem;
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      color: var(--signal);
+    }
+    .lead__title {
+      margin: 0 0 .5rem;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: clamp(1.45rem, 2.7vw, 1.95rem);
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: var(--accent-deep);
+    }
+    .lead__desc {
+      margin: 0 0 .9rem;
+      max-width: 44rem;
+      font-size: .9rem;
+      line-height: 1.62;
+      color: var(--muted);
+    }
+    .lead__links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1.5rem; }
+
+    .link {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule-strong);
+      padding-bottom: 1px;
+      transition: color .15s ease, border-color .15s ease;
+    }
+    .link:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
+    .link--quiet { font-weight: 400; color: var(--muted); }
+    .link--quiet:hover { color: var(--accent); }
+    .new {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin-left: .4rem;
+      vertical-align: 2px;
+    }
+
+    /* ---- Reference-style section lists ---- */
+    .refs { margin-top: 2.9rem; }
+    .refs__title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin: 0 0 .1rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--accent-deep);
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.35rem;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .refs__count {
+      font-family: var(--mono);
+      font-size: .62rem;
+      font-weight: 400;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .refs__list { list-style: none; margin: 0; padding: 0; }
+    .ref {
+      display: grid;
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      column-gap: 1.6rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .ref__meta {
+      padding-top: .28rem;
+      font-family: var(--mono);
+      font-size: .63rem;
+      line-height: 1.5;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .ref__title {
+      margin: 0 0 .28rem;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.09rem;
+      line-height: 1.28;
+      color: var(--ink);
+    }
+    .ref__title a {
+      color: inherit;
+      text-decoration: none;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-size: 0% 1px;
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: background-size .18s ease, color .18s ease;
+    }
+    .ref__title a:hover,
+    .ref__title a:focus-visible { color: var(--accent); background-size: 100% 1px; }
+    @media (prefers-reduced-motion: reduce) { .ref__title a { transition: none; } }
+    .ref__desc {
+      margin: 0;
+      max-width: 42rem;
+      font-size: .82rem;
+      line-height: 1.58;
+      color: var(--muted);
+    }
+    .ref__doi {
+      display: inline-block;
+      margin-top: .4rem;
+      font-family: var(--mono);
+      font-size: .63rem;
+      letter-spacing: .04em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .ref__doi:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---- Colophon ---- */
+    .colophon {
+      max-width: var(--wrap);
+      margin: 3.2rem auto 0;
+      padding: 1.5rem 1.5rem 2.8rem;
+      border-top: 3px double var(--rule-strong);
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .03em;
+      color: var(--muted);
+    }
+    .colophon__quote {
+      margin: 0 0 .15rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+    .colophon__attrib { margin: 0 0 1.1rem; }
+    .colophon__links { display: flex; flex-wrap: wrap; gap: .3rem 1.3rem; }
+    .colophon__links a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule-strong);
+      padding-bottom: 1px;
+    }
+    .colophon__links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ---- Small screens ---- */
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; column-gap: 0; }
+      .masthead__inner { padding-top: 2rem; }
+      .index {
+        grid-column: 1;
+        position: static;
+        padding: 1.3rem 0 1rem;
+        border-bottom: 1px solid var(--rule-strong);
+      }
+      .index__label { display: none; }
+      .index__list { display: flex; flex-wrap: wrap; gap: .3rem; border-left: none; }
+      .index__list a {
+        border: 1px solid var(--rule-strong);
+        border-radius: 2px;
+        padding: .22rem .55rem;
+        margin-left: 0;
+      }
+      .index__list a:hover { border-color: var(--accent); border-left-color: var(--accent); }
+      main { grid-column: 1; padding-top: 1.6rem; }
+      .ref { grid-template-columns: 1fr; row-gap: .35rem; padding: 1rem 0; }
+      .ref__meta { display: flex; flex-wrap: wrap; gap: .35rem 1rem; padding-top: 0; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="site-header-inner">
-    <h1 class="header-name">Miguel Angel Luque-Fernandez <span class="header-degrees">MA &middot; MSc &middot; MPH &middot; BSc &middot; PhD</span></h1>
-    <p class="header-prof">Full Professor, Dpt. of Statistics and Operations Research, Universidad de Granada</p>
-    <p class="header-affil">Honorary Associate Professor of Biostatistics and Epidemiology, LSHTM</p>
-    <div class="header-links">
-      <a href="https://github.com/migariane">&#x2B21; GitHub</a>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <h1 class="masthead__name">Miguel Angel Luque-Fernandez</h1>
+    <p class="masthead__degrees">MA &middot; MSc &middot; MPH &middot; BSc &middot; PhD</p>
+    <p class="masthead__role">Full Professor, Dpt. of Statistics and Operations Research, Universidad de Granada</p>
+    <p class="masthead__role masthead__role--muted">Honorary Associate Professor of Biostatistics and Epidemiology, LSHTM</p>
+    <nav class="masthead__links" aria-label="Profiles and contact">
+      <a href="https://github.com/migariane">GitHub</a>
       <a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&amp;hl=en">Google Scholar</a>
       <a href="https://maluque.netlify.app/">Academic Site</a>
       <a href="https://maluque-girto71.gamma.site/">Personal Site</a>
       <a href="https://twitter.com/WATZILEI">@WATZILEI</a>
       <a href="mailto:mluquefe@ugr.es">mluquefe@ugr.es</a>
-    </div>
+    </nav>
   </div>
 </header>
 
-<nav class="site-nav" aria-label="Jump to section">
-  <div class="site-nav-inner">
-    <a href="#conformal">Conformal Inference</a>
-    <a href="#causal">Causal Inference</a>
-    <a href="#survival">Survival Analysis</a>
-    <a href="#ml">Machine Learning</a>
-    <a href="#apps">Shiny Apps</a>
-    <a href="#stata">Stata Packages</a>
-    <a href="#r-pkgs">R Packages</a>
-    <a href="#books">Books</a>
-  </div>
-</nav>
+<div class="layout">
 
-<main>
+  <aside class="index" aria-label="Contents">
+    <p class="index__label">Contents</p>
+    <ul class="index__list">
+      <li><a href="#conformal">Conformal Inference</a></li>
+      <li><a href="#causal">Causal Inference</a></li>
+      <li><a href="#survival">Survival Analysis</a></li>
+      <li><a href="#ml">Machine Learning</a></li>
+      <li><a href="#apps">Shiny Apps</a></li>
+      <li><a href="#stata">Stata Packages</a></li>
+      <li><a href="#r-pkgs">R Packages</a></li>
+      <li><a href="#books">Books</a></li>
+      <li><a href="#tools">Tools &amp; Guides</a></li>
+    </ul>
+  </aside>
 
-  <div class="featured" id="conformal">
-    <div class="featured-label">Featured</div>
-    <h2>Conformal Statistical Inference</h2>
-    <p>
-      Marginal coverage guarantees, split conformal prediction (SCP),
-      conformal quantile regression (CQR), full conformal, and Jackknife+.
-      Available as a comprehensive interactive notebook and a slide tutorial in Spanish.
-    </p>
-    <div class="featured-links">
-      <a class="btn btn-white" href="./ConformalInferenceExplained.html">Comprehensive Guide (EN)</a>
-      <a class="btn btn-outline" href="./ConformalPrediction_Tutorial_ES.html">Tutorial Slides (ES) <span class="btn-new">NEW</span></a>
-    </div>
-  </div>
+  <main id="main">
 
-  <div class="featured featured-book" id="book">
-    <div class="featured-label">New Book</div>
-    <h2>Computational Causal Inference for Applied Researchers</h2>
-    <p>
-      An introduction to causal inference that starts from potential outcomes and DAGs and builds
-      up to TMLE, longitudinal data, mediation, and sensitivity analysis. Nine chapters with
-      reproducible R and Stata examples (~65 in total).
-    </p>
-    <div class="featured-links">
-      <a class="btn btn-white" href="https://migariane.github.io/Causal-Inference-Book/">Read the Book</a>
-      <a class="btn btn-outline" href="https://github.com/migariane/Causal-Inference-Book">GitHub Repo <span class="btn-new">NEW</span></a>
-    </div>
-  </div>
+    <section class="lead" id="conformal">
+      <p class="kicker">Featured</p>
+      <h2 class="lead__title">Conformal Statistical Inference</h2>
+      <p class="lead__desc">
+        Marginal coverage guarantees, split conformal prediction (SCP),
+        conformal quantile regression (CQR), full conformal, and Jackknife+.
+        Available as a comprehensive interactive notebook and a slide tutorial in Spanish.
+      </p>
+      <p class="lead__links">
+        <a class="link" href="./ConformalInferenceExplained.html">Comprehensive Guide (EN)</a>
+        <a class="link link--quiet" href="./ConformalPrediction_Tutorial_ES.html">Tutorial Slides (ES)<span class="new">new</span></a>
+      </p>
+    </section>
 
-  <section class="section" id="causal">
-    <h2 class="section-title">Causal Inference &amp; TMLE</h2>
-    <div class="grid">
+    <section class="lead" id="book">
+      <p class="kicker">New Book</p>
+      <h2 class="lead__title">Computational Causal Inference for Applied Researchers</h2>
+      <p class="lead__desc">
+        An introduction to causal inference that starts from potential outcomes and DAGs and builds
+        up to TMLE, longitudinal data, mediation, and sensitivity analysis. Nine chapters with
+        reproducible R and Stata examples (~65 in total).
+      </p>
+      <p class="lead__links">
+        <a class="link" href="https://migariane.github.io/Causal-Inference-Book/">Read the Book</a>
+        <a class="link link--quiet" href="https://github.com/migariane/Causal-Inference-Book">GitHub Repo<span class="new">new</span></a>
+      </p>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://migariane.github.io/Causal-Inference-Book/">Computational Causal Inference for Applied Researchers (Book)</a>
-        </div>
-        <div class="card-desc">The full book online. Nine chapters, 71 references. From potential outcomes and DAGs through to TMLE, with R and Stata code throughout.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span><span class="badge badge-stata">Stata</span><span class="badge badge-github">Book</span></div>
-      </article>
+    <section class="refs" id="causal" aria-labelledby="causal-h">
+      <h2 class="refs__title" id="causal-h">Causal Inference &amp; TMLE <span class="refs__count">8 works</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./CATE/CATE_h2oml.html">Metalearners vs ELTMLE for Heterogeneous Treatment Effect Estimation</a>
-        </div>
-        <div class="card-desc">Comparing S-, T-, and X-learners (h2o with GBM) against ELTMLE in Stata. CATE estimation with theoretical background and reproducible Quarto analysis.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span><span class="badge badge-stata">Stata</span><span class="badge badge-github">Quarto</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Book<br>R &middot; Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://migariane.github.io/Causal-Inference-Book/">Computational Causal Inference for Applied Researchers (Book)</a></h3>
+            <p class="ref__desc">The full book online. Nine chapters, 71 references. From potential outcomes and DAGs through to TMLE, with R and Stata code throughout.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./TMLE.nb.html">Targeted Maximum Likelihood Estimation (TMLE) in R</a>
-        </div>
-        <div class="card-desc">A practical walk-through of TMLE: influence functions, the fluctuation step, and variance estimation, all with worked examples in R.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Quarto<br>R &middot; Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./CATE/CATE_h2oml.html">Metalearners vs ELTMLE for Heterogeneous Treatment Effect Estimation</a></h3>
+            <p class="ref__desc">Comparing S-, T-, and X-learners (h2o with GBM) against ELTMLE in Stata. CATE estimation with theoretical background and reproducible Quarto analysis.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./CIM.html">Applied Computational Causal Inference using Stata</a>
-        </div>
-        <div class="card-desc">Doubly robust methods, AIPW, and TMLE in Stata using the <code>eltmle</code> command. Real-data examples and hands-on workflow.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Notebook<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./TMLE.nb.html">Targeted Maximum Likelihood Estimation (TMLE) in R</a></h3>
+            <p class="ref__desc">A practical walk-through of TMLE: influence functions, the fluctuation step, and variance estimation, all with worked examples in R.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./Maths_TMLE-IF.html">Las matem&aacute;ticas detr&aacute;s de TMLE (en espa&ntilde;ol)</a>
-        </div>
-        <div class="card-desc">Derivaci&oacute;n matem&aacute;tica completa: funciones de influencia, teor&iacute;a semiparam&eacute;trica, y estimadores doblemente robustos.</div>
-        <div class="card-meta"><span class="badge badge-es">ES</span><span class="badge badge-r">R</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./CIM.html">Applied Computational Causal Inference using Stata</a></h3>
+            <p class="ref__desc">Doubly robust methods, AIPW, and TMLE in Stata using the <code>eltmle</code> command. Real-data examples and hands-on workflow.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./DeltaMethodEpiTutorial.nb.html">Delta Method Tutorial</a>
-        </div>
-        <div class="card-desc">Variance estimation via the delta method for common epidemiological estimands. Derivations and examples in an R notebook.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Espa&ntilde;ol<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./Maths_TMLE-IF.html">Las matem&aacute;ticas detr&aacute;s de TMLE (en espa&ntilde;ol)</a></h3>
+            <p class="ref__desc">Derivaci&oacute;n matem&aacute;tica completa: funciones de influencia, teor&iacute;a semiparam&eacute;trica, y estimadores doblemente robustos.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./eltmle_one_sim.html">ELTMLE: One Simulation (2017 SUGM)</a>
-        </div>
-        <div class="card-desc">Simulation study presented at the 2017 Stata User Group Meeting, comparing <code>eltmle</code> to competitors under dual misspecification.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./DeltaMethodEpiTutorial.nb.html">Delta Method Tutorial</a></h3>
+            <p class="ref__desc">Variance estimation via the delta method for common epidemiological estimands. Derivations and examples in an R notebook.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/meltmle">ELTMLE &mdash; GitHub Repository</a>
-        </div>
-        <div class="card-desc">Open-source Stata module for TMLE estimation of the average treatment effect, with SuperLearner integration.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Simulation<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./eltmle_one_sim.html">ELTMLE: One Simulation (2017 SUGM)</a></h3>
+            <p class="ref__desc">Simulation study presented at the 2017 Stata User Group Meeting, comparing <code>eltmle</code> to competitors under dual misspecification.</p>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Package<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/meltmle">ELTMLE &mdash; GitHub Repository</a></h3>
+            <p class="ref__desc">Open-source Stata module for TMLE estimation of the average treatment effect, with SuperLearner integration.</p>
+          </div>
+        </li>
 
-  <section class="section" id="survival">
-    <h2 class="section-title">Survival Analysis</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./Tutorial-SVA-ULB.html">Introduction to Time-to-Event Analysis</a>
-        </div>
-        <div class="card-desc">Kaplan-Meier curves, log-rank tests, and Cox proportional hazards models. Workshop tutorial from ULB.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span></div>
-      </article>
+    <section class="refs" id="survival" aria-labelledby="survival-h">
+      <h2 class="refs__title" id="survival-h">Survival Analysis <span class="refs__count">4 works</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./Cohort.html">Net Survival: Cohort Analysis (Relative Survival Framework)</a>
-        </div>
-        <div class="card-desc">Standardizing net survival estimates in a cohort design. For Stata users working with population-based cancer registry data.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Workshop<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./Tutorial-SVA-ULB.html">Introduction to Time-to-Event Analysis</a></h3>
+            <p class="ref__desc">Kaplan-Meier curves, log-rank tests, and Cox proportional hazards models. Workshop tutorial from ULB.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./TutorialOne.html">Net Survival: STRS &amp; Poisson Regression</a>
-        </div>
-        <div class="card-desc">Fitting STRS models and Poisson regression for net survival estimation under the relative survival framework.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./Cohort.html">Net Survival: Cohort Analysis (Relative Survival Framework)</a></h3>
+            <p class="ref__desc">Standardizing net survival estimates in a cohort design. For Stata users working with population-based cancer registry data.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./TutorialTwo.html">Net Survival: Flexible Parametric Modeling</a>
-        </div>
-        <div class="card-desc">Royston-Parmar flexible parametric survival models applied to net survival. Extended tutorial with full Stata code.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./TutorialOne.html">Net Survival: STRS &amp; Poisson Regression</a></h3>
+            <p class="ref__desc">Fitting STRS models and Poisson regression for net survival estimation under the relative survival framework.</p>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="./TutorialTwo.html">Net Survival: Flexible Parametric Modeling</a></h3>
+            <p class="ref__desc">Royston-Parmar flexible parametric survival models applied to net survival. Extended tutorial with full Stata code.</p>
+          </div>
+        </li>
 
-  <section class="section" id="ml">
-    <h2 class="section-title">Machine Learning</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./SL-Tutorial/SuperLearner_Tutorial.html">SuperLearner Tutorial for Epidemiologists & Biostatisticians</a>
-        </div>
-        <div class="card-desc">Cross-validated ensemble ML with clinical application: binary & continuous outcomes, hyperparameter tuning, feature screening, parallel computing, custom wrappers, and TMLE bridge. R + Quarto.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span></div>
-      </article>
+    <section class="refs" id="ml" aria-labelledby="ml-h">
+      <h2 class="refs__title" id="ml-h">Machine Learning <span class="refs__count">3 works</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./CrossValidation.nb.html">Cross-Validation in Practice with R</a>
-        </div>
-        <div class="card-desc">K-fold CV, leave-one-out, and bootstrap resampling for model selection and evaluation. Interactive R notebook.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Tutorial<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./SL-Tutorial/SuperLearner_Tutorial.html">SuperLearner Tutorial for Epidemiologists &amp; Biostatisticians</a></h3>
+            <p class="ref__desc">Cross-validated ensemble ML with clinical application: binary &amp; continuous outcomes, hyperparameter tuning, feature screening, parallel computing, custom wrappers, and TMLE bridge. R + Quarto.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/cvAUROC">cvAUROC &mdash; Cross-validated AUC for Stata</a>
-        </div>
-        <div class="card-desc">Stata module that computes cross-validated area under the ROC curve with bootstrap confidence intervals.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Notebook<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="./CrossValidation.nb.html">Cross-Validation in Practice with R</a></h3>
+            <p class="ref__desc">K-fold CV, leave-one-out, and bootstrap resampling for model selection and evaluation. Interactive R notebook.</p>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Package<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/cvAUROC">cvAUROC &mdash; Cross-validated AUC for Stata</a></h3>
+            <p class="ref__desc">Stata module that computes cross-validated area under the ROC curve with bootstrap confidence intervals.</p>
+          </div>
+        </li>
 
-  <section class="section" id="apps">
-    <h2 class="section-title">Interactive Shiny Apps</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/RENTA/">Desigualdades Sociales en Andaluc&iacute;a (RENTA)</a>
-        </div>
-        <div class="card-desc">Mapa interactivo de renta mediana y variables sociodemogr&aacute;ficas por secci&oacute;n censal en Andaluc&iacute;a (2015&ndash;2022). Incluye asistente inteligente con IA local (Ollama) para consultas en lenguaje natural, garantizando la privacidad de los datos.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+    <section class="refs" id="apps" aria-labelledby="apps-h">
+      <h2 class="refs__title" id="apps-h">Interactive Shiny Apps <span class="refs__count">7 apps</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/ExpectedDateDelivery/">Expected Date of Delivery</a>
-        </div>
-        <div class="card-desc">Calculate an expected delivery date from gestational age, with uncertainty intervals.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/RENTA/">Desigualdades Sociales en Andaluc&iacute;a (RENTA)</a></h3>
+            <p class="ref__desc">Mapa interactivo de renta mediana y variables sociodemogr&aacute;ficas por secci&oacute;n censal en Andaluc&iacute;a (2015&ndash;2022). Incluye asistente inteligente con IA local (Ollama) para consultas en lenguaje natural, garantizando la privacidad de los datos.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/CoMCoR/">Pattern of Comorbidities in Cancer</a>
-        </div>
-        <div class="card-desc">Interactive network visualisation of comorbidity patterns among cancer patients.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/ExpectedDateDelivery/">Expected Date of Delivery</a></h3>
+            <p class="ref__desc">Calculate an expected delivery date from gestational age, with uncertainty intervals.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/Pardist/">Parametric Distributions: Time-to-Event</a>
-        </div>
-        <div class="card-desc">Explore Weibull, log-normal, and Gompertz survival distributions and their hazard functions interactively.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/CoMCoR/">Pattern of Comorbidities in Cancer</a></h3>
+            <p class="ref__desc">Interactive network visualisation of comorbidity patterns among cancer patients.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/EpiCollider/">Colliders in Epidemiology</a>
-        </div>
-        <div class="card-desc">A visual demonstration of collider bias and selection bias in causal inference.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/Pardist/">Parametric Distributions: Time-to-Event</a></h3>
+            <p class="ref__desc">Explore Weibull, log-normal, and Gompertz survival distributions and their hazard functions interactively.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/TeoreCLT/">Central Limit Theorem Explorer</a>
-        </div>
-        <div class="card-desc">Draw samples from normal, uniform, exponential, and bimodal distributions to see the CLT emerge step by step.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/EpiCollider/">Colliders in Epidemiology</a></h3>
+            <p class="ref__desc">A visual demonstration of collider bias and selection bias in causal inference.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://watzile.shinyapps.io/IntervalosConfianza/">Confidence Intervals Explorer</a>
-        </div>
-        <div class="card-desc">How do sample size, variability, and confidence level affect interval width? Uses simulated repeated sampling to show what coverage probability actually means.</div>
-        <div class="card-meta"><span class="badge badge-shiny">Shiny</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/TeoreCLT/">Central Limit Theorem Explorer</a></h3>
+            <p class="ref__desc">Draw samples from normal, uniform, exponential, and bimodal distributions to see the CLT emerge step by step.</p>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">App<br>Shiny</div>
+          <div>
+            <h3 class="ref__title"><a href="https://watzile.shinyapps.io/IntervalosConfianza/">Confidence Intervals Explorer</a></h3>
+            <p class="ref__desc">How do sample size, variability, and confidence level affect interval width? Uses simulated repeated sampling to show what coverage probability actually means.</p>
+          </div>
+        </li>
 
-  <section class="section" id="stata">
-    <h2 class="section-title">Stata Packages</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/meltmle">eltmle</a>
-        </div>
-        <div class="card-desc">Targeted Maximum Likelihood Estimation for the average treatment effect in Stata, using SuperLearner ensemble learning.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
-      </article>
+    <section class="refs" id="stata" aria-labelledby="stata-h">
+      <h2 class="refs__title" id="stata-h">Stata Packages <span class="refs__count">3 packages</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/cvAUROC">cvAUROC</a>
-        </div>
-        <div class="card-desc">Cross-validated area under the ROC curve for binary classifiers, with bootstrap CIs and k-fold CV.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Package<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/meltmle">eltmle</a></h3>
+            <p class="ref__desc">Targeted Maximum Likelihood Estimation for the average treatment effect in Stata, using SuperLearner ensemble learning.</p>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/cmatch">cmatch</a>
-        </div>
-        <div class="card-desc">Quick tabulation of matched pairs in 1:1 case-control studies by exposure status. Simple, small, well tested.</div>
-        <div class="card-meta"><span class="badge badge-stata">Stata</span><span class="badge badge-github">GitHub</span></div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Package<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/cvAUROC">cvAUROC</a></h3>
+            <p class="ref__desc">Cross-validated area under the ROC curve for binary classifiers, with bootstrap CIs and k-fold CV.</p>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Package<br>Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/cmatch">cmatch</a></h3>
+            <p class="ref__desc">Quick tabulation of matched pairs in 1:1 case-control studies by exposure status. Simple, small, well tested.</p>
+          </div>
+        </li>
 
-  <section class="section" id="r-pkgs">
-    <h2 class="section-title">R Packages</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://migariane.github.io/BioEstatR/">BioEstatR</a>
-        </div>
-        <div class="card-desc">Classical biostatistics routines for the health sciences &mdash; companion package to <em>Matem&aacute;tica Estad&iacute;stica M&eacute;dica con R</em>. Probability, inference, regression, epidemiology.</div>
-        <div class="card-meta"><span class="badge badge-r">R</span><span class="badge badge-github">pkgdown</span></div>
-      </article>
+    <section class="refs" id="r-pkgs" aria-labelledby="r-pkgs-h">
+      <h2 class="refs__title" id="r-pkgs-h">R Packages <span class="refs__count">1 package</span></h2>
+      <ol class="refs__list">
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Package<br>R</div>
+          <div>
+            <h3 class="ref__title"><a href="https://migariane.github.io/BioEstatR/">BioEstatR</a></h3>
+            <p class="ref__desc">Classical biostatistics routines for the health sciences &mdash; companion package to <em>Matem&aacute;tica Estad&iacute;stica M&eacute;dica con R</em>. Probability, inference, regression, epidemiology.</p>
+          </div>
+        </li>
 
-  <section class="section" id="books">
-    <h2 class="section-title">Books</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://migariane.github.io/Causal-Inference-Book/">Computational Causal Inference for Applied Researchers</a>
-        </div>
-        <div class="card-desc">Nine chapters covering potential outcomes, DAGs, G-formula, propensity scores, AIPW, TMLE, longitudinal data, mediation, and sensitivity analysis. About 65 examples in R and Stata.</div>
-        <div class="card-meta">
-          <span class="badge badge-r">R</span><span class="badge badge-stata">Stata</span><span class="badge badge-github">Book</span>
-          <a href="https://doi.org/10.5281/zenodo.20677995"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20677995.svg" alt="DOI: 10.5281/zenodo.20677995"></a>
-        </div>
-      </article>
+    <section class="refs" id="books" aria-labelledby="books-h">
+      <h2 class="refs__title" id="books-h">Books <span class="refs__count">3 books</span></h2>
+      <ol class="refs__list">
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://github.com/migariane/MatematicaEstadisticaMedicinaR">Mathematical Statistics with R (Matem&aacute;tica Estad&iacute;stica con R)</a>
-        </div>
-        <div class="card-desc">Open-access textbook on mathematical statistics for medicine and the health sciences. R and Quarto throughout. In Spanish.</div>
-        <div class="card-meta">
-          <span class="badge badge-r">R</span><span class="badge badge-es">ES</span><span class="badge badge-github">Book</span>
-          <a href="https://doi.org/10.5281/zenodo.20677785"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20677785.svg" alt="DOI: 10.5281/zenodo.20677785"></a>
-        </div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Book<br>R &middot; Stata</div>
+          <div>
+            <h3 class="ref__title"><a href="https://migariane.github.io/Causal-Inference-Book/">Computational Causal Inference for Applied Researchers</a></h3>
+            <p class="ref__desc">Nine chapters covering potential outcomes, DAGs, G-formula, propensity scores, AIPW, TMLE, longitudinal data, mediation, and sensitivity analysis. About 65 examples in R and Stata.</p>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677995">DOI 10.5281/zenodo.20677995</a>
+          </div>
+        </li>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="https://migariane.github.io/Bioestadistica/">Advanced Methods for Biostatistics (Bioestad&iacute;stica Aplicada)</a>
-        </div>
-        <div class="card-desc">Applied biostatistics: survival analysis, longitudinal models, causal inference, and diagnostic test evaluation. R implementations throughout.</div>
-        <div class="card-meta">
-          <span class="badge badge-r">R</span><span class="badge badge-es">ES</span><span class="badge badge-github">Book</span>
-          <a href="https://doi.org/10.5281/zenodo.18277805"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.18277805.svg" alt="DOI: 10.5281/zenodo.18277805"></a>
-        </div>
-      </article>
+        <li class="ref">
+          <div class="ref__meta">Book<br>R &middot; ES</div>
+          <div>
+            <h3 class="ref__title"><a href="https://github.com/migariane/MatematicaEstadisticaMedicinaR">Mathematical Statistics with R (Matem&aacute;tica Estad&iacute;stica con R)</a></h3>
+            <p class="ref__desc">Open-access textbook on mathematical statistics for medicine and the health sciences. R and Quarto throughout. In Spanish.</p>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.20677785">DOI 10.5281/zenodo.20677785</a>
+          </div>
+        </li>
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Book<br>R &middot; ES</div>
+          <div>
+            <h3 class="ref__title"><a href="https://migariane.github.io/Bioestadistica/">Advanced Methods for Biostatistics (Bioestad&iacute;stica Aplicada)</a></h3>
+            <p class="ref__desc">Applied biostatistics: survival analysis, longitudinal models, causal inference, and diagnostic test evaluation. R implementations throughout.</p>
+            <a class="ref__doi" href="https://doi.org/10.5281/zenodo.18277805">DOI 10.5281/zenodo.18277805</a>
+          </div>
+        </li>
 
-  <section class="section" id="tools">
-    <h2 class="section-title">Tools &amp; Guides</h2>
-    <div class="grid">
+      </ol>
+    </section>
 
-      <article class="card">
-        <div class="card-title">
-          <a href="./ClaudeCodeWindowsBiostat.html">Claude Code en Windows</a>
-        </div>
-        <div class="card-desc">Gu&iacute;a paso a paso para instalar y usar Claude Code en Windows, orientada a estad&iacute;sticos y cient&iacute;ficos de datos.</div>
-        <div class="card-meta"><span class="badge badge-es">ES</span><span class="badge badge-slides">Guide</span></div>
-      </article>
+    <section class="refs" id="tools" aria-labelledby="tools-h">
+      <h2 class="refs__title" id="tools-h">Tools &amp; Guides <span class="refs__count">1 guide</span></h2>
+      <ol class="refs__list">
 
-    </div>
-  </section>
+        <li class="ref">
+          <div class="ref__meta">Guide<br>Espa&ntilde;ol</div>
+          <div>
+            <h3 class="ref__title"><a href="./ClaudeCodeWindowsBiostat.html">Claude Code en Windows</a></h3>
+            <p class="ref__desc">Gu&iacute;a paso a paso para instalar y usar Claude Code en Windows, orientada a estad&iacute;sticos y cient&iacute;ficos de datos.</p>
+          </div>
+        </li>
 
-</main>
+      </ol>
+    </section>
 
-<footer>
-  <p class="quote">"Learning never exhausts the mind"</p>
-  <p>&mdash; Leonardo da Vinci</p>
-  <div class="footer-links">
+  </main>
+
+</div>
+
+<footer class="colophon">
+  <p class="colophon__quote">"Learning never exhausts the mind"</p>
+  <p class="colophon__attrib">&mdash; Leonardo da Vinci</p>
+  <div class="colophon__links">
     <a href="https://github.com/migariane/migariane.github.io">View on GitHub</a>
     <a href="http://scholar.google.com/citations?user=lA11XToAAAAJ&amp;hl=en">Google Scholar</a>
     <a href="https://maluque.netlify.app/">Academic Website</a>
