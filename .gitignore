@@ -3,3 +3,7 @@
 CATE/socialpressure.dta
 CATE/tmle_results.dta
 CATE/*.dta
+
+# Historial de consola R — local a la máquina, puede contener rutas y datos
+.Rhistory
+.RData
