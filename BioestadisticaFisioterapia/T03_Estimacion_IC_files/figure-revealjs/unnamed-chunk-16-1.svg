@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='252.00pt' viewBox='0 0 648.00 252.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwyNTIuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='252.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwyNTIuMDA=)'>
+<line x1='106.67' y1='194.40' x2='613.33' y2='194.40' style='stroke-width: 0.75;' />
+<line x1='106.67' y1='194.40' x2='106.67' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='191.11' y1='194.40' x2='191.11' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='275.56' y1='194.40' x2='275.56' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='360.00' y1='194.40' x2='360.00' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='444.44' y1='194.40' x2='444.44' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='528.89' y1='194.40' x2='528.89' y2='201.60' style='stroke-width: 0.75;' />
+<line x1='613.33' y1='194.40' x2='613.33' y2='201.60' style='stroke-width: 0.75;' />
+<text x='106.67' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>162</text>
+<text x='191.11' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>164</text>
+<text x='275.56' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>166</text>
+<text x='360.00' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>168</text>
+<text x='444.44' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>170</text>
+<text x='528.89' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>172</text>
+<text x='613.33' y='220.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>174</text>
+<text x='360.00' y='19.55' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='240.75px' lengthAdjust='spacingAndGlyphs'>IC 95% y valor de referencia clínico</text>
+<text x='360.00' y='249.12' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='154.72px' lengthAdjust='spacingAndGlyphs'>Grados de flexión de hombro</text>
+</g>
+<defs>
+  <clipPath id='cpODYuNDB8NjMzLjYwfDI4LjgwfDE5NC40MA=='>
+    <rect x='86.40' y='28.80' width='547.20' height='165.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpODYuNDB8NjMzLjYwfDI4LjgwfDE5NC40MA==)'>
+<polyline points='229.11,111.60 512.00,111.60 ' style='stroke-width: 4.50; stroke: #4682B4;' />
+<circle cx='370.56' cy='111.60' r='5.40' style='stroke-width: 0.75; stroke: #00008B; fill: #00008B;' />
+<text x='340.44' y='95.82' style='font-size: 13.20px; font-family: "Arial";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>x</text>
+<polyline points='340.44,87.08 347.03,87.08 ' style='stroke-width: 0.75;' />
+<text x='350.09' y='95.82' style='font-size: 13.20px; font-family: "Symbol";' textLength='7.23px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='360.37' y='95.82' style='font-size: 13.20px; font-family: "Arial";' textLength='40.30px' lengthAdjust='spacingAndGlyphs'>168.25</text>
+<text x='229.11' y='130.80' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='31.31px' lengthAdjust='spacingAndGlyphs'>164.9°</text>
+<text x='512.00' y='130.80' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='31.31px' lengthAdjust='spacingAndGlyphs'>171.6°</text>
+<line x1='444.44' y1='194.40' x2='444.44' y2='28.80' style='stroke-width: 2.25; stroke: #006400; stroke-dasharray: 12.00,12.00;' />
+<text x='411.38' y='74.07' style='font-size: 13.20px;fill: #006400; font-family: "Arial";' textLength='9.53px' lengthAdjust='spacingAndGlyphs'>H</text>
+<text x='420.90' y='76.47' style='font-size: 9.24px;fill: #006400; font-family: "Arial";' textLength='5.14px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='428.49' y='74.07' style='font-size: 13.20px;fill: #006400; font-family: "Symbol";' textLength='3.66px' lengthAdjust='spacingAndGlyphs'>:</text>
+<text x='434.59' y='74.07' style='font-size: 13.20px;fill: #006400; font-family: "Symbol";' textLength='7.59px' lengthAdjust='spacingAndGlyphs'>μ</text>
+<text x='445.24' y='74.07' style='font-size: 13.20px;fill: #006400; font-family: "Symbol";' textLength='7.23px' lengthAdjust='spacingAndGlyphs'>=</text>
+<text x='455.53' y='74.07' style='font-size: 13.20px;fill: #006400; font-family: "Arial";' textLength='21.98px' lengthAdjust='spacingAndGlyphs'>170</text>
+<text x='245.81' y='48.58' style='font-size: 13.20px; font-family: "Symbol";' textLength='7.59px' lengthAdjust='spacingAndGlyphs'>μ</text>
+<text x='253.40' y='50.98' style='font-size: 9.24px; font-family: "Arial";' textLength='5.14px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='258.54' y='48.58' style='font-size: 13.20px; font-family: "Arial";' textLength='50.53px' lengthAdjust='spacingAndGlyphs'> está en </text>
+<text x='309.08' y='48.58' style='font-size: 13.20px; font-family: "Arial";' textLength='3.66px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='312.74' y='48.58' style='font-size: 13.20px; font-family: "Arial";' textLength='9.53px' lengthAdjust='spacingAndGlyphs'>C</text>
+<text x='322.27' y='50.98' style='font-size: 9.24px; font-family: "Arial";' textLength='10.28px' lengthAdjust='spacingAndGlyphs'>95</text>
+<text x='332.55' y='50.98' style='font-size: 9.24px; font-family: "Symbol";' textLength='2.31px' lengthAdjust='spacingAndGlyphs'> </text>
+<text x='334.86' y='50.98' style='font-size: 9.24px; font-family: "Arial";' textLength='8.20px' lengthAdjust='spacingAndGlyphs'>%</text>
+<text x='343.07' y='48.58' style='font-size: 13.20px; font-family: "Arial";' textLength='116.45px' lengthAdjust='spacingAndGlyphs'>  →  No se rechaza </text>
+<text x='459.53' y='48.58' style='font-size: 13.20px; font-family: "Arial";' textLength='9.53px' lengthAdjust='spacingAndGlyphs'>H</text>
+<text x='469.05' y='50.98' style='font-size: 9.24px; font-family: "Arial";' textLength='5.14px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='106.67' y='176.33' text-anchor='middle' style='font-size: 9.60px;fill: #7F7F7F; font-family: "Arial";' textLength='73.55px' lengthAdjust='spacingAndGlyphs'>← Rechazaría H₀</text>
+<text x='571.11' y='176.33' text-anchor='middle' style='font-size: 9.60px;fill: #7F7F7F; font-family: "Arial";' textLength='73.55px' lengthAdjust='spacingAndGlyphs'>Rechazaría H₀ →</text>
+</g>
+</g>
+</svg>

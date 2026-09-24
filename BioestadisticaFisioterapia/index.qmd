@@ -1,0 +1,187 @@
+---
+title: "Bioestadística para Fisioterapia"
+subtitle: "Material docente — Grado en Fisioterapia"
+author:
+  - name: "Miguel Angel Luque-Fernández"
+    affiliation: "Dpto. Estadística e Investigación Operativa, Universidad de Granada"
+    email: "mluquefe@ugr.es"
+    url: "https://migariane.github.io"
+date: "2026-08-08"
+license: "CC BY 4.0"
+description: "Material docente interactivo de Bioestadística del Grado en Fisioterapia de la Universidad de Granada. Diapositivas Quarto/RevealJS con código R ejecutable."
+keywords: "bioestadística, fisioterapia, estadística, universidad de granada, UGR, grado fisioterapia, slides, quarto, revealjs, R, material docente"
+format:
+  revealjs:
+    theme: [default, madrid-theme.scss]
+    slide-number: false
+    fig-align: center
+    lang: es
+---
+
+# Bioestadística para Fisioterapia {.center}
+
+![](logo.png){width="100px"}
+
+**Grado en Fisioterapia** · Universidad de Granada
+
+**CC BY 4.0** · Miguel Angel Luque-Fernández
+
+[migariane.github.io](https://migariane.github.io) · Dpto. Estadística e Investigación Operativa
+
+---
+
+# Objetivos del Curso {.center}
+
+::: {.incremental}
+- **Leer críticamente** la literatura científica en fisioterapia
+- **Analizar datos clínicos** con herramientas estadísticas apropiadas
+- **Interpretar correctamente** p-valores, intervalos de confianza y tamaños del efecto
+- **Elegir la prueba adecuada** según el tipo de variable y diseño del estudio
+- **Reproducir análisis** usando R y el paquete BioEstatR
+- **Comunicar resultados** estadísticos de forma clara y rigurosa
+:::
+
+---
+
+## Contenido del Curso
+
+::: {.callout-note}
+Cada tema incluye: fundamentos teóricos con desarrollo matemático, aplicación clínica en fisioterapia, ejemplos numéricos paso a paso, y práctica guiada con **R + BioEstatR**.
+:::
+
+| # | Tema | Contenido principal | Ref. libro | Enlace |
+|:--:|------|--------------------|:----------:|--------|
+| **01** | Estadística Descriptiva (I) | Tipos de datos, tablas, organización, resumen, visualización | Sem. 1 | → [T01-I](T01_I_Descriptiva.html) |
+| **01** | Estadística Descriptiva (II) | Medidas de posición, dispersión, forma, aplicación práctica | Sem. 2 | → [T01-II](T01_II_Descriptiva.html) |
+| **02** | Probabilidad y VA (I) | Kolmogorov, Bayes, VPP/VPN, variables aleatorias discretas y continuas | Sem. 3 | → [T02-I](T02_I_Probabilidad.html) |
+| **02** | Probabilidad y VA (II) | Distribuciones Normal, Binomial, Poisson, t, χ², F, TCL, aproximaciones | Sem. 4–5 | → [T02-II](T02_II_Probabilidad.html) |
+| **03** | Estimación e Intervalos de Confianza | TCL, IC para media y proporción, Wilson, tamaño muestral | Sem. 6 | → [T03](T03_Estimacion_IC.html) |
+| **04** | Contraste de Hipótesis (I) | NHST, error tipo I/II, normalidad, tests para una muestra | Sem. 7 | → [T04-I](T04_I_Test_Hipotesis.html) |
+| **04** | Contraste de Hipótesis (II) | Tests dos muestras, no paramétricos, McNemar, potencia, d de Cohen | Sem. 8 | → [T04-II](T04_II_Test_Hipotesis.html) |
+| **05** | Datos Cualitativos — χ² | Tablas de contingencia, OR, RR, DR, NNT, Mantel-Haenszel, Fisher | Sem. 9–10 | → [T05](T05_ChiCuadrado.html) |
+| **06** | Regresión y Correlación | Pearson/Spearman, MCO, R², predicción, Anscombe, diagnóstico | Sem. 11–12 | → [T06](T06_RegresionCorr.html) |
+
+---
+
+## Recursos del Curso
+
+| Recurso | Descripción | Enlace |
+|---------|-------------|--------|
+| **Libro de referencia** | Matemáticas para la Estadística Médica con R | [migariane.github.io/MatematicaEstadisticaMedicinaR](https://migariane.github.io/MatematicaEstadisticaMedicinaR) |
+| **BioEstatR** | Paquete R para bioestadística clínica | [migariane.github.io/BioEstatR](https://migariane.github.io/BioEstatR) |
+| **R Project** | Lenguaje estadístico | [r-project.org](https://www.r-project.org) |
+| **RStudio** | Entorno de desarrollo integrado | [posit.co](https://posit.co/download/rstudio-desktop/) |
+| **UGR** | Universidad de Granada | [ugr.es](https://www.ugr.es) |
+
+---
+
+## Instalación de BioEstatR
+
+::: {.columns}
+::: {.column width="55%"}
+
+```r
+# Instalar BioEstatR desde GitHub
+install.packages("remotes")
+remotes::install_github(
+  "migariane/BioEstatR"
+)
+
+# Cargar el paquete
+library(BioEstatR)
+
+# Verificar instalación
+packageVersion("BioEstatR")
+```
+
+:::
+::: {.column width="45%"}
+::: {.callout-tip}
+**Funciones principales de BioEstatR**
+
+| Función | Uso |
+|---------|-----|
+| `freq()` | Estadística descriptiva |
+| `icm()` | IC para la media |
+| `icp()` | IC para proporción |
+| `testt()` | Test medias t (1 y 2 muestras) |
+| `testp()` | Test proporciones (1 y 2 muestras)|
+| `tabla2x2()` | Tablas 2×2 |
+| `rls()` | Regresión lineal |
+| `nm()` / `np()` | Tamaño muestral |
+:::
+:::
+:::
+
+---
+
+## Correspondencia Libro → Diapositivas
+
+::: {.callout-important}
+**Las diapositivas se basan en el libro de referencia.** Cada tema corresponde a uno o más capítulos del libro.
+:::
+
+| Semana libro | Capítulo | Tema diapositivas |
+|:---:|---|:---:|
+| 1–2 | Análisis Exploratorio de Datos | T01 (Parte I y II) |
+| 3 | Fundamentos de Probabilidad | T02 (parte I) |
+| 4–5 | Variables Aleatorias y Distribuciones | T02 (parte II) |
+| 6 | Estimación Puntual e IC | T03 |
+| 7 | Contraste de Hipótesis — Fundamentos | T04 (parte I) |
+| 8 | Contraste — Tests para 1 y 2 Muestras | T04 (parte II) |
+| 9 | Tablas de Contingencia y χ² | T05 (parte I) |
+| 10 | Medidas de Asociación y Confusión | T05 (parte II) |
+| 11–12 | Correlación y Regresión Lineal | T06 |
+
+---
+
+## Sobre este Material
+
+::: {.columns}
+::: {.column width="55%"}
+- **Titulación:** Grado en Fisioterapia
+- **Universidad:** Universidad de Granada
+- **Créditos:** Formación básica en estadística
+- **Software:** R + BioEstatR
+- **Formato:** Diapositivas interactivas (RevealJS + Quarto)
+- **Metodología:** Teoría → Ejemplo numérico → Código R → BioEstatR
+:::
+::: {.column width="45%"}
+::: {.callout-tip}
+**Recomendación de estudio**
+
+Repasa cada tema **antes** de la clase práctica
+
+Ejecuta el código R en tu ordenador
+
+Consulta el libro de referencia para profundizar
+
+Practica los ejercicios clínicos al final de cada tema
+:::
+:::
+:::
+
+---
+
+## Referencias Principales
+
+::: {.reference-box}
+- **Luque-Fernández, M.A. (2026).** *Matemáticas para la Estadística Médica con R.* Universidad de Granada.
+- **Femia, P. & Luque-Fernández, M.A. (2026).** *BioEstatR: Biostatistics Routines in R.* R package.
+- **Rosner, B. (2015).** *Fundamentals of Biostatistics* (8th ed.). Cengage Learning.
+- **Bland, M. (2015).** *An Introduction to Medical Statistics* (4th ed.). Oxford University Press.
+- **Peña, D. (2014).** *Fundamentos de Estadística.* Alianza Editorial.
+- **Altman, D.G. (1990).** *Practical Statistics for Medical Research.* Chapman & Hall/CRC.
+:::
+
+---
+
+## Licencia {.center}
+
+![](logo.png){width="80px"}
+
+© 2026 Miguel Angel Luque-Fernández
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — Comparte y adapta libremente, citando la fuente
+
+Material docente del Dpto. de Estadística e Investigación Operativa · Universidad de Granada

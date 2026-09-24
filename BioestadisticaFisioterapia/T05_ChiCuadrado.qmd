@@ -1,0 +1,1305 @@
+---
+title: "Análisis de Datos Cualitativos"
+subtitle: "Tema V — Test Chi-Cuadrado, Tablas 2×2 y McNemar"
+author:
+  - name: "Miguel Angel Luque-Fernández"
+    affiliation: "Dpto. Estadística e Investigación Operativa, Universidad de Granada"
+    email: "mluquefe@ugr.es"
+    url: "https://migariane.github.io"
+date: "2026"
+license: "CC BY 4.0"
+format:
+  revealjs:
+    slide-number: c/t
+    code-fold: true
+    code-summary: "Mostrar código R"
+    code-copy: true
+    code-overflow: wrap
+    fig-align: center
+    fig-width: 9
+    fig-height: 5.2
+    lang: es
+execute:
+  warning: false
+  message: false
+  echo: true
+  eval: true
+---
+
+# Análisis de Datos Cualitativos {.center}
+
+![](logo.png){width="90px"}
+
+**Grado en Fisioterapia**
+
+**CC BY 4.0** · Miguel Angel Luque-Fernández
+
+[Miguel Angel Luque-Fernández](https://migariane.github.io) · [maluque.netlify.app](https://maluque.netlify.app)
+
+Dpto. Estadística e Investigación Operativa · Universidad de Granada
+
+
+
+::: {.connection}
+**Del contraste a la asociación:** En el Tema 4 aprendiste a contrastar hipótesis sobre medias y proporciones. Ahora ampliamos ese marco a tablas de contingencia: ¿hay asociación entre dos variables cualitativas? El test χ² y las medidas de asociación (OR, RR, NNT) son las herramientas que necesitas.
+:::
+
+## Objetivos de aprendizaje — Tema 5
+
+::: {.callout-tip}
+**Al finalizar este tema sabrás:**
+:::
+
+::: {.incremental}
+1. Distinguir test de homogeneidad (2+ muestras) de independencia (1 muestra)
+2. Calcular frecuencias esperadas y el estadístico $\chi^2$
+3. Identificar el tipo de estudio (transversal, prospectivo, retrospectivo)
+4. Calcular e interpretar OR, RR y DR con sus IC
+5. Aplicar el test de McNemar para datos pareados
+6. Usar `tabla2x2()` y `testmcnemar()` de BioEstatR
+:::
+
+
+## Motivación clínica — ¿para qué sirve el test $\chi^2$?
+
+**Caso clínico:** Un ensayo compara terapia manual vs. ejercicio terapéutico para dolor lumbar.
+
+| | Recupera | No recupera | Total |
+|---|---|---|---|
+| **Terapia manual** | 42 | 18 | 60 |
+| **Ejercicio** | 30 | 30 | 60 |
+| **Total** | 72 | 48 | 120 |
+
+::: {.incremental}
+- Terapia manual: 70% de recuperación vs. Ejercicio: 50%
+- ¿Es esta diferencia **real** o fruto del **azar**?
+- El test $\chi^2$ responde esta pregunta con un **P-valor**
+- Este tema te da las herramientas para decidir si una asociación entre variables cualitativas es estadísticamente significativa
+:::
+
+
+## Introducción al test $\chi^2$
+
+::: {.incremental}
+
+- Debido a **Karl Pearson** (1900), es uno de los test más clásicos de la Estadística
+- Se aplica al análisis de **variables cualitativas** mediante recuentos (VA discretas)
+- El problema principal: comprobar si las proporciones observadas difieren **significativamente** de las esperadas bajo una determinada hipótesis
+
+**Dos aplicaciones del test $\chi^2$:**
+
+1. **Ajuste a distribuciones** — ej: ajuste a proporciones mendelianas (no lo estudiamos aquí)
+2. **Análisis de tablas de contingencia** ← Nos centramos aquí
+   - Test de **homogeneidad** entre varias muestras (2 o más)
+   - Test de **independencia** entre dos variables cualitativas (1 sola muestra)
+
+:::
+
+::: {.callout-tip}
+En la práctica, homogeneidad e independencia se resuelven con la **misma fórmula** ($E_{ij} = F_i \times C_j / T$), aunque conceptualmente son problemas diferentes.
+:::
+
+## Tablas de contingencia — Notación y terminología
+
+Una **tabla de contingencia** ($r \times c$) cruza la información de dos variables cualitativas.
+
+**Ejemplo 1 — Homogeneidad (4×3):** 4 tratamientos × Estado del paciente (n=560)
+
+| Tratamiento | Peor | Igual | Mejor | **Total fila** ($F_i$) |
+|:----------:|:----:|:-----:|:-----:|:----------------------:|
+| 1 | 7 | 28 | 115 | 150 |
+| 2 | 15 | 20 | 85 | 120 |
+| 3 | 10 | 30 | 90 | 130 |
+| 4 | 5 | 40 | 115 | 160 |
+| **Total col.** ($C_j$) | 37 | 118 | 405 | **T = 560** |
+
+- **2 características:** tratamiento (4 categorías) × estado (3 categorías) → tabla $4 \times 3$
+- **4 muestras independientes** (una por tratamiento) → Test de **homogeneidad**
+
+## Tablas de contingencia — Independencia
+
+**Ejemplo 2 — Independencia (3×3):** Localización del tumor × Naturaleza (n=141)
+
+| Localización | Benigno | Maligno | Otros | **Total** |
+|:-----------:|:-------:|:-------:|:-----:|:---------:|
+| Lóbulo frontal | 23 | 9 | 6 | 38 |
+| Lóbulo temporal | 21 | 4 | 3 | 28 |
+| Otras áreas | 34 | 24 | 17 | 75 |
+| **Total** | 78 | 37 | 26 | **141** |
+
+- **2 características:** localización (3) × naturaleza (3) → tabla $3 \times 3$
+- **1 sola muestra** de 141 pacientes → Test de **independencia**
+
+::: {.callout-tip}
+**¿Cómo distinguirlos?** El número de muestras lo indica: 1 muestra → independencia; 2+ muestras → homogeneidad.
+:::
+
+## Homogeneidad vs. independencia — Comparación lado a lado
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Homogeneidad**
+
+- **2 o más muestras** independientes
+- Pregunta: ¿Son iguales las **proporciones** entre los grupos?
+- $H_0$: $p_{1j} = p_{2j} = \cdots = p_{rj}$ para cada $j$
+- Ejemplo: 4 tratamientos, ¿mismo % de mejoría?
+
+:::
+::: {.column width="50%"}
+
+**Independencia**
+
+- **1 sola muestra** de $T$ individuos
+- Pregunta: ¿Están **asociadas** las dos variables?
+- $H_0$: Las variables son independientes
+- Ejemplo: 141 pacientes, ¿naturaleza del tumor asociada a localización?
+
+:::
+:::
+
+**Ambos tests comparten la misma mecánica de cálculo:**
+
+$$E_{ij} = \frac{F_i \times C_j}{T} \qquad \chi^2_{\text{exp}} = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(O_{ij} - E_{ij})^2}{E_{ij}} \qquad \text{gl} = (r-1)(c-1)$$
+
+La diferencia está en la **interpretación** de $H_0$, no en la fórmula.
+
+## Misma tabla, dos interpretaciones — Ejemplo clínico
+
+**Caso:** Un fisioterapeuta estudia 200 pacientes con dolor lumbar, clasificados por tipo de tratamiento (manual vs. ejercicio) y resultado (mejoría sí/no).
+
+| | Mejoría Sí | Mejoría No | Total |
+|---|---|---|---|
+| **Terapia Manual** | 70 | 30 | 100 |
+| **Ejercicio** | 50 | 50 | 100 |
+| **Total** | 120 | 80 | 200 |
+
+**Interpretación A — Homogeneidad (2 muestras independientes):**
+- $H_0$: La proporción de mejoría es igual en ambos tratamientos
+- 70% mejoría en manual vs. 50% en ejercicio → ¿son homogéneos?
+- $\chi^2 = 8.33$, $P = 0.004$ → **No son homogéneos** (las proporciones difieren)
+
+**Interpretación B — Independencia (1 muestra de 200):**
+- $H_0$: El tipo de tratamiento y el resultado son independientes
+- ¿Está asociado el tipo de tratamiento con la mejoría?
+- $\chi^2 = 8.33$, $P = 0.004$ → **No son independientes** (existe asociación)
+
+::: {.callout-tip}
+**Mismo cálculo, distinta pregunta:** La fórmula $\chi^2$ es idéntica. Lo que cambia es el diseño del estudio (¿1 muestra o 2?) y la redacción de $H_0$. En la práctica clínica, la interpretación como **homogeneidad** suele ser más natural cuando comparas tratamientos.
+:::
+
+## Notación general para tablas $r \times c$ — Estructura
+
+Cruzamos dos variables cualitativas $A$ (filas, $r$ categorías) y $B$ (columnas, $c$ categorías):
+
+| | $B_1$ | $B_2$ | $\cdots$ | $B_c$ | **Totales** |
+|---|:---:|:---:|:---:|:---:|:---:|
+| $A_1$ | $O_{11}$ | $O_{12}$ | $\cdots$ | $O_{1c}$ | $F_1$ |
+| $A_2$ | $O_{21}$ | $O_{22}$ | $\cdots$ | $O_{2c}$ | $F_2$ |
+| $\vdots$ | $\vdots$ | $\vdots$ | $\ddots$ | $\vdots$ | $\vdots$ |
+| $A_r$ | $O_{r1}$ | $O_{r2}$ | $\cdots$ | $O_{rc}$ | $F_r$ |
+| **Totales** | $C_1$ | $C_2$ | $\cdots$ | $C_c$ | **$T$** |
+
+- $O_{ij}$: frecuencia **observada** en fila $i$, columna $j$
+- $F_i$: total de fila $i$ (suma de esa fila)
+- $C_j$: total de columna $j$ (suma de esa columna)
+- $T$: total global
+
+(La notación de sumatorios y los porcentajes se detallan a continuación.)
+
+## Notación general — Sumatorios y porcentajes
+
+**Sumatorios (notación compacta):**
+
+- $F_i = \sum_{j=1}^{c} O_{ij}$: total de fila $i$
+- $C_j = \sum_{i=1}^{r} O_{ij}$: total de columna $j$
+- $T = \sum_{i=1}^{r} F_i = \sum_{j=1}^{c} C_j$: total global
+
+**Tres tipos de tablas de porcentajes:** por filas, por columnas, y totales.
+
+## Ejemplo de tabla $2 \times 2$ — Notación y porcentajes
+
+**Estudio:** Asociación entre hábito de fumar de la madre y bajo peso del recién nacido (n=400)
+
+| | Fuma Sí | Fuma No | Total |
+|---|---|---|---|
+| **Peso Bajo** | 20 | 26 | 46 |
+| **Peso Normal** | 60 | 294 | 354 |
+| **Total** | 80 | 320 | 400 |
+
+**Porcentajes por columnas:** del total de madres fumadoras 25% tienen niño con bajo peso vs 8% de no fumadoras
+
+**Porcentajes por filas:** del total de niños con bajo peso, el 43.5% son hijos de madres fumadoras
+
+**Porcentajes totales:** el 5% del total son madres fumadoras con niño de bajo peso
+
+## Tipos de estudio epidemiológico en tablas $2 \times 2$
+
+La misma tabla $2 \times 2$ puede proceder de **tres tipos de muestreo**:
+
+::: {.columns}
+::: {.column width="33%"}
+
+**Transversal**
+- 1 muestra de $T$ individuos
+- Se clasifican por enfermedad y FR
+
+:::
+::: {.column width="33%"}
+
+**Prospectivo (Cohortes)**
+- 2 muestras: $C_1$ expuestos y $C_2$ no expuestos
+- Se observa enfermedad
+
+:::
+::: {.column width="33%"}
+
+**Retrospectivo (Casos-Control)**
+- 2 muestras: $F_1$ enfermos y $F_2$ no enfermos
+- Se observa exposición
+
+:::
+:::
+
+| | FR Sí | FR No | Total |
+|---|---|---|---|
+| **Enfermos** | $O_{11}$ | $O_{12}$ | $F_1$ |
+| **No Enfermos** | $O_{21}$ | $O_{22}$ | $F_2$ |
+| **Total** | $C_1$ | $C_2$ | $T$ |
+
+::: {.callout-warning}
+El **tipo de estudio** determina qué **medidas de asociación** se pueden estimar y qué **corrección $c$** se debe usar en el $\chi^2$.
+:::
+
+## Test de homogeneidad — Tablas $r \times c$ (no $2 \times 2$)
+
+**Ejemplo — 4 tratamientos:**
+
+| Tratamiento | Peor | Igual | Mejor | Total |
+|:----------:|:----:|:-----:|:-----:|:-----:|
+| 1 | 7 | 28 | 115 | 150 |
+| 2 | 15 | 20 | 85 | 120 |
+| 3 | 10 | 30 | 90 | 130 |
+| 4 | 5 | 40 | 115 | 160 |
+| **Total** | 37 | 118 | 405 | 560 |
+
+**Hipótesis:**
+
+$H_0$: Los 4 tratamientos son **homogéneos** (igual proporción en cada categoría de resultado)
+
+$H_1$: Al menos un tratamiento es **diferente** a los demás
+
+**¿Qué supone $H_0$?** $p_{11}=p_{21}=p_{31}=p_{41}$ (mismo % que empeoran), $p_{12}=p_{22}=p_{32}=p_{42}$ (mismo % que quedan igual), y $p_{13}=p_{23}=p_{33}=p_{43}$ (mismo % que mejoran).
+
+## Frecuencias esperadas bajo $H_0$
+
+Si $H_0$ es cierta, las frecuencias esperadas se calculan como:
+
+$$E_{ij} = \frac{F_i \times C_j}{T}$$
+
+::: {.incremental}
+
+**Cálculo para el ejemplo:** $E_{11} = \frac{150 \times 37}{560} = 9.91$, $\quad E_{12} = \frac{150 \times 118}{560} = 31.61$
+
+| Tratamiento | Peor ($E_{i1}$) | Igual ($E_{i2}$) | Mejor ($E_{i3}$) |
+|:----------:|:---------------:|:----------------:|:----------------:|
+| 1 | 9.91 | 31.61 | 108.48 |
+| 2 | 7.93 | 25.29 | 86.79 |
+| 3 | 8.59 | 27.39 | 94.02 |
+| 4 | 10.57 | 33.71 | 115.71 |
+
+:::
+
+```{r}
+trat <- matrix(c(7,28,115,15,20,85,10,30,90,5,40,115), nrow=4, byrow=TRUE)
+round(chisq.test(trat)$expected, 2)
+```
+
+## Visualización del test $\chi^2$ — Observado vs esperado
+
+**4 tratamientos de fisioterapia × Estado del paciente:**
+
+```{r}
+#| fig-height: 5.5
+O <- matrix(c(7,28,115, 15,20,85, 10,30,90, 5,40,115), nrow=4, byrow=TRUE)
+E <- matrix(c(9.91,31.61,108.48, 7.93,25.29,86.79, 8.59,27.39,94.02, 10.57,33.71,115.71), nrow=4, byrow=TRUE)
+
+par(mfrow=c(2,2), mar=c(4,4,3,1))
+for(i in 1:4){
+  barplot(rbind(O[i,], E[i,]), beside=TRUE, names=c("Peor","Igual","Mejor"),
+          col=c("steelblue","coral"), main=paste("Tratamiento",i),
+          ylab="Frecuencia", ylim=c(0,120), legend=c("Observado","Esperado"))
+}
+par(mfrow=c(1,1))
+```
+
+**El $\chi^2$ mide la discrepancia entre barras azules (observado) y rojas (esperado bajo $H_0$).**
+
+## Condiciones de validez del test $\chi^2$
+
+::: {.callout-important}
+
+**Dos condiciones que deben cumplirse simultáneamente:**
+
+1. **Ninguna** frecuencia esperada $E_{ij}$ puede ser inferior a **1**
+2. **No más del 20%** de las $E_{ij}$ pueden ser inferiores o iguales a **5**
+
+:::
+
+**En el ejemplo (4 tratamientos, 12 celdas):** todas las $E_{ij} > 5$ ✓ → el método es válido.
+
+Se admitirían como máximo $12 \times 0.20 = 2.4 \rightarrow 2$ valores con $1 < E_{ij} \leq 5$. Con 3 ya no sería válido.
+
+## Estadístico de contraste y grados de libertad
+
+$$\chi^2_{\text{exp}} = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
+::: {.incremental}
+
+**Grados de libertad:** $\text{gl} = (r-1) \times (c-1)$
+
+**En el ejemplo (4×3):** gl = $(4-1)(3-1) = 6$
+
+$$\chi^2_{\text{exp}} = \frac{(7-9.91)^2}{9.91} + \frac{(28-31.61)^2}{31.61} + \cdots + \frac{(115-115.71)^2}{115.71} = 13.87$$
+
+:::
+
+```{r}
+chi <- chisq.test(trat)
+cat("χ²exp =", round(chi$statistic,2), "| gl =", chi$parameter,
+    "| P =", round(chi$p.value,4))
+```
+
+**Resultado:** $P < 0.05$ → **Rechazamos $H_0$.** Los 4 tratamientos no son homogéneos.
+
+## Distribución $\chi^2$ — Visualización del contraste
+
+```{r}
+#| fig-height: 5
+gl <- 6
+chi_exp <- 13.87
+chi_crit <- qchisq(0.95, gl)
+p_val <- round(1 - pchisq(chi_exp, gl), 4)
+
+curve(dchisq(x, gl), 0, 22, lwd = 3, col = "steelblue",
+      main = "Distribución Chi-cuadrado con gl = 6",
+      xlab = "Chi-cuadrado", ylab = "Densidad")
+abline(v = chi_crit, col = "darkgreen", lwd = 2.5, lty = 2)
+abline(v = chi_exp, col = "coral", lwd = 3)
+# Región de rechazo
+xr <- seq(chi_crit, 22, 0.01)
+yr <- dchisq(xr, gl)
+polygon(c(xr, rev(xr)), c(yr, rep(0, length(yr))),
+        col = rgb(0.9, 0.3, 0.2, 0.3), border = NA)
+# Etiquetas
+text(chi_crit + 1.5, dchisq(chi_crit, gl) + 0.01,
+     "Chi-crit = 12.59", col = "darkgreen", font = 2)
+text(chi_exp, dchisq(chi_exp, gl) + 0.015,
+     paste0("Chi2 = ", chi_exp, "\nP = ", p_val), col = "coral", font = 2)
+legend("topright", c("Región de rechazo (alfa = 0.05)", "Valor crítico", "Chi2 observado"),
+       fill = c(rgb(0.9, 0.3, 0.2, 0.3), NA, NA),
+       border = c(NA, "darkgreen", "coral"),
+       lty = c(NA, 2, 1), lwd = c(NA, 2.5, 3),
+       col = c(NA, "darkgreen", "coral"), bty = "n", cex = 0.8)
+```
+
+::: {.callout-tip}
+**¿Cómo leer este gráfico?** La curva es la distribución $\chi^2_6$ bajo $H_0$. El área roja es la región de rechazo ($\alpha = 0.05$). Nuestro $\chi^2 = 13.87$ (línea roja) cae **dentro** de la región de rechazo → $P < 0.05$ → diferencias significativas entre tratamientos.
+:::
+
+## Análisis de las causas de significación
+
+El test $\chi^2$ es un **test ómnibus**: detecta diferencias pero **no dice dónde** están.
+
+**Tres métodos para identificar las causas:**
+
+1. **Tabla de porcentajes** → fácil, pero subjetivo
+2. **Residuos estandarizados** → objetivo e intuitivo
+3. **Partición de tablas** (reducción a $2 \times 2$) → potente pero laborioso
+
+
+## Tabla de porcentajes por filas
+
+¿Qué tratamiento(s) es/son distinto(s)? Observemos los porcentajes:
+
+| Tratamiento | Peor | Igual | Mejor | Total |
+|:----------:|:----:|:-----:|:-----:|:-----:|
+| 1 | 4.7% | 18.7% | 76.7% | 100% |
+| 2 | **12.5%** | 16.7% | 70.8% | 100% |
+| 3 | 7.7% | 23.1% | 69.2% | 100% |
+| 4 | **3.1%** | 25.0% | 71.9% | 100% |
+| **Total** | 6.6% | 21.1% | 72.3% | 100% |
+
+**Observaciones:**
+- Mayor discrepancia en % de "Peor": Tto 2 (12.5%, el que más empeora) vs Tto 4 (3.1%, el que menos)
+- Los % de "Mejor" son similares (~70% en todos los tratamientos)
+- Los % de "Igual" sugieren dos grupos: Ttos 1-2 vs Ttos 3-4
+
+::: {.callout-warning}
+El análisis de porcentajes es una **primera aproximación subjetiva**. El estudio definitivo se hace con residuos estandarizados.
+:::
+
+::: {.callout-tip}
+**Pregunta para reflexionar:** ¿Qué tratamiento recomendarías descartar basándote solo en estos porcentajes? ¿Es suficiente esta evidencia para tomar una decisión clínica?
+:::
+
+## Residuos estandarizados
+
+$$R_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}$$
+
+- $|R_{ij}| > 1.96$ → celda con contribución **significativa** ($\alpha = 0.05$)
+- $|R_{ij}| > 2.58$ → celda con contribución **muy significativa** ($\alpha = 0.01$)
+
+```{r}
+chi <- chisq.test(trat)
+round(chi$stdres, 2)
+# Visualización: heatmap de residuos
+par(mfrow=c(1,1), mar=c(5,5,4,2))
+sr <- chi$stdres
+# Invertir filas para que coincida con el orden visual
+image(1:ncol(sr), 1:nrow(sr), t(sr[nrow(sr):1,]),
+      col=colorRampPalette(c("darkgreen","white","coral"))(100),
+      main="Residuos Estandarizados", xlab="", ylab="", xaxt="n", yaxt="n")
+axis(1, at=1:ncol(sr), labels=colnames(sr), las=2, cex.axis=0.8)
+axis(2, at=nrow(sr):1, labels=rownames(sr), las=2, cex.axis=0.8)
+for(i in 1:nrow(sr))
+  for(j in 1:ncol(sr))
+    text(j, nrow(sr)-i+1, round(sr[i,j],1), 
+         col=ifelse(abs(sr[i,j])>2,"white","black"), font=2, cex=0.85)
+
+```
+
+## Test de independencia — Tablas $r \times c$
+
+**Ejemplo:** ¿Está asociada la naturaleza del tumor con su localización? (n=141)
+
+| Localización | Benigno | Maligno | Otros | Total |
+|:-----------:|:-------:|:-------:|:-----:|:-----:|
+| Lóbulo frontal | 23 | 9 | 6 | 38 |
+| Lóbulo temporal | 21 | 4 | 3 | 28 |
+| Otras áreas | 34 | 24 | 17 | 75 |
+| **Total** | 78 | 37 | 26 | 141 |
+
+**$H_0$:** Naturaleza y localización son **independientes**
+
+**$H_1$:** Naturaleza y localización están **asociadas**
+
+```{r}
+tumor <- matrix(c(23,9,6,21,4,3,34,24,17), nrow=3, byrow=TRUE)
+chi2 <- chisq.test(tumor)
+cat("χ²exp =", round(chi2$statistic,2), "| gl =", chi2$parameter,
+    "| P =", round(chi2$p.value,4))
+# χ²exp = 7.84, gl = 4, P = 0.0975 → No significativo (pero hay indicios)
+```
+
+## Importancia del caso $2 \times 2$
+
+::: {.callout-important}
+
+Las tablas $2 \times 2$ requieren un **tratamiento especial**:
+
+1. **NO es aplicable** la fórmula general del $\chi^2$
+2. Permiten obtener **medidas de asociación** entre las variables
+3. Surgen cuando ambas variables son **dicotómicas** (binarias)
+4. Permiten resolver problemas de gran interés en el ámbito biosanitario
+
+:::
+
+**Formato estándar** (enfermedad en filas, factor de riesgo en columnas):
+
+| | FR Expuesto | FR No Expuesto | Total |
+|---|---|---|---|
+| **Enfermedad Presente** | $O_{11}$ | $O_{12}$ | $F_1$ |
+| **Enfermedad Ausente** | $O_{21}$ | $O_{22}$ | $F_2$ |
+| **Total** | $C_1$ | $C_2$ | $T$ |
+
+- **Primera fila:** modalidad de mayor interés (enfermos)
+- **Primera columna:** modalidad que induce a tener la enfermedad
+
+## Ejemplo $2 \times 2$ — Madre fumadora y peso
+
+**Estudio transversal (n=400 nacimientos):**
+
+| | Fuma Sí | Fuma No | Total |
+|---|---|---|---|
+| **Peso Bajo** | 20 | 26 | 46 |
+| **Peso Normal** | 60 | 294 | 354 |
+| **Total** | 80 | 320 | 400 |
+
+**¿Qué categoría es el factor de riesgo?** Con porcentajes por columnas:
+
+- 25% de fumadoras tienen niño con bajo peso
+- 8% de no fumadoras tienen niño con bajo peso
+
+Como 25% > 8%, **fumar = Sí** es la modalidad de riesgo.
+
+## Estadístico $\chi^2$ para tablas $2 \times 2$
+
+::: {.callout-warning}
+
+**¡NO es válida la expresión general!** Para tablas $2 \times 2$ se usa:
+
+$$\chi^2_{\text{exp}} = \frac{\left(|O_{11}O_{22} - O_{12}O_{21}| - c\right)^2 \cdot T}{F_1 \cdot F_2 \cdot C_1 \cdot C_2}$$
+
+donde:
+- $|O_{11}O_{22} - O_{12}O_{21}|$: **producto cruzado** (en valor absoluto)
+- $c$: **corrección de continuidad de Yates** — en tablas $2 \times 2$: $c = T/2$ (R: `chisq.test(..., correct = TRUE)`)
+- $F_1, F_2, C_1, C_2$: totales marginales de filas y columnas
+:::
+
+(Las condiciones de validez se detallan a continuación.)
+
+## Condiciones de validez para el caso $2 \times 2$
+
+**Frecuencia mínima esperada:** $E = \frac{F_i \cdot C_j}{T}$ para cada celda.
+
+**Regla de Cochran:** al menos el 80% de las frecuencias esperadas deben ser $\geq 5$ y **todas** $\geq 1$. Si no se cumple → **test exacto de Fisher**.
+
+| Diseño | Corrección de continuidad |
+|:-------|:-------------------------:|
+| Tabla $2 \times 2$ (dos muestras) | **Yates:** $c = T/2$ |
+| McNemar (datos pareados) | $c = 1$ en el numerador |
+
+::: {.callout-tip}
+**¿Por qué corregir? — Intuición:** La distribución $\chi^2$ es una aproximación **continua** a un estadístico **discreto**. Sin corrección, el test rechaza $H_0$ con más frecuencia de la debida (sobre todo con muestras pequeñas). La corrección de continuidad "baja" el estadístico para compensar. En la práctica, con $n$ grandes la corrección apenas cambia el resultado.
+:::
+
+**gl = 1** siempre en tablas $2 \times 2$.
+
+## Ejemplo $2 \times 2$ — Cálculo completo
+
+**Estudio transversal:** $E_{11} = \frac{46 \times 80}{400} = 9.2 \geq 5$ ✓ (regla de Cochran)
+
+Con corrección de Yates ($c = T/2 = 200$):
+
+$$\chi^2_{\text{exp}} = \frac{(|20 \times 294 - 26 \times 60| - 200)^2 \times 400}{46 \times 354 \times 80 \times 320}$$
+
+$$= \frac{(4320 - 200)^2 \times 400}{46 \times 354 \times 80 \times 320} = \frac{(4120)^2 \times 400}{416,870,400} = 16.29$$
+
+**Sin corrección (Pearson):** $\chi^2 = 17.91$. La corrección reduce el estadístico y aumenta ligeramente el P-valor.
+
+```{r}
+tabla <- matrix(c(20,26,60,294), nrow=2)
+chi_yates  <- chisq.test(tabla, correct=TRUE)
+chi_pearson <- chisq.test(tabla, correct=FALSE)
+cat("Yates: χ² =", round(chi_yates$statistic,2), "| P =", format(chi_yates$p.value, digits=4))
+cat("\nPearson: χ² =", round(chi_pearson$statistic,2), "| P =", format(chi_pearson$p.value, digits=4))
+```
+
+**gl = 1, $P < 0.001$** → **Rechazamos $H_0$.** Existe asociación significativa entre fumar y bajo peso.
+
+## Interpretación de medidas de asociación — Guía visual
+
+**Fumar y bajo peso (n=400):**
+
+| | Fuma Sí | Fuma No | Total |
+|---|---|---|---|
+| **Peso Bajo** | 20 | 26 | 46 |
+| **Peso Normal** | 60 | 294 | 354 |
+| **Total** | 80 | 320 | 400 |
+
+```{r}
+#| fig-height: 5.2
+par(mfrow=c(1,3), mar=c(4,4,3,1))
+# DR
+p1<-20/80; p2<-26/320
+barplot(c(p1,p2)*100, names=c("Fumadoras","No fumadoras"), col=c("coral","steelblue"),
+        main=paste0("DR = ",round(p1-p2,3),"\n(",round((p1-p2)*100,1)," pp de diferencia)"),
+        ylab="% Bajo Peso", ylim=c(0,30))
+# RR = 3.08
+barplot(c(p1,p2)*100, names=c("Fumadoras","No fumadoras"), col=c("coral","steelblue"),
+        main=paste0("RR = p1/p2 = ",round(p1/p2,2),"\n(3x mas riesgo)"),
+        ylab="% Bajo Peso", ylim=c(0,30))
+# OR = 3.77
+barplot(c(p1,p2)*100, names=c("Fumadoras","No fumadoras"), col=c("coral","steelblue"),
+        main=paste0("OR = ",round((20*294)/(26*60),2),"\n(odds 3.77x mayor)"),
+        ylab="% Bajo Peso", ylim=c(0,30))
+par(mfrow=c(1,1))
+```
+
+::: {.callout-important}
+**Para el estudiante:** DR se interpreta en **escala aditiva** (diferencia de %). RR y OR en **escala multiplicativa** (cuántas veces más). DR = 0 y RR/OR = 1 significan ausencia de asociación.
+:::
+
+## Medidas de asociación en tablas $2 \times 2$
+
+El valor P **no indica la intensidad** de la asociación, solo la evidencia muestral contra $H_0$.
+
+::: {.incremental}
+
+**1. Riesgo Absoluto (Diferencia de Berkson):**
+$$d = p_1 - p_2 = \frac{O_{11}}{C_1} - \frac{O_{12}}{C_2}$$
+$d = 0$ independencia; $d > 0$ asociación positiva; $d < 0$ asociación negativa
+
+**2. Riesgo Relativo:**
+$$R = \frac{p_1}{p_2} = \frac{O_{11}/C_1}{O_{12}/C_2}$$
+$R = 1$ independencia; $R > 1$ factor de riesgo; $R < 1$ factor protector
+
+**3. Razón del Producto Cruzado (Odds Ratio):**
+$$O = \frac{O_{11} \times O_{22}}{O_{12} \times O_{21}}$$
+$O = 1$ independencia; $O > 1$ asociación positiva; $O < 1$ asociación negativa
+
+:::
+
+## Medidas de asociación — Cálculo en el ejemplo
+
+```{r}
+O11<-20; O12<-26; O21<-60; O22<-294; C1<-80; C2<-320
+d  <- O11/C1 - O12/C2
+R  <- (O11/C1) / (O12/C2)
+O  <- (O11*O22)/(O12*O21)
+cat("Riesgo Absoluto d =", round(d,3),
+    "\nRiesgo Relativo R =", round(R,3),
+    "\nOdds Ratio      O =", round(O,3))
+```
+
+**Interpretación:**
+- **$d = 0.169$:** La probabilidad de bajo peso es 16.9 puntos porcentuales mayor en madres fumadoras
+- **$R = 3.08$:** La probabilidad de bajo peso es 3.08 veces mayor (¡el triple!) si la madre fuma
+- **$O = 3.77$:** La odds de bajo peso es 3.77 veces mayor en madres fumadoras
+
+::: {.callout-tip}
+**Pregunta para reflexionar:** ¿Por qué el OR (3.77) es mayor que el RR (3.08)? Pista: observa las fórmulas — ¿qué ocurre cuando la prevalencia del desenlace no es baja?
+:::
+
+## Visualización de las medidas de asociación
+
+```{r}
+#| fig-height: 4.5
+# Forest plot de las medidas de asociación con IC 95%
+medidas <- c("DR (Riesgo Absoluto)", "RR (Riesgo Relativo)", "OR (Odds Ratio)")
+estimador <- c(0.169, 3.08, 3.77)
+ic_inf <- c(0.069, 1.813, 1.976)
+ic_sup <- c(0.268, 5.222, 7.189)
+valor_nulo <- c(0, 1, 1)
+colores <- c("#2980b9", "#27ae60", "coral")
+
+par(mar = c(5, 10, 3, 2))
+plot(estimador, 3:1, pch = 19, cex = 2, col = colores,
+     xlim = c(-0.3, 8), ylim = c(0.5, 3.5), yaxt = "n",
+     xlab = "Estimador (escala logarítmica para RR/OR)", ylab = "",
+     main = "Medidas de Asociación con IC 95%\n(Tabaquismo → Bajo Peso al Nacer)",
+     log = "")
+axis(2, at = 3:1, labels = medidas, las = 1, cex.axis = 0.9)
+# Intervalos de confianza
+for(i in 1:3) {
+  lines(c(ic_inf[i], ic_sup[i]), c(3-i+1, 3-i+1), lwd = 3, col = colores[i])
+  points(ic_inf[i], 3-i+1, pch = "|", cex = 1.2, col = colores[i])
+  points(ic_sup[i], 3-i+1, pch = "|", cex = 1.2, col = colores[i])
+}
+# Líneas de valor nulo
+abline(v = 0, lty = 3, col = "grey50", lwd = 2)
+text(0.9, 3.2, "Valor nulo\n(DR=0)", col = "grey50", cex = 0.7)
+abline(v = 1, lty = 3, col = "grey50", lwd = 2)
+text(1.6, 1.7, "Valor nulo\n(RR/OR=1)", col = "grey50", cex = 0.7)
+```
+
+::: {.callout-tip}
+**Regla visual:** Si el IC de DR **no cruza el 0**, la asociación es significativa. Si el IC de RR/OR **no cruza el 1**, la asociación es significativa. En este ejemplo, los tres IC evitan sus respectivos valores nulos → asociación significativa.
+:::
+
+## ¿Qué Medida Usar Según el Tipo de Estudio?
+
+| Medida | Transversal | Prospectivo | Retrospectivo |
+|:-------|:----------:|:----------:|:------------:|
+| $d$ (Riesgo Absoluto) | ✓ | ✓ | ✗ |
+| $R$ (Riesgo Relativo) | ✓ | ✓ | Aprox. si $P(E) < 10\%$ |
+| $O$ (Odds Ratio) | ✓ | ✓ | ✓ |
+
+**El Odds Ratio es la medida de asociación por excelencia en epidemiología:**
+- Válido en **cualquier** tipo de estudio
+- Forma parte de modelos más complejos (regresión logística)
+- **Cuidado:** no interpretar $O$ como si fuera $R$. Solo se aproximan cuando $P(E) < 10\%$
+
+::: {.callout-note}
+**¿Por qué el OR es la medida más usada en epidemiología?**
+
+1. **Invarianza:** el OR no cambia si intercambiamos filas por columnas (simetría).
+2. **Validez retrospectiva:** en estudios caso-control, el OR es estimable cuando el RR no lo es.
+3. **Conexión con modelos multivariantes:** en regresión logística, $\exp(\beta) = OR$.
+:::
+
+*Referencia: Rothman, K. J., Greenland, S., & Lash, T. L. (2008). Modern Epidemiology (3rd ed.). LWW.*
+
+---
+
+## McNemar — Planteamiento del problema
+
+**Ejemplo clínico:** Eficacia de dos terapias para dolor crónico en fibromialgia. n=166 mujeres reciben ambas terapias en orden aleatorizado:
+
+- Terapia A: analgésica
+- Terapia B: terapia física
+
+| | Terapia B: Sí | Terapia B: No |
+|---|---|---|
+| **Terapia A: Sí** | 38 | **15** |
+| **Terapia A: No** | **31** | 82 |
+
+**Interpretación:**
+- 38 responden a ambas (concordantes positivas)
+- 82 no responden a ninguna (concordantes negativas)
+- 15 responden a A pero no a B (discordantes)
+- 31 responden a B pero no a A (discordantes)
+
+::: {.callout-important}
+Las celdas concordantes (38 y 82) **no aportan información diferencial**. El test se basa exclusivamente en las celdas **discordantes** (15 y 31).
+:::
+
+## McNemar — Hipótesis y estadístico
+
+**$H_0$:** Las dos terapias son igualmente eficaces $\quad \Leftrightarrow \quad p_{12} = p_{21}$
+
+**$H_1$:** Las dos terapias **no** son igualmente eficaces
+
+**Condición de validez:** $n_{12} + n_{21} > 10$. En el ejemplo: $15 + 31 = 46 > 10$ ✓
+
+**Estadístico de contraste** (aproximación normal):
+
+$$z_{\text{exp}} = \frac{|n_{12} - n_{21}| - 1}{\sqrt{n_{12} + n_{21}}}$$
+
+$$z_{\text{exp}} = \frac{|15 - 31| - 1}{\sqrt{15 + 31}} = \frac{15}{6.78} = 2.21$$
+
+**$P = 2 \times P(Z > 2.21) \approx 0.027$** → **Rechazamos $H_0$** (las terapias no son iguales)
+
+::: {.callout-tip}
+**Pregunta para reflexionar:** ¿Qué significa $P = 0.027$ en términos clínicos? Si tuvieras que explicárselo a un paciente, ¿cómo lo harías?
+:::
+
+```{r}
+n12<-15; n21<-31
+z_exp <- (abs(n12-n21)-1)/sqrt(n12+n21)
+P <- 2*(1-pnorm(z_exp))
+cat("zexp =", round(z_exp,3), "| P =", round(P,4))
+```
+
+## McNemar — Estimación del efecto diferencial
+
+**Proporciones de respuesta:**
+
+$\hat{p}_A = \frac{38+15}{166} = 0.319$ (31.9% responden a terapia A)
+
+$\hat{p}_B = \frac{38+31}{166} = 0.416$ (41.6% responden a terapia B)
+
+**Diferencia estimada:** $\hat{p}_A - \hat{p}_B = -0.096$ (−9.6 puntos porcentuales)
+
+**IC 95% para la diferencia (Agresti-Min):**
+
+```{r}
+n<-166; n12<-15; n21<-31; z_a<-qnorm(0.975)
+d <- (n12-n21)/n
+se <- sqrt((n12+n21) - (n12-n21)^2/n) / n
+IC <- c(d - z_a*se, d + z_a*se)
+cat("Diferencia =", round(d,4), "| IC95% = (", round(IC[1],4), ",", round(IC[2],4), ")")
+```
+
+**Conclusión:** La terapia B tiene **mayor respuesta** que la A (diferencia −9.6%, IC 95%: −17.5% a −1.8%). Como el IC **no contiene al 0**, la diferencia es significativa ($P = 0.027$).
+
+---
+
+## Protocolo para tablas $r \times c$ (más de $2 \times 2$)
+
+::: {.incremental}
+
+1. **Identificar** el tipo de test: 1 muestra → independencia; 2+ → homogeneidad
+2. **Formular** $H_0$ y $H_1$ (homogeneidad o independencia siempre en $H_0$)
+3. Si es $2 \times 2$ → ir al protocolo específico
+4. **Calcular** frecuencias esperadas: $E_{ij} = F_i \times C_j / T$
+5. **Comprobar validez:** ninguna $E_{ij} < 1$, no más del 20% con $E_{ij} \leq 5$
+6. **Calcular** $\chi^2_{\text{exp}} = \sum (O_{ij}-E_{ij})^2/E_{ij}$, gl = $(r-1)(c-1)$
+7. **Obtener P** e interpretar
+8. Si es significativo: analizar causas (porcentajes, residuos)
+
+:::
+
+## Protocolo específico para tablas $2 \times 2$
+
+::: {.incremental}
+
+1. **Representar** la tabla en formato estándar (enfermedad × FR)
+2. **Identificar** el tipo de estudio: transversal (1 muestra), prospectivo o retrospectivo (2 muestras)
+3. **NO usar** la fórmula general de $\chi^2$. Usar la fórmula con corrección $c$ adecuada
+4. **Comprobar validez** según el tipo de estudio ($E$ mínimo y corrección $c$)
+5. **Calcular** $\chi^2_{\text{exp}}$ y obtener P
+6. Si es significativo: **obtener medidas de asociación** ($d$, $R$, $O$) con IC 95%
+7. Si no es significativo: el IC proporciona idea de la fiabilidad de aceptar $H_0$
+
+:::
+
+## Tipos de estudio — Singularidades y limitaciones
+
+| Característica | **Transversal** | **Prospectivo (Cohortes)** | **Retrospectivo (Casos-Control)** |
+|:--------------|:---------------|:--------------------------|:---------------------------------|
+| **Muestras** | 1 (población) | 2 (expuestos / no expuestos) | 2 (enfermos / no enfermos) |
+| **¿Estima prevalencia?** | ✓ Sí | ✗ No | ✗ No |
+| **¿Estima incidencia?** | ✗ No | ✓ Sí | ✗ No |
+| **¿DR?** | ✓ Sí | ✓ Sí | ✗ No |
+| **¿RR?** | ✓ Sí | ✓ Sí | Aprox. si $P(E) < 10\%$ |
+| **¿OR?** | ✓ Sí | ✓ Sí | ✓ Sí |
+| **Coste/tiempo** | Bajo | Alto (requiere seguimiento) | Medio |
+| **Causalidad** | No (asociación) | Sí (temporalidad) | No |
+
+::: {.callout-important}
+**Regla:** Antes de analizar una tabla $2 \times 2$, identificar el tipo de estudio. De ello depende qué medidas se pueden estimar y qué corrección $c$ usar en el $\chi^2$.
+:::
+
+
+## Interpretación de medidas de asociación — Rangos y valores nulos
+
+| Medida | Símbolo | Fórmula | Rango | Valor nulo | Significado |
+|:-------|:------:|:--------|:-----:|:----------:|:------------|
+| **Diferencia de Riesgos** | DR | $p_1 - p_2$ | $[-1, +1]$ | **0** | $p_1 = p_2$ |
+| **Riesgo Relativo** | RR | $p_1 / p_2$ | $[0, \infty)$ | **1** | $p_1 = p_2$ |
+| **Odds Ratio** | OR | $\frac{O_{11}O_{22}}{O_{12}O_{21}}$ | $[0, \infty)$ | **1** | Igualdad de odds |
+
+**Interpretación según el valor:**
+
+| Valor | DR (escala aditiva) | RR / OR (escala multiplicativa) |
+|:------|:-------------------|:-------------------------------|
+| **Nulo** | DR = 0 | RR = 1, OR = 1 |
+| <span style="color:#b2182b">**Factor de riesgo**</span> | DR > 0 | RR > 1, OR > 1 |
+| <span style="color:#2166ac">**Factor protector**</span> | DR < 0 | 0 < RR < 1, 0 < OR < 1 |
+
+## ¿Cuándo el IC Indica No Significación?
+
+::: {.callout-important}
+**Regla fundamental para interpretar IC de medidas de asociación:**
+
+| Medida | Escala | Valor nulo | **No significativo** | **Significativo** |
+|:-------|:------|:----------:|:--------------------|:------------------|
+| **DR** | Aditiva | **0** | IC contiene al 0 | IC no contiene al 0 |
+| **RR** | Multiplicativa | **1** | IC contiene al 1 | IC no contiene al 1 |
+| **OR** | Multiplicativa | **1** | IC contiene al 1 | IC no contiene al 1 |
+:::
+
+**Ejemplos ilustrativos de interpretación de IC** (valores hipotéticos, salvo el caso real del OR):
+
+| Medida | Estimación | IC 95% | ¿Significativo? | Interpretación |
+|:-------|:----------:|:-------|:---------------:|---------------|
+| DR (ejercicio vs control) | +0.15 | (+0.03, +0.27) | **Sí** (0 no está en IC) | Ejercicio aumenta mejoría 15pp |
+| RR (ejercicio vs control) | 1.50 | (0.85, 2.65) | **No** (1 está en IC) | Sin evidencia suficiente |
+| OR (fumar vs no fumar) | 3.77 | (1.976, 7.189) | **Sí** (1 no está en IC) | Asociación significativa |
+| DR (terapia A vs B) | 0.05 | (−0.18, +0.08) | **No** (0 está en IC) | Sin diferencia significativa |
+
+::: {.callout-tip}
+**Para estudiantes:** Escala aditiva (DR) → pensar en **0**. Escala multiplicativa (RR/OR) → pensar en **1**. Si el IC contiene ese número → no significativo. Si no lo contiene → significativo.
+:::
+
+---
+
+## Extensiones y consideraciones avanzadas
+
+::: {.callout-note}
+**Más allá del $\chi^2$ básico:** en esta sección exploramos alternativas para muestras pequeñas (Fisher), medidas de impacto clínico (NNT) y la importancia de la estratificación (Paradoja de Simpson).
+:::
+
+## Test exacto de Fisher — Alternativa para muestras pequeñas
+
+::: {.callout-warning}
+**Cuándo usar Fisher en vez de χ²:** Si alguna frecuencia esperada es < 5 (o < 1), el test χ² no es válido. Usar el test exacto de Fisher [@fisher1922].
+:::
+
+**Ejemplo clínico:** Estudio piloto (n=20) de eficacia de terapia manual para cefalea tensional.
+
+| | Mejoría | No mejoría |
+|---|:---:|:---:|
+| **Terapia manual** | 8 | 2 |
+| **Control** | 3 | 7 |
+
+```{r}
+matriz <- matrix(c(8, 2, 3, 7), nrow=2, byrow=TRUE)
+rownames(matriz) <- c("Terapia", "Control")
+colnames(matriz) <- c("Mejoría", "No mejoría")
+# Chi-cuadrado: frecuencias esperadas
+cat("Frecuencias esperadas:\n"); print(round(chisq.test(matriz)$expected, 1))
+# Fisher exact test
+fisher.test(matriz)
+```
+
+**Interpretación:** Con muestras tan pequeñas (n=20), el test exacto de Fisher es más fiable que el χ². Si P < 0.05, hay asociación significativa entre terapia y mejoría.
+
+## ¿Qué Hay Detrás del Test Exacto de Fisher?
+
+::: {.callout-tip}
+**Idea clave:** Fisher calcula la probabilidad **exacta** de obtener una tabla tan o más extrema que la observada, sin usar ninguna aproximación.
+:::
+
+### 1. ¿Por qué "exacto"?
+
+El χ² tradicional usa una aproximación (la distribución χ² es una aproximación de la verdadera distribución del estadístico). Con muestras pequeñas, esta aproximación falla. Fisher evita la aproximación: calcula directamente la probabilidad de la tabla observada.
+
+### 2. La distribución hipergeométrica — El motor matemático
+
+Imagina que fijas todos los **márgenes** de la tabla (totales por fila y columna). La pregunta es: ¿de cuántas formas distintas pueden distribuirse los pacientes en las celdas **manteniendo esos totales fijos**?
+
+$$
+P(\text{tabla}) = \frac{\binom{a+b}{a}\binom{c+d}{c}}{\binom{n}{a+c}} = \frac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!n!}
+$$
+
+donde $a, b, c, d$ son las 4 celdas y $n = a+b+c+d$.
+
+::: {.callout-note}
+**Para el estudiante de fisioterapia:** No necesitas memorizar la fórmula. Lo importante es entender que Fisher calcula la probabilidad de **cada posible tabla** con los mismos totales de fila y columna, y luego suma las probabilidades de todas las tablas **tan o más extremas** que la observada. Esa suma es el P-valor.
+:::
+
+### 3. ¿Qué hace `fisher.test()` en R?
+
+Para nuestra tabla (Terapia: 8 mejoría / 2 no; Control: 3 / 7):
+
+1. **Fija los márgenes:** Terapia = 10, Control = 10, Mejoría = 11, No mejoría = 9
+2. **Enumera todas las tablas posibles** manteniendo esos totales (desde la más favorable a terapia hasta la más favorable a control)
+3. **Calcula la probabilidad** de cada tabla usando la fórmula hipergeométrica
+4. **Suma** las probabilidades de las tablas con efecto $\geq$ al observado
+5. **Devuelve la suma** → ese es el P-valor exacto
+
+```{r}
+#| eval: false
+# Ilustración conceptual: todas las tablas posibles con los mismos márgenes
+# fisher.test() hace esto internamente:
+# Tabla más extrema a favor de terapia: 10 mejoría / 0 no; Control 1 / 9
+# Tabla más extrema a favor de control:  1 mejoría / 9 no; Control 10 / 0
+# La nuestra:                              8 mejoría / 2 no; Control 3 / 7
+# P-valor = P(nuestra tabla) + P(tablas aún más extremas)
+```
+
+### 4. La intuición clínica
+
+Piensa en una urna con 11 bolas rojas (mejoría) y 9 azules (no mejoría). Sacas 10 bolas al azar para el grupo de terapia. ¿Cuál es la probabilidad de sacar 8 o más rojas solo por azar? Fisher responde esta pregunta **exactamente**, sin necesidad de que el tamaño muestral sea grande.
+
+*¿Por qué el test de Fisher no depende de frecuencias esperadas ≥ 5? Porque no usa ninguna aproximación asintótica — calcula la probabilidad directamente a partir de la combinatoria.*
+
+## NNT — Número necesario a tratar
+
+::: {.formula-box}
+$$\NNT = \frac{1}{|\DR|} = \frac{1}{|p_1 - p_2|}$$
+:::
+
+**Interpretación:** NNT = número de pacientes que necesitas tratar con la terapia experimental (vs control) para que **un paciente adicional** se beneficie.
+
+| NNT | Interpretación |
+|:---:|:---|
+| 1–5 | Efecto muy grande |
+| 5–10 | Efecto moderado |
+| 10–20 | Efecto pequeño |
+| > 20 | Efecto muy pequeño |
+
+**Ejemplo:** Electroterapia: 60% mejoría. Ejercicio solo: 36% mejoría.
+
+```{r}
+p1 <- 0.60; p2 <- 0.36
+DR <- p1 - p2
+NNT <- 1 / abs(DR)
+cat("DR =", round(DR, 3), "\nNNT =", round(NNT, 1),
+    "\n→ Necesitas tratar", ceiling(NNT), "pacientes con electroterapia",
+    "\n  para que 1 adicional mejore respecto a ejercicio solo")
+```
+
+## Confusión (Confounding) y paradoja de Simpson
+
+::: {.columns}
+::: {.column width="50%"}
+
+::: {.callout-note}
+**Confusión:** una tercera variable $Z$ asociada simultáneamente con la exposición $X$ y el desenlace $Y$ distorsiona la asociación real. $Z$ **no** es un paso intermedio en la cadena causal $X \rightarrow Y$.
+:::
+
+**Ejemplos en fisioterapia:**
+- **Gravedad del paciente:** a mayor gravedad, más probable recibir tratamiento intensivo (exposición) y peor pronóstico (desenlace)
+- **Edad:** a mayor edad, distinta indicación terapéutica y distinta tasa de recuperación
+- **Nivel de actividad física basal:** condiciona tanto el tipo de lesión como la respuesta al tratamiento
+
+:::
+::: {.column width="50%"}
+
+::: {.callout-warning}
+**Paradoja de Simpson:** la asociación en datos **agregados** puede **invertirse** al estratificar por una variable confundente [@simpson1951].
+:::
+
+**¿Por qué ocurre?** Porque los tamaños de los subgrupos son distintos. Si un grupo (ej: hospital A) atiende más casos graves, su tasa global de éxito se ve lastrada — aunque sea mejor en cada subgrupo por separado.
+
+:::
+:::
+
+**Control del confounding:**
+- **En el diseño:** aleatorización (elimina confusión conocida y desconocida), restricción, emparejamiento
+- **En el análisis:** estratificación (Mantel-Haenszel), ajuste por regresión
+
+## Paradoja de Simpson — Ejemplo visual en fisioterapia
+
+**Contexto:** Dos fisioterapeutas (A y B) tratan pacientes con lumbalgia. Comparan sus tasas de éxito.
+
+```{r}
+#| fig-height: 5.5
+par(mfrow = c(1, 3), mar = c(4, 4, 3.5, 1))
+
+# --- Datos ---
+# Agregado: A: 160/200 = 80%, B: 90/100 = 90%
+# Estratificado por gravedad:
+# Leves:  A = 155/160 (96.9%), B = 85/90 (94.4%)
+# Graves: A =   5/40  (12.5%), B =  5/10 (50.0%)
+
+# Panel 1: Datos agregados
+bp1 <- barplot(c(80, 90), names = c("Fisio A", "Fisio B"),
+               col = c("#3498db", "coral"), ylim = c(0, 100),
+               main = "Datos Agregados", ylab = "% Éxito",
+               cex.main = 1.1, cex.axis = 0.9)
+text(bp1, c(80, 90) + 4, labels = c("160/200\n(80%)", "90/100\n(90%)"),
+     cex = 0.85, font = 2)
+mtext("→ B parece mejor", side = 1, line = 2.5, cex = 0.8, col = "coral", font = 2)
+
+# Panel 2: Leves
+bp2 <- barplot(c(96.9, 94.4), names = c("Fisio A\n(n=160)", "Fisio B\n(n=90)"),
+               col = c("#3498db", "coral"), ylim = c(0, 100),
+               main = "Casos LEVES", ylab = "% Éxito",
+               cex.main = 1.1, cex.axis = 0.9)
+text(bp2, c(96.9, 94.4) + 4, labels = c("155/160\n(96.9%)", "85/90\n(94.4%)"),
+     cex = 0.85, font = 2)
+mtext("→ A ligeramente mejor", side = 1, line = 2.5, cex = 0.8, col = "#3498db", font = 2)
+
+# Panel 3: Graves
+bp3 <- barplot(c(12.5, 50), names = c("Fisio A\n(n=40)", "Fisio B\n(n=10)"),
+               col = c("#3498db", "coral"), ylim = c(0, 100),
+               main = "Casos GRAVES", ylab = "% Éxito",
+               cex.main = 1.1, cex.axis = 0.9)
+text(bp3, c(12.5, 50) + 4, labels = c("5/40\n(12.5%)", "5/10\n(50.0%)"),
+     cex = 0.85, font = 2)
+mtext("→ B mejor, pero solo 10 casos", side = 1, line = 2.5, cex = 0.8, col = "coral", font = 2)
+```
+
+::: {.callout-important}
+**La paradoja explicada:** El Fisio A atiende **40 casos graves** (20% de su carga), mientras que el Fisio B solo atiende **10** (10%). Los casos graves tienen peor pronóstico. La desigualdad en la composición de pacientes arrastra la tasa global de A hacia abajo, creando la ilusión de que B es mejor cuando en realidad A obtiene mejores resultados en pacientes leves (y la aparente ventaja de B en graves se basa en solo 10 pacientes).
+:::
+
+**Lección clínica:** Antes de comparar resultados entre profesionales, servicios o estudios, estratifica siempre por gravedad, edad u otros factores pronósticos. La estadística de Mantel-Haenszel proporciona una medida de asociación ajustada que combina la información de todos los estratos.
+
+---
+
+# Resumen {.center}
+
+::: {.incremental}
+
+1. **$\chi^2$ de Pearson:** compara frecuencias observadas vs esperadas: $E_{ij} = F_i \times C_j / T$
+
+2. **Homogeneidad** (2+ muestras) vs **Independencia** (1 muestra) — misma mecánica
+
+3. **Condiciones de validez:** $E_{ij} \geq 1$ y < 20% con $E_{ij} \leq 5$
+
+4. **Tablas $2 \times 2$:** fórmula especial con corrección $c$. Tres tipos de estudio epidemiológico
+
+5. **Medidas de asociación:** $d$ (riesgo absoluto), $R$ (riesgo relativo), $O$ (odds ratio)
+
+6. **El Odds Ratio** es la medida por excelencia — válido en cualquier tipo de estudio
+
+7. **McNemar:** para proporciones apareadas — solo usa celdas discordantes
+
+8. **Residuos estandarizados:** $|R_{ij}| > 1.96$ identifica las celdas responsables de la significación
+
+:::
+
+## Interpretación de la salida de BioEstatR para $\chi^2$
+
+**Ejemplo: `tabla2x2(o=tabla)` para el estudio de fumar y bajo peso:**
+
+```
+Test Chi-cuadrado para tabla 2x2
+χ² = 17.91, gl = 1, P < 0.001
+
+Medidas de asociación:
+OR = 3.77 (IC 95%: 1.976 a 7.189)
+RR = 3.08 (IC 95%: 1.813 a 5.222)
+DR = 0.169 (IC 95%: 0.069 a 0.268)
+
+Interpretación: Asociación significativa (P < 0.001).
+La odds de bajo peso es 3.77 veces mayor en madres fumadoras.
+```
+
+**Cómo leer la salida:**
+- **$\chi^2$ y P:** P < 0.001 → asociación significativa
+- **OR = 3.77:** la odds es casi 4 veces mayor en expuestos
+- **IC del OR:** (1.976, 7.189) no contiene 1 → significativo
+- **DR = 0.169:** 16.9 puntos porcentuales más de bajo peso en fumadoras
+
+::: {.callout-tip}
+**Regla de oro:** IC de OR/RR contiene 1 → no significativo. IC de DR contiene 0 → no significativo. Si el IC no toca el valor nulo, la asociación es significativa.
+:::
+
+## Derivación del estadístico $\chi^2$ desde sus fundamentos
+
+::: {.callout-tip}
+**Material complementario (opcional).** La siguiente derivación asume conocimientos de distribuciones binomial y normal que exceden el nivel requerido para el Grado en Fisioterapia.
+:::
+
+**¿De dónde sale $\chi^2 = \sum (O-E)^2/E$?**
+
+::: {.callout-note}
+Pearson (1900) demostró que, bajo $H_0$, el estadístico $\sum (O_i-E_i)^2/E_i$ sigue una distribución $\chi^2$. La idea clave: cada celda aporta una normal estándar al cuadrado.
+:::
+
+**Paso 1 — Aproximación Normal:** En cada celda, $O_{ij} \sim \text{Binomial}(T, p_{ij})$. Para $T$ grande: $O_{ij} \approx N(E_{ij}, E_{ij}(1-p_{ij})) \approx N(E_{ij}, E_{ij})$ cuando $p_{ij}$ es pequeño.
+
+**Paso 2 — Estandarización:** $Z_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}} \approx N(0,1)$ bajo $H_0$
+
+**Paso 3 — Suma de normales al cuadrado:**
+$$\chi^2 = \sum_{i=1}^{r} \sum_{j=1}^{c} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
+Los totales de filas y columnas son fijos → solo $(r-1)(c-1)$ de las $Z_{ij}$ son independientes → $\text{gl} = (r-1)(c-1)$.
+
+**Paso 4 — Ejemplo numérico (celda 1,1 del ejemplo de 4 tratamientos):**
+$Z_{11}^2 = (7-9.91)^2/9.91 = 0.855$. Sumando las 12 celdas: $\chi^2_{\text{exp}} = 13.87$ (gl = 6), $P = 0.031$.
+
+## Puente al tema 6 — De la asociación a la predicción
+
+::: {.callout-important}
+**El test $\chi^2$ detecta asociación entre variables categóricas. La regresión (Tema 6) modela la relación funcional entre variables.**
+:::
+
+| Característica | $\chi^2$ (T5) | Regresión (T6) |
+|:---------------|:--------------|:---------------|
+| **Variables** | Ambas categóricas | Ambas continuas (o mixtas) |
+| **¿Qué mide?** | Asociación (¿están relacionadas?) | Relación funcional (¿cómo?) |
+| **Resultado** | P-valor, OR, RR | $\beta_0, \beta_1, R^2$, predicciones |
+| **Ejemplo** | ¿Fumar se asocia con bajo peso? | ¿Cuánto aumenta el ROM por sesión? |
+
+**Progresión natural del análisis:**
+1. $\chi^2$ dice **SI** hay asociación → screening inicial
+2. Regresión dice **CUÁNTO** cambia $Y$ por cada unidad de $X$ → cuantificación
+3. Ambas comparten la misma lógica inferencial: $H_0$, estadístico, P-valor, IC
+
+## Ejercicio clínico — Análisis de tablas 2×2
+
+::: {.exercise}
+Un fisioterapeuta estudia si la práctica de ejercicio terapéutico supervisado (vs. ejercicio en casa) se asocia con la recuperación funcional a los 3 meses en pacientes con artrosis de cadera:
+
+| Ejercicio | Recupera | No recupera | Total |
+|:----------|:--------:|:-----------:|:-----:|
+| Supervisado | 42 | 8 | 50 |
+| En casa | 28 | 22 | 50 |
+| **Total** | **70** | **30** | **100** |
+
+1. ¿Qué tipo de estudio es? Identifica las medidas de asociación apropiadas.
+2. Calcula OR, RR y sus IC 95% usando `tabla2x2()` de BioEstatR. Interpreta.
+3. Realiza el test $\chi^2$. ¿Es significativa la asociación? ¿Hay confusión por gravedad inicial?
+
+:::
+
+## Referencias
+
+::: {.reference-box}
+- [@bioestatr2026] — Femia, P. & Luque-Fernández, M. A. (2026). *BioEstatR: Biostatistics Routines in R*. R package. Universidad de Granada.
+- [@luque2026] — Luque-Fernández, M. A. (2026). *Matemáticas para la Estadística Médica con R*. Universidad de Granada.
+- [@pearson1900] — Pearson, K. (1900). On the criterion that a given system of deviations... *Phil. Mag.*, 50(302), 157–175.
+- [@fisher1922] — Fisher, R. A. (1922). On the interpretation of χ² from contingency tables. *J. R. Stat. Soc.*, 85(1), 87–94.
+- [@yates1934] — Yates, F. (1934). Contingency tables involving small numbers. *J. R. Stat. Soc.*, 1(2), 217–235.
+- [@mcnemar1947] — McNemar, Q. (1947). Note on the sampling error of the difference between correlated proportions. *Psychometrika*, 12(2), 153–157.
+- [@mantel1959] — Mantel, N. & Haenszel, W. (1959). Statistical aspects of the analysis of data from retrospective studies. *JNCI*, 22(4), 719–748.
+- [@cornfield1951] — Cornfield, J. (1951). A method of estimating comparative rates. *JNCI*, 11, 1269–1275.
+- [@simpson1951] — Simpson, E. H. (1951). The interpretation of interaction in contingency tables. *J. R. Stat. Soc. B*, 13(2), 238–241.
+- [@woolf1955] — Woolf, B. (1955). On estimating the relation between blood group and disease. *Ann. Hum. Genet.*, 19(4), 251–253.
+- [@agresti2013] — Agresti, A. (2013). *Categorical Data Analysis* (3rd ed.). Wiley.
+- [@rothman2008] — Rothman, K. J., Greenland, S. & Lash, T. L. (2008). *Modern Epidemiology* (3rd ed.). LWW.
+:::
+
+---
+
+## Ejercicio Clínico — Tema V
+
+**Contexto:** Asociación tipo fisioterapia × mejoría (n=100). Manual: 35/50 mejoran. Ejercicio: 25/50.
+
+1. Calcula OR de mejoría (manual vs ejercicio)
+2. Interpreta
+3. ¿Qué test de contraste?
+
+::: {.callout-tip}
+**Solución**
+
+1. $OR = \frac{35 \times 25}{15 \times 25} = \frac{875}{375} = \mathbf{2.33}$
+2. Terapia manual tiene 2.33× más odds de mejorar. $P < 0.05$ → significativo
+3. $\chi^2$ de Pearson (frecuencias esperadas $> 5$)
+
+```{r}
+#| fig-height: 5.5
+tabla <- matrix(c(35, 25, 15, 25), nrow=2,
+                dimnames=list(c("Manual","Ejercicio"), c("Mejoría","No mejoria")))
+chi <- chisq.test(tabla, correct=FALSE)
+OR <- 35*25/(15*25)
+
+par(mfrow=c(1,2), mar=c(4,4,4,1))
+# Panel 1: Barras agrupadas
+barplot(tabla, beside=TRUE, col=c("steelblue","coral"),
+        main=paste0("OR = ", round(OR,2)), ylab="Frecuencia", ylim=c(0,40))
+legend("topright", c("Manual","Ejercicio"), fill=c("steelblue","coral"), bty="n", cex=0.8)
+# Panel 2: Mosaic
+mosaicplot(t(tabla), main="Mosaic: Tipo × Mejoría", color=c("coral","steelblue"))
+par(mfrow=c(1,1))
+
+cat("OR =", round(OR,2), "χ² =", round(chi$statistic,2),
+    "gl =", chi$parameter, "P =", round(chi$p.value,4))
+```
+:::
+---
+
+# Código del Tema V — Resumen Organizado {.center}
+
+## Test χ² de independencia
+
+```{r}
+#| eval: false
+# Tabla de contingencia
+trat <- matrix(c(49, 28, 14, 6, 3, 1,
+                 42, 33, 21, 9, 6, 2,
+                 40, 35, 28, 12, 8, 4),
+               nrow = 3, byrow = TRUE,
+               dimnames = list(
+                 c("Fisioterapia Manual", "Ejercicio", "Combinado"),
+                 c("Muy mejor", "Mejor", "Igual", "Peor", "Muy peor", "Sin cambio")))
+
+# Test χ²
+chi <- chisq.test(trat)
+chi$expected                              # Frecuencias esperadas
+chi$stdres                                # Residuos estandarizados
+
+# Con corrección de continuidad (2×2)
+tabla_2x2 <- matrix(c(49, 42, 28, 33), nrow = 2)
+chisq.test(tabla_2x2, correct = TRUE)
+```
+
+## Medidas de asociación
+
+```{r}
+#| eval: false
+# OR, RR, DR desde tabla 2×2
+a <- 35; b <- 15; c <- 25; d <- 25
+OR <- (a * d) / (b * c)
+RR <- (a / (a + b)) / (c / (c + d))
+DR <- a/(a+b) - c/(c+d)
+
+# Con BioEstatR
+library(BioEstatR)
+tabla2x2(o = matrix(c(35, 15, 25, 25), nrow = 2))  # OR + IC
+
+# NNT
+NNT <- 1 / DR
+cat("OR =", round(OR, 2), "DR =", round(DR, 3), "NNT =", round(NNT, 1))
+```
+
+## Test exacto de Fisher
+
+```{r}
+#| eval: false
+# Para tablas con frecuencias esperadas < 5
+matriz <- matrix(c(2, 8, 6, 4), nrow = 2)
+fisher.test(matriz)
+```
+
+## Test de McNemar
+
+```{r}
+#| eval: false
+# Datos apareados (antes/después)
+# n11=ambos+, n12=solo antes+, n21=solo después+, n22=ambos-
+mcnemar.test(matrix(c(38, 15, 31, 82), nrow = 2))
+
+# Con BioEstatR
+library(BioEstatR)
+testmcnemar(n11 = 38, n12 = 15, n21 = 31, n22 = 82)
+```

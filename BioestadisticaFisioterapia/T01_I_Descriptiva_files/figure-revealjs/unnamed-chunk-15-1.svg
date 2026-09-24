@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='396.00pt' viewBox='0 0 648.00 396.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='396.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='324.00' y='19.55' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='422.31px' lengthAdjust='spacingAndGlyphs'>Términos Estadísticos en Fisioterapia Basada en la Evidencia</text>
+</g>
+<defs>
+  <clipPath id='cpMTQuNDB8NjMzLjYwfDI4LjgwfDM4MS42MA=='>
+    <rect x='14.40' y='28.80' width='619.20' height='352.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMTQuNDB8NjMzLjYwfDI4LjgwfDM4MS42MA==)'>
+<text x='214.39' y='133.11' text-anchor='middle' style='font-size: 36.00px;fill: #1A5276; font-family: "Arial";' textLength='98.03px' lengthAdjust='spacingAndGlyphs'>Media</text>
+<text x='521.64' y='85.84' text-anchor='middle' style='font-size: 28.80px; font-weight: bold;fill: #1B557A; font-family: "Arial";' textLength='115.22px' lengthAdjust='spacingAndGlyphs'>Mediana</text>
+<text x='338.50' y='98.27' text-anchor='middle' style='font-size: 24.00px;fill: #1C587F; font-family: "Arial";' textLength='60.03px' lengthAdjust='spacingAndGlyphs'>Moda</text>
+<text x='301.61' y='78.49' text-anchor='middle' style='font-size: 21.60px; font-weight: bold;fill: #1D5C84; font-family: "Arial";' textLength='87.66px' lengthAdjust='spacingAndGlyphs'>Varianza</text>
+<text x='415.63' y='190.72' text-anchor='middle' style='font-size: 19.20px; font-weight: bold;fill: #1E5F89; font-family: "Arial";' textLength='101.31px' lengthAdjust='spacingAndGlyphs'>Desviación</text>
+<text x='530.31' y='285.77' text-anchor='middle' style='font-size: 16.80px;fill: #1F628E; font-family: "Arial";' textLength='65.38px' lengthAdjust='spacingAndGlyphs'>Percentil</text>
+<text x='235.21' y='77.59' text-anchor='middle' style='font-size: 16.80px;fill: #206693; font-family: "Arial";' textLength='48.55px' lengthAdjust='spacingAndGlyphs'>Cuartil</text>
+<text x='423.49' y='168.74' text-anchor='middle' style='font-size: 19.20px;fill: #216998; font-family: "Arial";' textLength='98.11px' lengthAdjust='spacingAndGlyphs'>Histograma</text>
+<text x='404.34' y='148.25' text-anchor='middle' style='font-size: 16.80px; font-weight: bold;fill: #226C9C; font-family: "Arial";' textLength='62.53px' lengthAdjust='spacingAndGlyphs'>Boxplot</text>
+<text x='372.58' y='272.92' text-anchor='middle' style='font-size: 21.60px; font-weight: bold;fill: #2370A1; font-family: "Arial";' textLength='111.61px' lengthAdjust='spacingAndGlyphs'>Dispersión</text>
+<text x='562.92' y='95.37' text-anchor='middle' style='font-size: 24.00px;fill: #2472A5; font-family: "Arial";' textLength='70.70px' lengthAdjust='spacingAndGlyphs'>Barras</text>
+<text x='476.46' y='351.83' text-anchor='middle' style='font-size: 19.20px;fill: #2574A8; font-family: "Arial";' textLength='75.72px' lengthAdjust='spacingAndGlyphs'>Sectores</text>
+<text x='457.37' y='298.72' text-anchor='middle' style='font-size: 28.80px;fill: #2677AB; font-family: "Arial";' textLength='142.47px' lengthAdjust='spacingAndGlyphs'>Frecuencia</text>
+<text x='185.52' y='322.05' text-anchor='middle' style='font-size: 33.60px; font-weight: bold;fill: #2879AF; font-family: "Arial";' textLength='128.83px' lengthAdjust='spacingAndGlyphs'>Muestra</text>
+<text x='279.48' y='255.65' text-anchor='middle' style='font-size: 33.60px;fill: #297BB2; font-family: "Arial";' textLength='147.58px' lengthAdjust='spacingAndGlyphs'>Población</text>
+<text x='137.62' y='294.67' text-anchor='middle' style='font-size: 31.20px; font-weight: bold;fill: #2A7EB5; font-family: "Arial";' textLength='119.64px' lengthAdjust='spacingAndGlyphs'>Variable</text>
+<text x='203.24' y='109.45' text-anchor='middle' style='font-size: 26.40px; font-weight: bold;fill: #2B80B8; font-family: "Arial";' textLength='114.34px' lengthAdjust='spacingAndGlyphs'>Continua</text>
+<text x='294.18' y='125.76' text-anchor='middle' style='font-size: 24.00px;fill: #2C82BC; font-family: "Arial";' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>Discreta</text>
+<text x='355.45' y='300.77' text-anchor='middle' style='font-size: 26.40px; font-weight: bold;fill: #2D84BF; font-family: "Arial";' textLength='104.11px' lengthAdjust='spacingAndGlyphs'>Nominal</text>
+<text x='454.71' y='97.65' text-anchor='middle' style='font-size: 24.00px;fill: #2E86C2; font-family: "Arial";' textLength='77.36px' lengthAdjust='spacingAndGlyphs'>Ordinal</text>
+<text x='409.20' y='331.07' text-anchor='middle' style='font-size: 19.20px; font-weight: bold;fill: #2E88C5; font-family: "Arial";' textLength='66.11px' lengthAdjust='spacingAndGlyphs'>Normal</text>
+<text x='207.58' y='117.88' text-anchor='middle' style='font-size: 14.40px; font-weight: bold;fill: #2F8AC8; font-family: "Arial";' textLength='65.58px' lengthAdjust='spacingAndGlyphs'>Asimetría</text>
+<text x='483.99' y='118.51' text-anchor='middle' style='font-size: 14.40px;fill: #308CCA; font-family: "Arial";' textLength='52.80px' lengthAdjust='spacingAndGlyphs'>Curtosis</text>
+<text x='292.95' y='136.04' text-anchor='middle' style='font-size: 16.80px;fill: #308ECD; font-family: "Arial";' textLength='29.86px' lengthAdjust='spacingAndGlyphs'>RIQ</text>
+<text x='432.45' y='356.31' text-anchor='middle' style='font-size: 12.00px;fill: #3190D0; font-family: "Arial";' textLength='60.03px' lengthAdjust='spacingAndGlyphs'>Coeficiente</text>
+<text x='179.58' y='243.97' text-anchor='middle' style='font-size: 9.60px;fill: #3292D3; font-family: "Arial";' textLength='26.11px' lengthAdjust='spacingAndGlyphs'>ECDF</text>
+<text x='247.53' y='325.44' text-anchor='middle' style='font-size: 16.80px; font-weight: bold;fill: #3294D6; font-family: "Arial";' textLength='75.62px' lengthAdjust='spacingAndGlyphs'>Densidad</text>
+<text x='410.72' y='232.53' text-anchor='middle' style='font-size: 12.00px; font-weight: bold;fill: #3396D8; font-family: "Arial";' textLength='67.33px' lengthAdjust='spacingAndGlyphs'>Fisioterapia</text>
+<text x='119.08' y='227.78' text-anchor='middle' style='font-size: 9.60px;fill: #3699DB; font-family: "Arial";' textLength='22.38px' lengthAdjust='spacingAndGlyphs'>ROM</text>
+<text x='526.81' y='95.88' text-anchor='middle' style='font-size: 12.00px;fill: #3E9DDC; font-family: "Arial";' textLength='23.11px' lengthAdjust='spacingAndGlyphs'>EVA</text>
+<text x='133.44' y='163.85' text-anchor='middle' style='font-size: 14.40px;fill: #47A1DE; font-family: "Arial";' textLength='75.20px' lengthAdjust='spacingAndGlyphs'>Diagnóstico</text>
+<text x='404.89' y='262.26' text-anchor='middle' style='font-size: 12.00px;fill: #50A6DF; font-family: "Arial";' textLength='75.39px' lengthAdjust='spacingAndGlyphs'>Rehabilitación</text>
+<text x='469.66' y='328.91' text-anchor='middle' style='font-size: 12.00px;fill: #59AAE1; font-family: "Arial";' textLength='28.69px' lengthAdjust='spacingAndGlyphs'>Dolor</text>
+<text x='329.94' y='179.24' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #61AFE2; font-family: "Arial";' textLength='45.30px' lengthAdjust='spacingAndGlyphs'>Inferencia</text>
+<text x='318.12' y='74.17' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #6AB3E4; font-family: "Arial";' textLength='38.36px' lengthAdjust='spacingAndGlyphs'>Estimación</text>
+<text x='525.42' y='85.93' text-anchor='middle' style='font-size: 7.20px;fill: #73B8E5; font-family: "Arial";' textLength='31.17px' lengthAdjust='spacingAndGlyphs'>Contraste</text>
+<text x='277.92' y='311.48' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #7CBCE7; font-family: "Arial";' textLength='24.38px' lengthAdjust='spacingAndGlyphs'>P-valor</text>
+<text x='221.43' y='336.21' text-anchor='middle' style='font-size: 7.20px;fill: #85C1E9; font-family: "Arial";' textLength='40.36px' lengthAdjust='spacingAndGlyphs'>Significación</text>
+</g>
+</g>
+</svg>

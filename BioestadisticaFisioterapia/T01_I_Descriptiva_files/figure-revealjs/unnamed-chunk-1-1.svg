@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='252.00pt' viewBox='0 0 648.00 252.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwyNTIuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='252.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwyNTIuMDA=)'>
+<text x='324.00' y='19.55' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='142.36px' lengthAdjust='spacingAndGlyphs'>Del Individuo al Dato</text>
+</g>
+<defs>
+  <clipPath id='cpMTQuNDB8NjMzLjYwfDI4LjgwfDIzNy42MA=='>
+    <rect x='14.40' y='28.80' width='619.20' height='208.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMTQuNDB8NjMzLjYwfDI4LjgwfDIzNy42MA==)'>
+<rect x='54.53' y='55.87' width='126.13' height='77.33' style='stroke-width: 1.88; stroke: #1A5276; fill: #3380CC; fill-opacity: 0.15;' />
+<text x='117.60' y='87.88' text-anchor='middle' style='font-size: 10.80px; font-weight: bold;fill: #1A5276; font-family: "Arial";' textLength='64.77px' lengthAdjust='spacingAndGlyphs'>POBLACIÓN</text>
+<text x='117.60' y='104.44' text-anchor='middle' style='font-size: 8.40px;fill: #1A5276; font-family: "Arial";' textLength='55.53px' lengthAdjust='spacingAndGlyphs'>N (inaccesible)</text>
+<text x='117.60' y='119.59' text-anchor='middle' style='font-size: 7.20px;fill: #666666; font-family: "Arial";' textLength='40.34px' lengthAdjust='spacingAndGlyphs'>(inaccesible)</text>
+<line x1='186.40' y1='94.53' x2='260.93' y2='94.53' style='stroke-width: 1.50; stroke: #006400;' />
+<polyline points='253.45,98.85 260.93,94.53 253.45,90.21 ' style='stroke-width: 1.50; stroke: #006400;' />
+<text x='223.67' y='83.95' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #006400; font-family: "Arial";' textLength='37.31px' lengthAdjust='spacingAndGlyphs'>Muestreo</text>
+<rect x='266.67' y='55.87' width='126.13' height='77.33' style='stroke-width: 1.88; stroke: #1E6E3E; fill: #33B34D; fill-opacity: 0.15;' />
+<text x='329.73' y='86.79' text-anchor='middle' style='font-size: 10.80px; font-weight: bold;fill: #1E6E3E; font-family: "Arial";' textLength='53.39px' lengthAdjust='spacingAndGlyphs'>MUESTRA</text>
+<text x='329.73' y='105.23' text-anchor='middle' style='font-size: 8.40px;fill: #1E6E3E; font-family: "Arial";' textLength='23.58px' lengthAdjust='spacingAndGlyphs'>n = 30</text>
+<text x='329.73' y='119.59' text-anchor='middle' style='font-size: 7.20px;fill: #666666; font-family: "Arial";' textLength='34.75px' lengthAdjust='spacingAndGlyphs'>(accesible)</text>
+<line x1='398.53' y1='94.53' x2='473.07' y2='94.53' style='stroke-width: 1.50; stroke: #006400;' />
+<polyline points='465.58,98.85 473.07,94.53 465.58,90.21 ' style='stroke-width: 1.50; stroke: #006400;' />
+<text x='435.80' y='84.02' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #006400; font-family: "Arial";' textLength='36.36px' lengthAdjust='spacingAndGlyphs'>Medición</text>
+<rect x='478.80' y='55.87' width='126.13' height='77.33' style='stroke-width: 1.88; stroke: #B03A2E; fill: #CC661A; fill-opacity: 0.15;' />
+<text x='541.87' y='86.79' text-anchor='middle' style='font-size: 10.80px; font-weight: bold;fill: #B03A2E; font-family: "Arial";' textLength='36.80px' lengthAdjust='spacingAndGlyphs'>DATOS</text>
+<text x='541.87' y='103.81' text-anchor='middle' style='font-size: 8.40px;fill: #B03A2E; font-family: "Arial";' textLength='18.91px' lengthAdjust='spacingAndGlyphs'>n × p</text>
+<text x='541.87' y='119.59' text-anchor='middle' style='font-size: 7.20px;fill: #666666; font-family: "Arial";' textLength='24.34px' lengthAdjust='spacingAndGlyphs'>(matriz)</text>
+<line x1='541.87' y1='137.07' x2='541.87' y2='160.27' style='stroke-width: 1.50; stroke: #4682B4;' />
+<polyline points='537.55,152.78 541.87,160.27 546.19,152.78 ' style='stroke-width: 1.50; stroke: #4682B4;' />
+<line x1='541.87' y1='160.27' x2='238.00' y2='183.47' style='stroke-width: 1.50; stroke: #4682B4;' />
+<polyline points='245.13,178.59 238.00,183.47 245.79,187.20 ' style='stroke-width: 1.50; stroke: #4682B4;' />
+<line x1='541.87' y1='160.27' x2='438.67' y2='183.47' style='stroke-width: 1.50; stroke: #4682B4;' />
+<polyline points='445.02,177.61 438.67,183.47 446.91,186.04 ' style='stroke-width: 1.50; stroke: #4682B4;' />
+<text x='152.00' y='189.16' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #1A5276; font-family: "Arial";' textLength='45.27px' lengthAdjust='spacingAndGlyphs'>Descriptiva</text>
+<text x='152.00' y='199.24' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #1A5276; font-family: "Arial";' textLength='36.38px' lengthAdjust='spacingAndGlyphs'>(resumir)</text>
+<text x='352.67' y='189.16' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #1A5276; font-family: "Arial";' textLength='39.66px' lengthAdjust='spacingAndGlyphs'>Inferencia</text>
+<text x='352.67' y='199.24' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #1A5276; font-family: "Arial";' textLength='67.62px' lengthAdjust='spacingAndGlyphs'>(extender a pob.)</text>
+</g>
+</g>
+</svg>

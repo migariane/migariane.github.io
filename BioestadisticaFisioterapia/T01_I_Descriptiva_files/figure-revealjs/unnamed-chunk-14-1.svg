@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='432.00pt' viewBox='0 0 648.00 432.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHw0MzIuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='432.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHw0MzIuMDA=)'>
+<rect x='134.59' y='320.76' width='499.01' height='41.90' style='stroke-width: 0.75; fill: #4682B4;' />
+<rect x='134.59' y='270.48' width='436.63' height='41.90' style='stroke-width: 0.75; fill: #90808C;' />
+<rect x='134.59' y='220.19' width='311.88' height='41.90' style='stroke-width: 0.75; fill: #DA7F64;' />
+<rect x='134.59' y='169.90' width='249.50' height='41.90' style='stroke-width: 0.75; fill: #FF903F;' />
+<rect x='134.59' y='119.62' width='224.55' height='41.90' style='stroke-width: 0.75; fill: #FFB31F;' />
+<rect x='134.59' y='69.33' width='149.70' height='41.90' style='stroke-width: 0.75; fill: #FFD700;' />
+<text x='115.20' y='345.36' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='47.05px' lengthAdjust='spacingAndGlyphs'>Lumbalgia</text>
+<text x='115.20' y='295.08' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='50.42px' lengthAdjust='spacingAndGlyphs'>Cervicalgia</text>
+<text x='115.20' y='244.79' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='37.95px' lengthAdjust='spacingAndGlyphs'>Omalgia</text>
+<text x='115.20' y='194.50' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='34.53px' lengthAdjust='spacingAndGlyphs'>Artrosis</text>
+<text x='115.20' y='144.22' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='41.94px' lengthAdjust='spacingAndGlyphs'>Esguince</text>
+<text x='115.20' y='93.93' text-anchor='end' style='font-size: 10.20px; font-family: "Arial";' textLength='42.50px' lengthAdjust='spacingAndGlyphs'>Tendinitis</text>
+<text x='381.60' y='33.95' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='250.75px' lengthAdjust='spacingAndGlyphs'>Diagnósticos en Fisioterapia (n=150)</text>
+<text x='381.60' y='429.12' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='59.36px' lengthAdjust='spacingAndGlyphs'>Frecuencia</text>
+<line x1='134.59' y1='374.40' x2='633.60' y2='374.40' style='stroke-width: 0.75;' />
+<line x1='134.59' y1='374.40' x2='134.59' y2='381.60' style='stroke-width: 0.75;' />
+<line x1='259.34' y1='374.40' x2='259.34' y2='381.60' style='stroke-width: 0.75;' />
+<line x1='384.10' y1='374.40' x2='384.10' y2='381.60' style='stroke-width: 0.75;' />
+<line x1='508.85' y1='374.40' x2='508.85' y2='381.60' style='stroke-width: 0.75;' />
+<line x1='633.60' y1='374.40' x2='633.60' y2='381.60' style='stroke-width: 0.75;' />
+<text x='134.59' y='400.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='259.34' y='400.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='384.10' y='400.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='508.85' y='400.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text x='633.60' y='400.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>40</text>
+</g>
+</g>
+</svg>

@@ -1,0 +1,454 @@
+/*-- scss:defaults --*/
+
+// ============================================
+// Madrid Professional — Bioestadística Fisioterapia
+// Clean, modern, accessible theme for medical statistics teaching
+// ============================================
+
+// Colors
+$body-bg: #fafbfc;
+$body-color: #2d3436;
+$link-color: #1a5276;
+$link-color-hover: #2471a3;
+
+// Madrid palette
+$m-dark: #0a3d62;
+$m-medium: #1e6fa0;
+$m-light: #d4e6f1;
+$m-accent: #ebf3fa;
+$m-highlight: #f5f8fc;
+
+// Callout colors
+$callout-note: #1e6fa0;
+$callout-tip: #27ae60;
+$callout-warning: #e67e22;
+$callout-important: #c0392b;
+
+// Typography
+$font-family-sans-serif: "Inter", "Fira Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+$presentation-font-size-root: 25px;
+$presentation-h1-font-size: 2em;
+$presentation-h2-font-size: 1.35em;
+$presentation-h3-font-size: 1.1em;
+$presentation-heading-color: $m-dark;
+$presentation-heading-font-weight: 700;
+$presentation-heading-line-height: 1.2;
+
+$code-color: #2c3e50;
+$code-bg: #f4f7fb;
+
+/*-- scss:rules --*/
+
+// ============================================
+// TITLE SLIDE
+// ============================================
+.reveal .title-slide {
+  text-align: center;
+  background: linear-gradient(180deg, $m-accent 0%, $body-bg 40%);
+  h1 {
+    color: $m-dark;
+    font-size: 2.3em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    border-bottom: 5px solid $m-medium;
+    padding-bottom: 0.25em;
+    margin-bottom: 0.4em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  h2 { color: $m-medium; font-size: 1.2em; font-weight: 500; }
+  img { margin: 0.4em 0; border: none !important; box-shadow: none !important; }
+  p { font-size: 0.85em; color: #555; }
+}
+
+// ============================================
+// SLIDE BACKGROUND — subtle header bar
+// ============================================
+.reveal .slides section {
+  background: linear-gradient(180deg, $m-accent 0%, $body-bg 7px);
+  padding: 10px 20px 10px 20px;
+}
+
+// ============================================
+// CENTERED SECTION DIVIDERS
+// ============================================
+.reveal .slides section.center {
+  text-align: center;
+  h1 {
+    font-size: 2.5em;
+    font-weight: 800;
+    border-bottom: none;
+    color: $m-dark;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    border-bottom: none;
+    color: $m-medium;
+    margin-top: 0.5em;
+  }
+}
+
+// ============================================
+// HEADINGS
+// ============================================
+.reveal h2 {
+  color: $m-dark;
+  font-weight: 700;
+  border-bottom: 3px solid $m-medium;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.01em;
+}
+.reveal h3 {
+  color: $m-medium;
+  font-weight: 600;
+  margin-bottom: 0.4em;
+}
+
+// ============================================
+// CODE BLOCKS
+// ============================================
+.reveal pre {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-radius: 8px;
+  margin: 0.4em 0;
+}
+.reveal pre code {
+  background-color: #f4f7fb;
+  border: 1px solid #dce6f0;
+  border-radius: 8px;
+  font-size: 0.72em;
+  line-height: 1.4;
+  max-height: 420px;
+  overflow-y: auto !important;
+  padding: 0.6em 0.8em;
+}
+// Code output — slightly different
+.reveal pre code:not(.sourceCode) {
+  background-color: #fafafa;
+  border-left: 3px solid $m-medium;
+  font-size: 0.75em;
+}
+
+// ============================================
+// TABLES — dark header, clean style
+// ============================================
+.reveal table {
+  font-size: 0.78em;
+  border-collapse: collapse;
+  margin: 0.4em auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border-radius: 6px;
+  overflow: hidden;
+  th {
+    background: linear-gradient(180deg, $m-dark, darken($m-dark, 4%));
+    color: #fff;
+    padding: 6px 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.95em;
+    letter-spacing: 0.02em;
+  }
+  td {
+    padding: 4px 10px;
+    border: 1px solid #e8ecf0;
+  }
+  tr:nth-child(even) { background-color: #f2f6fa; }
+  tr:hover { background-color: $m-highlight; transition: background 0.2s; }
+}
+
+// ============================================
+// CALLOUT BOXES — colored left border with subtle background
+// ============================================
+.reveal .callout-note, .reveal .callout-tip,
+.reveal .callout-warning, .reveal .callout-important {
+  border-radius: 8px;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  font-size: 0.8em;
+  line-height: 1.4;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.reveal .callout-note {
+  border-left: 5px solid $callout-note;
+  background: #d6eaf8;
+}
+.reveal .callout-tip {
+  border-left: 5px solid $callout-tip;
+  background: #d5f5e3;
+}
+.reveal .callout-warning {
+  border-left: 5px solid $callout-warning;
+  background: #fdebd0;
+}
+.reveal .callout-important {
+  border-left: 5px solid $callout-important;
+  background: #fadbd8;
+}
+
+// ============================================
+// LISTS — comfortable spacing
+// ============================================
+.reveal .incremental {
+  font-size: 0.88em;
+  line-height: 1.55;
+  li { margin-bottom: 0.25em; }
+}
+
+.reveal ul, .reveal ol {
+  line-height: 1.5;
+  li { margin-bottom: 0.2em; }
+}
+
+// ============================================
+// TWO-COLUMN LAYOUTS
+// ============================================
+.reveal .columns {
+  font-size: 0.8em;
+  gap: 1em;
+}
+
+// ============================================
+// IMAGES — clean, subtle shadow, contained in slide
+// ============================================
+.reveal section img {
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  max-width: 100%;
+  max-height: 60vh;
+  width: auto;
+  height: auto;
+  display: block;
+  margin-inline: auto;
+}
+
+// ============================================
+// SLIDE NUMBER
+// ============================================
+.reveal .slide-number {
+  font-size: 0.5em;
+  color: $m-medium;
+  opacity: 0.6;
+  background: none;
+}
+
+// ============================================
+// PROGRESS BAR — thin, elegant
+// ============================================
+.reveal .progress {
+  height: 3px;
+  background: rgba($m-dark, 0.1);
+  span { background: $m-medium; }
+}
+
+// ============================================
+// CONTROLS
+// ============================================
+.reveal .controls-arrow { color: $m-medium; opacity: 0.5; }
+.reveal .controls-arrow:hover { opacity: 0.9; }
+
+// ============================================
+// BLOCKQUOTES
+// ============================================
+.reveal blockquote {
+  border-left: 4px solid $m-medium;
+  background: $m-highlight;
+  padding: 0.5em 1em;
+  font-style: italic;
+  color: #555;
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+// ============================================
+// STRONG / BOLD
+// ============================================
+.reveal strong {
+  color: $m-dark;
+  font-weight: 700;
+}
+
+// ============================================
+// LINKS — dotted underline, hover solid
+// ============================================
+.reveal a {
+  color: $link-color;
+  text-decoration: none;
+  border-bottom: 1px dotted $link-color;
+  transition: all 0.2s;
+}
+.reveal a:hover {
+  color: $link-color-hover;
+  border-bottom: 1px solid $link-color-hover;
+}
+
+// ============================================
+// MATH — ensure readable
+// ============================================
+.reveal .katex {
+  font-size: 1.05em;
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+
+// Smaller text — for footnotes, references, dense content
+.reveal .small {
+  font-size: 0.7em;
+  line-height: 1.35;
+}
+
+// Framed box — highlight key formulas and definitions
+.reveal .framed {
+  border: 2px solid $m-medium;
+  border-radius: 10px;
+  padding: 0.6em 1em;
+  background: linear-gradient(135deg, $m-highlight, #fff);
+  margin: 0.5em 0;
+  box-shadow: 0 2px 8px rgba($m-medium, 0.12);
+  text-align: center;
+}
+
+// Definition box — key concepts
+.reveal .def {
+  border-left: 5px solid $m-dark;
+  background: $m-accent;
+  padding: 0.4em 1em;
+  margin: 0.4em 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82em;
+}
+
+// Step-by-step numbered procedures
+.reveal .steps {
+  counter-reset: step;
+  ol {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    counter-increment: step;
+    margin-bottom: 0.5em;
+    padding-left: 2.5em;
+    position: relative;
+  }
+  li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: $m-medium;
+    color: #fff;
+    width: 1.8em;
+    height: 1.8em;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 1.8em;
+    font-weight: 700;
+    font-size: 0.85em;
+  }
+}
+
+// Exercise callout — clinical/practical exercises
+.reveal .exercise {
+  border: 2px dashed $callout-warning;
+  background: #fef9e7;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  font-size: 0.82em;
+  h3, h4 { color: darken($callout-warning, 10%); margin-top: 0; }
+}
+
+// Connection box — links between topics
+.reveal .connection {
+  background: linear-gradient(90deg, $m-accent, $body-bg);
+  border-left: 5px solid $m-dark;
+  border-radius: 0 8px 8px 0;
+  padding: 0.4em 1em;
+  margin: 0.4em 0;
+  font-size: 0.82em;
+}
+
+// ============================================
+// FORMULA BOX — highlighted formula with gradient
+// ============================================
+.reveal .formula-box {
+  border: 2px solid $m-medium;
+  border-radius: 12px;
+  padding: 0.6em 1.2em;
+  background: linear-gradient(135deg, #e8f4fd 0%, #fff 100%);
+  margin: 0.5em 0;
+  box-shadow: 0 3px 10px rgba($m-medium, 0.15);
+  text-align: center;
+  font-size: 0.95em;
+}
+
+// ============================================
+// EXAMPLE BOX — worked numerical examples
+// ============================================
+.reveal .example-box {
+  border: 2px solid #2ecc71;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  background: linear-gradient(135deg, #eafaf1 0%, #fff 100%);
+  margin: 0.5em 0;
+  font-size: 0.82em;
+  box-shadow: 0 2px 6px rgba(46, 204, 113, 0.12);
+  h3, h4 { color: #27ae60; margin-top: 0; }
+}
+
+// ============================================
+// REFERENCE BOX — bibliographic references
+// ============================================
+.reveal .reference-box {
+  border-left: 4px solid #8e44ad;
+  background: linear-gradient(90deg, #f5eef8 0%, #fdfefe 100%);
+  border-radius: 0 8px 8px 0;
+  padding: 0.4em 1em;
+  margin: 0.4em 0;
+  font-size: 0.75em;
+  line-height: 1.4;
+  color: #555;
+}
+
+// ============================================
+// DECISION TREE — test selection flowcharts
+// ============================================
+.reveal .decision-tree {
+  border: 2px dashed $m-medium;
+  border-radius: 12px;
+  padding: 0.6em 1em;
+  background: linear-gradient(135deg, $m-accent 0%, #fff 100%);
+  margin: 0.5em 0;
+  font-size: 0.78em;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba($m-dark, 0.08);
+  code { background: rgba($m-dark, 0.06); padding: 0.1em 0.3em; border-radius: 3px; }
+}
+
+// ============================================
+// THEOREM BOX — formal mathematical theorems
+// ============================================
+.reveal .theorem {
+  border: 2px solid $m-dark;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+  background: linear-gradient(135deg, $m-accent 0%, #fff 100%);
+  margin: 0.5em 0;
+  font-size: 0.85em;
+  box-shadow: 0 3px 8px rgba($m-dark, 0.1);
+  h3, h4 { color: $m-dark; margin-top: 0; font-weight: 700; }
+}
+
+// ============================================
+// RESPONSIVE TWEAKS
+// ============================================
+@media (max-width: 1024px) {
+  $presentation-font-size-root: 22px;
+  .reveal .columns { font-size: 0.75em; }
+}

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='468.00pt' viewBox='0 0 648.00 468.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHw0NjguMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='468.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHw0NjguMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpNTkuMDR8NjE3Ljc2fDU5LjA0fDM5NC41Ng=='>
+    <rect x='59.04' y='59.04' width='558.72' height='335.52' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNTkuMDR8NjE3Ljc2fDU5LjA0fDM5NC41Ng==)'>
+<polygon points='105.60,294.47 312.53,294.47 312.53,236.35 105.60,236.35 ' style='stroke-width: 0.75; stroke: none; fill: #4682B4;' />
+<line x1='105.60' y1='272.00' x2='312.53' y2='272.00' style='stroke-width: 2.25; stroke-linecap: butt;' />
+<line x1='209.07' y1='359.23' x2='209.07' y2='294.47' style='stroke-width: 0.75; stroke-dasharray: 4.00,4.00;' />
+<line x1='209.07' y1='168.75' x2='209.07' y2='236.35' style='stroke-width: 0.75; stroke-dasharray: 4.00,4.00;' />
+<line x1='157.33' y1='359.23' x2='260.80' y2='359.23' style='stroke-width: 0.75;' />
+<line x1='157.33' y1='168.75' x2='260.80' y2='168.75' style='stroke-width: 0.75;' />
+<polygon points='105.60,294.47 312.53,294.47 312.53,236.35 105.60,236.35 ' style='stroke-width: 0.75;' />
+<polygon points='364.27,248.20 571.20,248.20 571.20,178.07 364.27,178.07 ' style='stroke-width: 0.75; stroke: none; fill: #FF7F50;' />
+<line x1='364.27' y1='212.05' x2='571.20' y2='212.05' style='stroke-width: 2.25; stroke-linecap: butt;' />
+<line x1='467.73' y1='329.60' x2='467.73' y2='248.20' style='stroke-width: 0.75; stroke-dasharray: 4.00,4.00;' />
+<line x1='467.73' y1='80.95' x2='467.73' y2='178.07' style='stroke-width: 0.75; stroke-dasharray: 4.00,4.00;' />
+<line x1='416.00' y1='329.60' x2='519.47' y2='329.60' style='stroke-width: 0.75;' />
+<line x1='416.00' y1='80.95' x2='519.47' y2='80.95' style='stroke-width: 0.75;' />
+<polygon points='364.27,248.20 571.20,248.20 571.20,178.07 364.27,178.07 ' style='stroke-width: 0.75;' />
+<circle cx='467.73' cy='382.13' r='2.70' style='stroke-width: 0.75;' />
+<circle cx='467.73' cy='71.47' r='2.70' style='stroke-width: 0.75;' />
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHw0NjguMDA=)'>
+<line x1='209.07' y1='394.56' x2='467.73' y2='394.56' style='stroke-width: 0.75;' />
+<line x1='209.07' y1='394.56' x2='209.07' y2='401.76' style='stroke-width: 0.75;' />
+<line x1='467.73' y1='394.56' x2='467.73' y2='401.76' style='stroke-width: 0.75;' />
+<text x='209.07' y='420.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='43.34px' lengthAdjust='spacingAndGlyphs'>Grupo 1</text>
+<text x='467.73' y='420.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='43.34px' lengthAdjust='spacingAndGlyphs'>Grupo 2</text>
+<line x1='59.04' y1='360.77' x2='59.04' y2='84.41' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='360.77' x2='51.84' y2='360.77' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='314.71' x2='51.84' y2='314.71' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='268.65' x2='51.84' y2='268.65' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='222.59' x2='51.84' y2='222.59' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='176.53' x2='51.84' y2='176.53' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='130.47' x2='51.84' y2='130.47' style='stroke-width: 0.75;' />
+<line x1='59.04' y1='84.41' x2='51.84' y2='84.41' style='stroke-width: 0.75;' />
+<text transform='translate(41.76,360.77) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>150</text>
+<text transform='translate(41.76,314.71) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>160</text>
+<text transform='translate(41.76,268.65) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>170</text>
+<text transform='translate(41.76,222.59) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>180</text>
+<text transform='translate(41.76,176.53) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>190</text>
+<text transform='translate(41.76,130.47) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>200</text>
+<text transform='translate(41.76,84.41) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>210</text>
+<text x='338.40' y='34.67' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='208.73px' lengthAdjust='spacingAndGlyphs'>Comparación de Estatura (cm)</text>
+<text x='338.40' y='449.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='33.34px' lengthAdjust='spacingAndGlyphs'>Grupo</text>
+<text transform='translate(12.96,226.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.00px' lengthAdjust='spacingAndGlyphs'>cm</text>
+<polygon points='59.04,394.56 617.76,394.56 617.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
+</g>
+</g>
+</svg>

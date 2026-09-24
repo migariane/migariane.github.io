@@ -7,3 +7,7 @@ CATE/*.dta
 # Historial de consola R — local a la máquina, puede contener rutas y datos
 .Rhistory
 .RData
+
+.DS_Store
+**/.DS_Store
+.git-rewrite/

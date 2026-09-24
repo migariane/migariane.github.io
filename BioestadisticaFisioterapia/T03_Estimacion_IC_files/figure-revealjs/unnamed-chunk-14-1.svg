@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='324.00pt' viewBox='0 0 648.00 324.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='324.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)'>
+<line x1='134.40' y1='252.00' x2='614.40' y2='252.00' style='stroke-width: 0.75;' />
+<line x1='134.40' y1='252.00' x2='134.40' y2='259.20' style='stroke-width: 0.75;' />
+<line x1='230.40' y1='252.00' x2='230.40' y2='259.20' style='stroke-width: 0.75;' />
+<line x1='326.40' y1='252.00' x2='326.40' y2='259.20' style='stroke-width: 0.75;' />
+<line x1='422.40' y1='252.00' x2='422.40' y2='259.20' style='stroke-width: 0.75;' />
+<line x1='518.40' y1='252.00' x2='518.40' y2='259.20' style='stroke-width: 0.75;' />
+<line x1='614.40' y1='252.00' x2='614.40' y2='259.20' style='stroke-width: 0.75;' />
+<text x='134.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='230.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='326.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='422.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='518.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='614.40' y='277.92' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.7</text>
+<polygon points='115.20,252.00 633.60,252.00 633.60,57.60 115.20,57.60 ' style='stroke-width: 0.75;' />
+<text x='374.40' y='33.95' text-anchor='middle' style='font-size: 14.40px; font-weight: bold; font-family: "Arial";' textLength='140.75px' lengthAdjust='spacingAndGlyphs'>IC 95% — 4 Métodos</text>
+<text x='374.40' y='306.72' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='118.05px' lengthAdjust='spacingAndGlyphs'>Proporción de mejoría</text>
+<line x1='115.20' y1='222.30' x2='115.20' y2='87.30' style='stroke-width: 0.75;' />
+<line x1='115.20' y1='222.30' x2='108.00' y2='222.30' style='stroke-width: 0.75;' />
+<line x1='115.20' y1='177.30' x2='108.00' y2='177.30' style='stroke-width: 0.75;' />
+<line x1='115.20' y1='132.30' x2='108.00' y2='132.30' style='stroke-width: 0.75;' />
+<line x1='115.20' y1='87.30' x2='108.00' y2='87.30' style='stroke-width: 0.75;' />
+<text x='100.80' y='226.60' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='36.02px' lengthAdjust='spacingAndGlyphs'>Wilson</text>
+<text x='100.80' y='181.60' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='42.92px' lengthAdjust='spacingAndGlyphs'>Wald_aj</text>
+<text x='100.80' y='136.60' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='26.91px' lengthAdjust='spacingAndGlyphs'>Wald</text>
+<text x='100.80' y='91.60' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='36.67px' lengthAdjust='spacingAndGlyphs'>Exacto</text>
+</g>
+<defs>
+  <clipPath id='cpMTE1LjIwfDYzMy42MHw1Ny42MHwyNTIuMDA='>
+    <rect x='115.20' y='57.60' width='518.40' height='194.40' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMTE1LjIwfDYzMy42MHw1Ny42MHwyNTIuMDA=)'>
+<polyline points='237.17,222.30 520.04,222.30 ' style='stroke-width: 3.00; stroke: #4682B4;' />
+<circle cx='374.40' cy='222.30' r='4.05' style='stroke-width: 0.75; fill: #000000;' />
+<polyline points='237.52,177.30 520.00,177.30 ' style='stroke-width: 3.00; stroke: #006400;' />
+<circle cx='374.40' cy='177.30' r='4.05' style='stroke-width: 0.75; fill: #000000;' />
+<polyline points='226.39,132.30 522.41,132.30 ' style='stroke-width: 3.00; stroke: #FF7F50;' />
+<circle cx='374.40' cy='132.30' r='4.05' style='stroke-width: 0.75; fill: #000000;' />
+<polyline points='223.28,87.30 532.89,87.30 ' style='stroke-width: 3.00; stroke: #A020F0;' />
+<circle cx='374.40' cy='87.30' r='4.05' style='stroke-width: 0.75; fill: #000000;' />
+</g>
+</g>
+</svg>

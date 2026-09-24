@@ -1,0 +1,989 @@
+---
+title: "Estadística Descriptiva"
+subtitle: "Tema I (Parte II) — Medidas de Posición, Dispersión, Forma y Aplicación Práctica"
+author:
+  - name: "Miguel Angel Luque-Fernández"
+    affiliation: "Dpto. Estadística e Investigación Operativa, Universidad de Granada"
+    email: "mluquefe@ugr.es"
+    url: "https://migariane.github.io"
+date: "2026"
+license: "CC BY 4.0"
+format:
+  revealjs:
+    slide-number: c/t
+    code-fold: true
+    code-copy: true
+    code-summary: "Mostrar código R"
+    fig-width: 9
+    fig-height: 5.5
+    code-overflow: wrap
+    lang: es
+execute:
+  warning: false
+  message: false
+  echo: true
+  eval: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+# Cargar BioEstatR si está disponible
+has_bioestatr <- requireNamespace("BioEstatR", quietly = TRUE)
+if (has_bioestatr) library(BioEstatR)
+
+# Cargar e1071 para asimetría/curtosis (con fallback)
+has_e1071 <- requireNamespace("e1071", quietly = TRUE)
+if (has_e1071) library(e1071)
+
+# Funciones fallback si e1071 no está disponible
+if (!has_e1071) {
+  skewness <- function(x) {
+    n <- length(x); m <- mean(x); s <- sd(x)
+    (n / ((n-1)*(n-2))) * sum(((x - m) / s)^3)
+  }
+  kurtosis <- function(x) {
+    n <- length(x); m <- mean(x); s <- sd(x)
+    ((n*(n+1)) / ((n-1)*(n-2)*(n-3))) * sum(((x - m) / s)^4) -
+      (3*(n-1)^2) / ((n-2)*(n-3))
+  }
+}
+```
+
+# Medidas de Posición {.center}
+
+
+::: {.columns}
+::: {.column width="50%"}
+**Tendencia central:** Media ($\bar{x}$), Mediana ($Me$), Moda
+
+**No central:** Percentiles ($P_\alpha$), Cuartiles ($Q_1,Q_2,Q_3$), Deciles
+:::
+::: {.column width="50%"}
+**Qué medida según tipo de variable:**
+
+| Tipo | Medidas |
+|------|---------|
+| Nominal | Proporción, Moda |
+| Ordinal | + Mediana, Percentiles, RIQ |
+| Cuantitativa | + Media, Varianza, DT, CV |
+:::
+:::
+
+::: {.callout-important}
+¡No se puede calcular la **media** de una variable **nominal**!
+:::
+
+::: {.callout-tip}
+**Consejo para el estudiante:** Para recordar qué medida usar: ¿tipo de variable? Nominal → solo moda y %. Ordinal → añade mediana. Cuantitativa → añade media. ¿Hay outliers? → prefiere mediana y RIQ sobre media y DT.
+:::
+
+## Proporción, moda y mediana
+
+**Proporción:** $p_i = n_i/n$ — frecuencia relativa. Para nominales.
+
+**Moda:** valor con **mayor frecuencia** (puede no ser única). Única medida central para nominales.
+
+**Mediana ($Me$):** valor que divide la muestra ordenada en dos partes iguales.
+
+1. Ordenar datos: $x_{(1)} \leq x_{(2)} \leq \cdots \leq x_{(n)}$
+2. $n$ impar: $Me = x_{((n+1)/2)}$; $n$ par: $Me = (x_{(n/2)} + x_{(n/2+1)})/2$
+
+**Ejemplo ordinal:** {peor, peor, peor, mejor, igual, mejor, peor} → ordenar por gravedad → $Me$ = "peor"
+
+```{r}
+x<-c(3,6,7,10,15); cat("Me =", median(x))  # 7
+x2<-c(3,6,10,15); cat("Me =", median(x2))  # 8
+```
+
+## Media aritmética
+
+::: {.framed}
+$$\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$$
+:::
+
+**Para datos agrupados (tabla de frecuencias):** $\bar{x} = \frac{\sum x_i \cdot n_i}{n}$
+
+**Para intervalos:** usar la **marca de clase** $x_j = (x_j^l + x_j^u)/2$
+
+**Ejemplo — Edad (n=124):**
+
+| $x_i$ | $n_i$ | $x_i \cdot n_i$ |
+|:-----:|:-----:|:---------------:|
+| 15 | 5 | 75 |
+| 16 | 28 | 448 |
+| 17 | 64 | 1088 |
+| 18 | 18 | 324 |
+| 19 | 6 | 114 |
+| 20 | 3 | 60 |
+| **Σ** | **124** | **2109** |
+
+$\bar{x} = 2109/124 = 17.0$ años
+
+## Media ponderada
+
+$$\bar{x}_p = \frac{\sum x_i \cdot w_i}{\sum w_i}$$
+
+**Ejemplo — Nota media:** 5 (3 créditos), 7 (3 créd), 9 (6 créd).
+
+$\bar{x}_p = \frac{5\times3 + 7\times3 + 9\times6}{12} = 7.5 \; \neq \; \frac{5+7+9}{3} = 7.0$
+
+## Respiro visual — Midiendo en fisioterapia
+
+![Goniometría de rodilla](https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800)
+
+Las medidas de posición resumen **dónde se concentran** los datos. La media es sensible a valores extremos; la mediana es robusta.
+
+## Media geométrica y media armónica — Fórmulas
+
+::: {.formula-box}
+**Media Geométrica:** $G = \left(\prod_{i=1}^n x_i\right)^{1/n} = \exp\left(\frac{1}{n}\sum \ln x_i\right)$
+
+**Media Armónica:** $H = \frac{n}{\sum_{i=1}^n \frac{1}{x_i}}$
+:::
+
+**¿Cuándo usar cada una en fisioterapia?**
+
+- **Geométrica:** Para promediar tasas, ratios, o índices multiplicativos (ej: factor de mejora relativa entre sesiones)
+- **Armónica:** Para promediar tasas o velocidades (ej: velocidad media de marcha en ida y vuelta)
+
+```{r}
+# Factores de mejora: 1.2, 1.5, 1.8, 1.3, 1.6
+mejoras <- c(1.2, 1.5, 1.8, 1.3, 1.6)
+G <- exp(mean(log(mejoras)))
+cat("Media geométrica =", round(G, 3))
+# Velocidades de marcha (m/s): ida=1.2, vuelta=0.8
+v <- c(1.2, 0.8)
+H <- length(v) / sum(1/v)
+cat("\nMedia armónica =", round(H, 3), "m/s")
+cat("\nMedia aritmética =", round(mean(v), 3), "m/s (sobreestima!)")
+```
+
+## Media geométrica y media armónica
+
+::: {.callout-note}
+**Media Geométrica ($G$):** Adecuada para datos que siguen un crecimiento multiplicativo (proporciones, ratios, tasas de cambio). Se define como:
+
+$$G = \left(\prod_{i=1}^{n} x_i\right)^{1/n} = \exp\left(\frac{1}{n}\sum_{i=1}^{n} \ln x_i\right)$$
+
+**Media Armónica ($H$):** Adecuada para promediar tasas, velocidades y ratios inversos:
+
+$$H = \frac{n}{\sum_{i=1}^{n} \frac{1}{x_i}}$$
+:::
+
+**Relación fundamental:** Para datos positivos siempre se cumple $H \leq G \leq \bar{x}$.
+
+| Media | Cuándo usar en Fisioterapia | Ejemplo |
+|:------|:---------------------------|:--------|
+| **Aritmética** ($\bar{x}$) | Variables aditivas | ROM, fuerza, distancia |
+| **Geométrica** ($G$) | Ratios, cocientes pre/post, índices multiplicativos | Ratio de mejoría (ROM post / ROM pre) |
+| **Armónica** ($H$) | Velocidades, tasas, frecuencias | Velocidad de marcha en diferentes tramos |
+
+```{r}
+# Ejemplo: ratios de mejoría pre/post en 5 pacientes
+ratios <- c(1.2, 1.5, 1.1, 1.8, 1.3)  # ROM_post / ROM_pre
+
+media_arit <- mean(ratios)
+media_geom <- exp(mean(log(ratios)))
+media_armo <- 1 / mean(1 / ratios)
+
+cat("Ratios de mejoría:", ratios,
+    "\n\nMedia aritmética  =", round(media_arit, 3),
+    "\nMedia geométrica  =", round(media_geom, 3),
+    "\nMedia armónica    =", round(media_armo, 3),
+    "\n\nSe cumple H ≤ G ≤ x̄:", media_armo <= media_geom & media_geom <= media_arit)
+```
+
+::: {.callout-tip}
+**En fisioterapia:** Cuando comparas la **mejoría relativa** de varios pacientes (ej: "el ROM mejoró un 20%, 50%, 10%..."), la media geométrica es más apropiada que la aritmética. La aritmética sobrestima el promedio de cambios multiplicativos.
+:::
+
+## Mediana vs media y simetría — Regla para identificar asimetría
+
+::: {.callout-important}
+**Regla nemotécnica (rule of thumb):** La posición relativa de media, mediana y moda revela la asimetría.
+:::
+
+::: {.columns}
+::: {.column width="33%"}
+**Simétrica**
+$$\bar{x} \approx Me \approx Mo$$
+Las tres coinciden en el centro
+:::
+::: {.column width="33%"}
+**Asim. derecha (+)**
+$$Mo < Me < \bar{x}$$
+La media es arrastrada por la cola larga a la derecha
+:::
+::: {.column width="33%"}
+**Asim. izquierda (−)**
+$$\bar{x} < Me < Mo$$
+La media es arrastrada por la cola larga a la izquierda
+:::
+:::
+
+```{r}
+#| fig-height: 6
+par(mfrow=c(1,3), mar=c(3,4,4,1))
+set.seed(123)
+
+# ── Simétrica ──
+x_sym <- rnorm(5000, 10, 1.5)
+hist(x_sym, col="steelblue", border="white", breaks=30, freq=FALSE,
+     main="Simétrica", xlab="", ylab="", yaxt="n", cex.main=1.3)
+dx <- density(x_sym); lines(dx, col="darkgreen", lwd=2.5)
+abline(v=mean(x_sym), col="darkgreen", lwd=3)       # media = rojo
+abline(v=median(x_sym), col="#2471a3", lwd=3, lty=2) # mediana = azul
+legend("topright", c(paste0("x̄=", round(mean(x_sym),1)),
+       paste0("Me=", round(median(x_sym),1))),
+       col=c("darkgreen","#2471a3"), lty=c(1,2), lwd=3, bty="n", cex=0.85)
+text(9.5, max(dx$y)*0.85, "x̄ ≈ Me ≈ Mo", col="darkgreen", font=2, cex=0.9)
+
+# ── Asimétrica derecha ──
+x_pos <- rexp(5000, 0.5)
+hist(x_pos, col="seagreen", border="white", breaks=30, freq=FALSE,
+     main="Asim. derecha (+)", xlab="", ylab="", yaxt="n", cex.main=1.3)
+dx <- density(x_pos); lines(dx, col="darkgreen", lwd=2.5)
+abline(v=mean(x_pos), col="darkgreen", lwd=3)
+abline(v=median(x_pos), col="#2471a3", lwd=3, lty=2)
+legend("topright", c(paste0("x̄=", round(mean(x_pos),1)),
+       paste0("Me=", round(median(x_pos),1))),
+       col=c("darkgreen","#2471a3"), lty=c(1,2), lwd=3, bty="n", cex=0.85)
+text(8, max(dx$y)*0.85, "Mo < Me < x̄", col="darkgreen", font=2, cex=0.9)
+
+# ── Asimétrica izquierda ──
+x_neg <- 12 - rexp(5000, 0.5)
+hist(x_neg, col="seagreen", border="white", breaks=30, freq=FALSE,
+     main="Asim. izquierda (−)", xlab="", ylab="", yaxt="n", cex.main=1.3)
+dx <- density(x_neg); lines(dx, col="darkgreen", lwd=2.5)
+abline(v=mean(x_neg), col="darkgreen", lwd=3)
+abline(v=median(x_neg), col="#2471a3", lwd=3, lty=2)
+legend("topleft", c(paste0("x̄=", round(mean(x_neg),1)),
+       paste0("Me=", round(median(x_neg),1))),
+       col=c("darkgreen","#2471a3"), lty=c(1,2), lwd=3, bty="n", cex=0.85)
+text(5, max(dx$y)*0.85, "x̄ < Me < Mo", col="darkgreen", font=2, cex=0.9)
+
+par(mfrow=c(1,1))
+```
+
+::: {.callout-tip}
+**Cómo usarlo en fisioterapia:** Si en tu muestra la media de EVA-dolor es 6.2 y la mediana es 4.5, tienes una asimetría derecha: la mayoría de pacientes tiene dolor moderado-bajo, pero unos pocos con dolor muy alto empujan la media hacia arriba. En este caso, **reporta la mediana**.
+:::
+
+## ¿Media o Mediana? — El Efecto de los Valores Extremos
+
+::: {.callout-tip}
+**Piensa antes de mirar:** Tienes 30 pacientes con fuerza prensil entre 24-38 kg. Uno adicional registra 65 kg. ¿La media cambiará mucho? ¿Y la mediana? ¿Cuál reportarías en tu artículo? → **Mira los gráficos de abajo para comprobarlo.**
+:::
+
+```{r}
+#| fig-height: 6
+set.seed(123)
+par(mfrow=c(1,2), mar=c(4,4,4,1))
+
+# Sin outlier
+x1 <- rnorm(30, 30, 5)
+hist(x1, col="steelblue", border="white", breaks=12, freq=FALSE,
+     main="Sin outliers: media ~ mediana", xlab="Fuerza (kg)", xlim=c(15,65))
+abline(v=mean(x1), col="darkgreen", lwd=3)
+abline(v=median(x1), col="steelblue", lwd=3, lty=2)
+curve(dnorm(x,mean(x1),sd(x1)), add=T, col="grey40", lwd=1, lty=3)
+legend("topright", c(paste("Media =",round(mean(x1),1)),
+       paste("Mediana =",round(median(x1),1))), col=c("darkgreen","steelblue"),
+       lty=c(1,2), lwd=3, bty="n", cex=0.9)
+
+# Con outlier
+x2 <- c(x1, 65)  # paciente con fuerza excepcional
+hist(x2, col="seagreen", border="white", breaks=12, freq=FALSE,
+     main="Con outlier: media se desplaza", xlab="Fuerza (kg)", xlim=c(15,65))
+abline(v=mean(x2), col="darkgreen", lwd=3)
+abline(v=median(x2), col="steelblue", lwd=3, lty=2)
+legend("topright", c(paste("Media =",round(mean(x2),1)),
+       paste("Mediana =",round(median(x2),1))), col=c("darkgreen","steelblue"),
+       lty=c(1,2), lwd=3, bty="n", cex=0.9)
+par(mfrow=c(1,1))
+```
+
+::: {.callout-tip}
+**Consejo:** Ante datos con valores extremos (outliers), **prefiere la mediana** sobre la media. La mediana apenas cambia. La media se ve muy afectada. En fisioterapia, un paciente con dolor excepcionalmente alto no debe distorsionar la descripción del grupo.
+:::
+
+## Percentiles y cuantiles
+
+**Percentil $\alpha$:** valor que deja $\alpha$% de observaciones por debajo. Posición = $(n+1)\alpha/100$.
+
+**Cuartiles:** $Q_1=P_{25}$, $Q_2=P_{50}=Me$, $Q_3=P_{75}$. **Deciles:** $D_k = P_{10k}$.
+
+**Ejemplo — $P_{40}$ (nº recaídas, n=500):**
+
+| $x_i$ | $n_i$ | $N_i$ | % acum |
+|:-----:|:-----:|:-----:|:------:|
+| 0 | 72 | 72 | 14.4 |
+| 1 | 155 | 227 | 45.4 |
+| 2 | 97 | 324 | 64.8 |
+
+Posición $P_{40}$ = $(500+1) \times 0.4 = 200.4$ → $P_{40} = 1$ recaída
+
+## Mediana desde tabla agrupada — Interpolación
+
+**Flexión de rodilla (°), n=60:**
+
+| Intervalo | $x_j$ | $n_i$ | $N_i$ |
+|:---------:|:-----:|:-----:|:-----:|
+| 110–120 | 115 | 5 | 5 |
+| 120–130 | 125 | 15 | 20 |
+| **130–140** | **135** | **25** | **45** ← contiene Me |
+| 140–150 | 145 | 10 | 55 |
+| 150–160 | 155 | 5 | 60 |
+
+$$Me = L_{i-1} + \frac{n/2 - N_{i-1}}{n_i} \cdot a = 130 + \frac{30-20}{25} \times 10 = 134°$$
+
+## Ejercicio rápido — Cuartiles
+
+**Calcula $Q_1$, $Q_2$, $Q_3$ para:** 3, 5, 7, 8, 12, 15, 18, 21
+
+::: {.callout-tip}
+**Solución:** Ordenados: 3, 5, 7, 8, 12, 15, 18, 21 ($n=8$, par)
+
+- $Q_1 = P_{25}$: posición $0.25 \times 8 = 2$ → entre 5 y 7 → $Q_1 = \mathbf{6.0}$
+- $Q_2 = Me$: posición $0.50 \times 8 = 4$ → entre 8 y 12 → $Q_2 = \mathbf{10.0}$
+- $Q_3 = P_{75}$: posición $0.75 \times 8 = 6$ → entre 15 y 18 → $Q_3 = \mathbf{16.5}$
+- $RIQ = Q_3 - Q_1 = 16.5 - 6.0 = \mathbf{10.5}$
+
+```{r}
+x <- c(3, 5, 7, 8, 12, 15, 18, 21)
+# type=2: método manual del curso (promedio de los dos valores centrales)
+cat("Q1 =", quantile(x, 0.25, type=2), "\nQ2 =", quantile(x, 0.50, type=2),
+    "\nQ3 =", quantile(x, 0.75, type=2),
+    "\nRIQ =", diff(quantile(x, c(0.25, 0.75), type=2)))
+```
+:::
+
+## Diagrama de cajas (Boxplot)
+
+# Medidas de Dispersión y Forma {.center}
+
+
+```{r}
+#| fig-height: 6.5
+set.seed(123)
+g1<-rnorm(50,170,10); g2<-rnorm(50,180,15)
+boxplot(g1,g2,names=c("Grupo 1","Grupo 2"),col=c("steelblue","coral"),
+        main="Comparación de Estatura (cm)",ylab="cm",xlab="Grupo")
+```
+
+**Caja:** $Q_1$ a $Q_3$ (50% central). **Línea:** $Me$. **Bigotes:** $1.5 \times RIQ$. **Puntos:** outliers.
+
+## ¿Por Qué Medir la Dispersión?
+
+Dos grupos pueden tener la **misma media** pero dispersión muy diferente. La media sola no describe la distribución.
+
+```{r}
+#| fig-height: 6
+set.seed(123); n<-10000; mu<-90
+grpA<-rnorm(n,mu,5); grpB<-rnorm(n,mu,18)
+plot(density(grpA,adjust=1.5),col="steelblue",lwd=4,xlim=c(30,150),
+     main=expression(paste("Misma ",mu,"=90°, distinta ",sigma)),xlab="Flexión rodilla (°)")
+lines(density(grpB,adjust=1.5),col="seagreen",lwd=4); abline(v=mu,lty=2,lwd=2)
+arrows(mu-10,0.01,mu+10,0.01,col="steelblue",lwd=3,code=3,angle=90,length=0.12)
+arrows(mu-36,0.005,mu+36,0.005,col="seagreen",lwd=3,code=3,angle=90,length=0.12)
+legend("topright",c(expression(sigma==5),expression(sigma==18)),col=c("steelblue","seagreen"),lwd=4,bty="n",cex=1.3)
+```
+
+**Grupo A:** $s=5°$, $s^2=25$. **Grupo B:** $s=18°$, $s^2=324$. Misma media, **variabilidad 13 veces mayor**.
+
+## Rango, varianza y desviación típica
+
+**Rango:** $A = x_{\max} - x_{\min}$. Simple pero muy pobre (solo usa 2 valores).
+
+::: {.framed}
+**Varianza muestral:** $s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n-1}$
+
+**Desviación típica:** $s = \sqrt{s^2}$ (mismas unidades que la variable)
+:::
+
+**Fórmula abreviada:** $s^2 = \frac{1}{n-1}\left[\sum x_i^2 - \frac{(\sum x_i)^2}{n}\right]$
+
+**¿Por qué $n-1$?** Usamos $n-1$ porque al estimar $\bar{x}$ a partir de los mismos datos, "gastamos" un grado de libertad. Esto garantiza que $s^2$ sea un estimador **insesgado** de $\sigma^2$.
+
+## Varianza — Cálculo paso a paso
+
+**Flexión de rodilla (°) en 5 pacientes:** 125, 132, 128, 135, 130. $\bar{x}=130°$.
+
+| $x_i$ | $x_i-\bar{x}$ | $(x_i-\bar{x})^2$ |
+|:-----:|:------------:|:-----------------:|
+| 125 | −5 | 25 |
+| 132 | +2 | 4 |
+| 128 | −2 | 4 |
+| 135 | +5 | 25 |
+| 130 | 0 | 0 |
+| **Σ** | **0** | **58** |
+
+$$s^2 = \frac{58}{4} = 14.5 \text{ grados}^2 \qquad s = \sqrt{14.5} = 3.81°$$
+
+```{r}
+x<-c(125,132,128,135,130); cat("s2 =", var(x), "s =", round(sd(x),2))
+```
+
+## Interpretación de la desviación típica
+
+Se expresa $\bar{x} \pm s$. Si la distribución es simétrica (≈Normal):
+
+- $\bar{x} \pm s$ contiene ≈ 68%
+- $\bar{x} \pm 2s$ contiene ≈ 95%
+
+```{r}
+#| fig-height: 6.5
+curve(dnorm(x), -4, 4, lwd=3, col="steelblue", main=expression(bar(x) %+-% 2*s))
+x1<-seq(-2,2,0.01); polygon(c(x1,rev(x1)),c(dnorm(x1),rep(0,length(x1))),col=rgb(0,0,1,0.2),border=NA)
+x2<-seq(-1,1,0.01); polygon(c(x2,rev(x2)),c(dnorm(x2),rep(0,length(x2))),col=rgb(0,0,1,0.15),border=NA)
+text(0,0.2,"~68%",cex=1); text(0,0.05,"~95%",cex=1)
+```
+
+## Álgebra de Estadísticos desde Tablas Agrupadas
+
+Cuando los datos están agrupados en $k$ intervalos, las fórmulas de la media y la varianza se adaptan usando la **marca de clase** $x_j$ como representante del intervalo:
+
+::: {.framed}
+**Media desde tabla agrupada:**
+$$\bar{x} = \frac{1}{n}\sum_{j=1}^{k} x_j \cdot n_j = \sum_{j=1}^{k} x_j \cdot f_j$$
+
+**Varianza desde tabla agrupada (fórmula abreviada de cálculo):**
+$$s^2 = \frac{1}{n-1}\left[ \sum_{j=1}^{k} x_j^2 \cdot n_j - \frac{\left( \sum_{j=1}^{k} x_j \cdot n_j \right)^2}{n} \right]$$
+:::
+
+**Relación con las fórmulas para datos sin agrupar:**
+
+- $\sum x_i$ se sustituye por $\sum x_j \cdot n_j$ (cada marca de clase multiplicada por su frecuencia)
+- $\sum x_i^2$ se sustituye por $\sum x_j^2 \cdot n_j$
+- El resultado es una **aproximación**: asume que todas las observaciones del intervalo se concentran en $x_j$
+
+## Ejemplo detallado — Media y varianza con datos agrupados
+
+**Flexión de rodilla (grados) en 60 pacientes de fisioterapia:**
+
+| Intervalo | Marca de clase ($x_j$) | $n_j$ | $x_j \cdot n_j$ | $x_j^2 \cdot n_j$ |
+|:---------:|:---------------------:|:-----:|:--------------:|:-----------------:|
+| 110-120 | 115 | 5 | 575 | 66,125 |
+| 120-130 | 125 | 15 | 1,875 | 234,375 |
+| 130-140 | 135 | 25 | 3,375 | 455,625 |
+| 140-150 | 145 | 10 | 1,450 | 210,250 |
+| 150-160 | 155 | 5 | 775 | 120,125 |
+| **Total** | | **60** | **8,050** | **1,086,500** |
+
+$$\bar{x} = \frac{\sum x_j \cdot n_j}{n} = \frac{8050}{60} = 134.2°$$
+
+$$s^2 = \frac{1}{n-1}\left[\sum x_j^2 n_j - \frac{(\sum x_j n_j)^2}{n}\right] = \frac{1}{59}\left[1,086,500 - \frac{8,050^2}{60}\right] = \frac{6,458}{59} = 109.5$$
+
+$$s = \sqrt{109.5} = 10.5°$$
+
+```{r}
+x <- c(rep(115,5), rep(125,15), rep(135,25), rep(145,10), rep(155,5))
+cat("Media =", mean(x), "grados | s =", round(sd(x),1), "grados | s2 =", round(var(x),1))
+```
+
+**Nota:** La media con datos agrupados (134.2°) es una aproximación. Asume que todas las observaciones se concentran en la marca de clase.
+
+## Coeficiente de variación (CV) y rango intercuartílico (RIQ)
+
+**CV — Definición clínica:** mide la **dispersión relativa** respecto a la media. Es adimensional (sin unidades), lo que permite comparar la variabilidad entre variables medidas en escalas completamente distintas.
+
+$$CV = \frac{s}{\bar{x}} \times 100\%$$
+
+**Usos clínicos del CV:**
+
+- **Precisión diagnóstica:** comparar la fiabilidad de distintos métodos de medición (goniometría digital vs manual vs visual)
+- **Variabilidad biológica:** comparar la dispersión de variables con unidades distintas (ej: ¿qué varía más en una población, la fuerza muscular o el ROM?)
+- **Control de calidad:** monitorizar la consistencia de mediciones repetidas en un servicio de fisioterapia (CV < 5% → excelente; 5-10% → aceptable; > 10% → revisar protocolo)
+
+| Método medición ROM | $\bar{x}$ | $s$ | CV | Interpretación |
+|:--------------------|:--------:|:---:|:---:|:--------------|
+| Goniometría digital | 150° | 3° | 2.0% | Excelente — gold standard |
+| Goniometría manual | 148° | 7.5° | 5.1% | Aceptable — práctica clínica |
+| Estimación visual | 145° | 14.5° | 10.0% | Poco preciso — no usar solo |
+
+**RIQ — Rango Intercuartílico:** $RIQ = Q_3 - Q_1$. Contiene el 50% central de los datos. Robusto frente a outliers; es el acompañante natural de la mediana.
+
+**Desviación cuartil:** $DQ = RIQ/2$ — mide la dispersión alrededor de la mediana.
+
+## Asimetría y curtosis
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Asimetría (skewness) — $g_1$:** mide la **falta de simetría** de la distribución.
+
+$$g_1 = \frac{\frac{1}{n}\sum(x_i-\bar{x})^3}{s^3}$$
+
+| $g_1$ | Forma | Ejemplo en Fisioterapia |
+|:-----:|:------|:------------------------|
+| $\approx 0$ | Simétrica | ROM de cadera en población sana |
+| $> 0$ | Cola a la **derecha** (+) | Días hasta el alta (la mayoría temprano, pocos tardan mucho) |
+| $< 0$ | Cola a la **izquierda** (−) | Fuerza en pacientes con lesión (la mayoría baja, pocos alta) |
+
+**Interpretación clínica:** si $g_1 > 0$, la media $>$ mediana (arrastrada por valores altos). Si $g_1 < 0$, media $<$ mediana.
+
+:::
+::: {.column width="50%"}
+
+**Curtosis (kurtosis) — $g_2$:** mide el **apuntamiento** y el peso de las colas.
+
+$$g_2 = \frac{\frac{1}{n}\sum(x_i-\bar{x})^4}{s^4}$$
+
+| Exc. $g_2-3$ | Nombre | Significado clínico |
+|:------------:|:-------|:--------------------|
+| $\approx 0$ | **Mesocúrtica** | Distribución Normal de referencia |
+| $> 0$ | **Leptocúrtica** | Colas pesadas → más valores extremos de lo esperado (ej: dolor crónico: la mayoría moderado pero algunos muy extremos) |
+| $< 0$ | **Platicúrtica** | Colas ligeras → pocos valores extremos (ej: ROM en muestra muy homogénea) |
+
+*Nota: $g_2$ es la curtosis; el exceso de curtosis (excess kurtosis) es $g_2 - 3$.*
+
+:::
+:::
+
+```{r}
+#| fig-height: 6.5
+par(mfrow=c(1,2), mar=c(4,4,3,1), bg="white")
+
+# ── Panel 1: Asimetría con valores numéricos ──
+set.seed(123)
+x_sym <- rnorm(1000, 90, 15)
+x_pos <- rexp(1000, rate=1/10)
+x_neg <- -rexp(1000, rate=1/8) + 40
+# Calcular asimetría
+g1_sym <- round(mean((x_sym-mean(x_sym))^3)/sd(x_sym)^3, 2)
+g1_pos <- round(mean((x_pos-mean(x_pos))^3)/sd(x_pos)^3, 2)
+g1_neg <- round(mean((x_neg-mean(x_neg))^3)/sd(x_neg)^3, 2)
+
+xlim_asim <- range(density(x_sym)$x, density(x_pos)$x, density(x_neg)$x)
+ylim_asim <- range(density(x_sym)$y, density(x_pos)$y, density(x_neg)$y)
+plot(density(x_sym), col="steelblue", lwd=3, main="Asimetría (Skewness)", 
+     xlab="Valor", ylab="Densidad", xlim=xlim_asim, ylim=c(0, ylim_asim[2]*1.1))
+lines(density(x_pos), col="seagreen", lwd=3)
+lines(density(x_neg), col="coral", lwd=3)
+# Añadir medias como referencia
+abline(v=mean(x_sym), col="steelblue", lty=2, lwd=1.2)
+abline(v=mean(x_pos), col="seagreen", lty=2, lwd=1.2)
+abline(v=mean(x_neg), col="coral", lty=2, lwd=1.2)
+legend("topright", 
+       c(paste0("Simétrica (g₁=",g1_sym,")"),
+         paste0("Positiva (g₁=",g1_pos,")"),
+         paste0("Negativa (g₁=",g1_neg,")")),
+       col=c("steelblue","seagreen","coral"), lwd=3, bty="n", cex=0.7)
+
+# ── Panel 2: Curtosis con valores numéricos ──
+set.seed(123)
+xl <- rt(100000, 8)          # t(8): leptocúrtica (exceso teórico = 1.5)
+xm <- rnorm(100000)          # Normal: mesocúrtica (exceso = 0)
+xp <- runif(100000, -2, 2)   # Uniforme: platicúrtica (exceso = -1.2)
+dx <- density(xl, adjust=1.2, from=-5, to=5)
+dy <- density(xm, adjust=1.2, from=-5, to=5)
+dz <- density(xp, adjust=1.2, from=-5, to=5)
+# Exceso de curtosis = E[((X-μ)/σ)^4] - 3
+g2_lepto <- round(mean(((xl-mean(xl))/sd(xl))^4) - 3, 1)
+g2_meso  <- round(mean(((xm-mean(xm))/sd(xm))^4) - 3, 1)
+g2_plati <- round(mean(((xp-mean(xp))/sd(xp))^4) - 3, 1)
+
+plot(dx, col="coral", lwd=3, ylim=c(0, max(dx$y,dy$y,dz$y)*1.15),
+     main="Curtosis (Exceso de curtosis)", xlab="Valor estandarizado", ylab="Densidad")
+lines(dy, col="steelblue", lwd=3)
+lines(dz, col="seagreen", lwd=3)
+legend("topright",
+       c(paste0("Leptocúrtica (exc=", g2_lepto, ")"),
+         paste0("Mesocúrtica (exc=", g2_meso, ")"),
+         paste0("Platicúrtica (exc=", g2_plati, ")")),
+       col=c("coral","steelblue","seagreen"), lwd=3, bty="n", cex=0.7)
+par(mfrow=c(1,1))
+```
+
+## Ecdf — Función de distribución empírica
+
+::: {.callout-note}
+**ECDF (Empirical Cumulative Distribution Function):** describe la proporción de datos $\leq$ cada valor observado. Es el equivalente muestral de la función de distribución $F(x) = P(X \leq x)$.
+:::
+
+$$F_n(x) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{1}_{\{x_i \leq x\}} = \begin{cases} 0 & x < x_{(1)} \\ i/n & x_{(i)} \leq x < x_{(i+1)} \\ 1 & x \geq x_{(n)} \end{cases}$$
+
+
+donde $\mathbb{1}_{\{x_i \leq x\}}$ vale 1 si $x_i \leq x$ y 0 en caso contrario.
+
+**Utilidad clínica de la ECDF:**
+
+- **Percentiles visuales:** leer directamente cualquier percentil del gráfico (ej: $P_{50}$ ≈ 124 mmHg)
+- **Comparar grupos:** superponer ECDF de dos grupos (ej: tratados vs control) para ver si uno estocásticamente domina al otro
+- **Normalidad:** comparar la ECDF con la curva de la Normal teórica (test de Kolmogorov-Smirnov)
+- **Sin pérdida de información:** a diferencia del histograma (que agrupa), la ECDF muestra cada dato
+
+```{r}
+#| fig-height: 6.5
+pas<-c(120,125,118,130,122,128,115,135,124,129)
+plot(ecdf(pas), main="ECDF: Presión Arterial Sistólica (n=10)",
+     xlab="PAS (mmHg)", ylab="F(x) — Proporción acumulada",
+     col="steelblue", verticals=TRUE, pch=16, lwd=2.5, cex.main=1.1)
+grid(col="grey80")
+# Añadir percentiles clave
+abline(h=c(0.25,0.5,0.75), col=c("darkgreen","coral","darkgreen"), lty=3, lwd=1.5)
+text(138, 0.52, "Me = 124.5", col="coral", cex=0.8, font=2)
+```
+
+## Estadística descriptiva con R — Cálculo manual
+
+# Aplicación Práctica {.center}
+
+
+**Ejemplo: flexión de rodilla (°) en 8 pacientes:**
+125, 132, 128, 135, 130, 126, 131, 129
+
+```{r}
+x <- c(125, 132, 128, 135, 130, 126, 131, 129)
+
+# ── Medidas de posición ──
+cat("n           =", length(x))
+cat("\nMedia       =", round(mean(x), 2), "°")
+cat("\nMediana     =", median(x), "°")
+cat("\nMínimo      =", min(x), "°")
+cat("\nMáximo      =", max(x), "°")
+cat("\nQ1          =", quantile(x, 0.25), "°")
+cat("\nQ3          =", quantile(x, 0.75), "°")
+
+# ── Medidas de dispersión ──
+cat("\n\nVarianza    =", round(var(x), 2), "grados²")
+cat("\nDesv. típica =", round(sd(x), 2), "°")
+cat("\nRIQ         =", IQR(x), "°")
+cat("\nCV (%)      =", round(sd(x)/mean(x)*100, 1), "%")
+
+# ── Forma (con fallback si e1071 no disponible) ──
+if (has_e1071) {
+  cat("\n\nAsimetría   =", round(e1071::skewness(x), 3))
+  cat("\nCurtosis    =", round(e1071::kurtosis(x), 3))
+} else {
+  cat("\n\nAsimetría   =", round(skewness(x), 3))
+  cat("\nCurtosis    =", round(kurtosis(x), 3))
+}
+
+# ── Normalidad ──
+cat("\n\nShapiro-Wilk: W =", round(shapiro.test(x)$statistic, 3),
+    ", P =", round(shapiro.test(x)$p.value, 4))
+# Visualización completa
+par(mfrow=c(2,2), mar=c(4,4,3,1))
+hist(x, col="steelblue", border="white", breaks=6, freq=FALSE,
+     main=paste0("ROM (n=", length(x), ")"), xlab="Grados")
+curve(dnorm(x, mean(x), sd(x)), add=TRUE, col="darkgreen", lwd=2.5)
+boxplot(x, col="seagreen", horizontal=TRUE, main="Boxplot", xlab="Grados")
+qqnorm(x, col="steelblue", pch=19, main="Q-Q Plot"); qqline(x, col="coral", lwd=2)
+plot(density(x), col="steelblue", lwd=2.5, main="Densidad", xlab="Grados")
+polygon(density(x), col=rgb(0,0,0.5,0.15), border="steelblue")
+par(mfrow=c(1,1))
+
+```
+
+**Interpretación de la salida:** $n=8$, $\bar{x}=129.5°$, $s=3.3°$, $Me=129.5°$, $CV=2.5\%$ (muy homogéneo), $RIQ=3.75°$, asimetría $\approx 0$ (simétrica), Shapiro-Wilk $P > 0.05$ (compatible con normalidad).
+
+## R base vs BioEstatR — Resumen de funciones
+
+| Tarea | R Base | BioEstatR |
+|-------|--------|-----------|
+| Todos los estadísticos | `mean()`, `sd()`, `median()`, `IQR()`, etc. | `freq(x)` |
+| Tabla de frecuencias | `table(x)`; `prop.table(table(x))` | `freq(x)` |
+| Tabla agrupada en $k$ intervalos | `cut(x, breaks=k)` + `table()` | `freq(x, cuts=k)` |
+| Gráficos por grupo | `boxplot(y ~ g)` | `grps(x = y, f = g)` |
+| Test de normalidad + Q-Q plot | `shapiro.test(x)`; `qqnorm(x)` | `testnormal(x)` |
+| Resumen de 5 números | `summary(x)` | `freq(x)` |
+
+```{r}
+#| eval: false
+# ── Datos de ejemplo ──
+x <- c(125, 132, 128, 135, 130, 126, 131, 129)       # ROM rodilla (°)
+grupo <- factor(c(rep("Control", 4), rep("Tratamiento", 4)))
+y <- c(140, 145, 138, 142, 120, 125, 118, 122)         # ROM 2° grupo
+
+# ── BioEstatR (atajos) ──
+if (has_bioestatr) {
+  library(BioEstatR)
+  freq(x)                     # todo en uno: n, media, DE, CV, Me, Q1, Q3, min, max, asimetría, curtosis, Shapiro-Wilk
+  freq(x, cuts = 5)           # igual pero agrupando en 5 intervalos
+  grps(x = y, f = grupo)             # boxplots + resumen por grupo
+  testnormal(x)               # Shapiro-Wilk + histograma + Q-Q plot
+}
+
+# ── R base (equivalente completo) ──
+mean(x); sd(x); median(x); IQR(x); quantile(x, c(0.25, 0.75))
+shapiro.test(x)
+boxplot(y ~ grupo)
+hist(x, freq = FALSE); lines(density(x), col = "steelblue", lwd = 2)
+```
+
+## BioEstatR en acción — Ejemplo completo
+
+```{r}
+set.seed(456)
+rom_ejemplo <- round(rnorm(40, mean = 108, sd = 14), 1)
+
+if (has_bioestatr) {
+  # Si BioEstatR está disponible, usar sus funciones
+  cat("=== Usando BioEstatR ===\n")
+  freq(rom_ejemplo)
+} else {
+  # Fallback completo con R base
+  cat("=== R Base (BioEstatR no disponible) ===\n")
+  cat("n =", length(rom_ejemplo),
+      "| Media =", round(mean(rom_ejemplo), 1),
+      "| DT =", round(sd(rom_ejemplo), 1),
+      "\nMediana =", round(median(rom_ejemplo), 1),
+      "| Q1 =", round(quantile(rom_ejemplo, 0.25), 1),
+      "| Q3 =", round(quantile(rom_ejemplo, 0.75), 1),
+      "\nRIQ =", round(IQR(rom_ejemplo), 1),
+      "| CV =", round(sd(rom_ejemplo)/mean(rom_ejemplo)*100, 1), "%",
+      "\nMín =", min(rom_ejemplo),
+      "| Máx =", max(rom_ejemplo))
+  sw <- shapiro.test(rom_ejemplo)
+  cat("\nShapiro-Wilk: W =", round(sw$statistic, 3),
+      " P =", round(sw$p.value, 4), "\n")
+}
+```
+
+## Ejercicio clínico — Análisis descriptivo completo
+
+Un fisioterapeuta mide el rango de movimiento (ROM, en grados) de rodilla en 40 pacientes tras una artroplastia total de rodilla.
+
+```{r}
+#| echo: true
+set.seed(456)
+rom_rodilla <- round(rnorm(40, mean = 108, sd = 14), 1)
+rom_rodilla
+```
+
+::: {.incremental}
+1. **Clasifica** la variable ROM (tipo, escala)
+2. **Construye** una tabla de frecuencias agrupada en 5 intervalos con `freq(rom, cuts=5)`
+3. **Elige y genera** el gráfico adecuado para esta variable
+4. **Calcula** media, mediana, DT, CV y RIQ
+5. **Interpreta:** ¿hay asimetría? ¿los datos son compatibles con la distribución Normal?
+6. **Redacta** un párrafo de 3 líneas resumiendo los resultados
+:::
+
+## Solución — Estadísticos y frecuencias
+
+```{r}
+rom <- rom_rodilla
+
+# 1. Tabla de frecuencias agrupada
+cat("=== FRECUENCIAS (5 intervalos) ===\n")
+print(table(cut(rom, breaks=5)))
+
+# 2. Estadísticos descriptivos
+cat("\n=== ESTADÍSTICOS ===\n")
+cat("n =", length(rom), "  |  Media =", round(mean(rom),1), "°  |  Mediana =", round(median(rom),1),
+    "°\nDT =", round(sd(rom),1), "°  |  CV =", round(sd(rom)/mean(rom)*100,1),
+    "%  |  RIQ =", round(IQR(rom),1), "°\nQ1 =", round(quantile(rom,0.25),1),
+    "°  |  Q3 =", round(quantile(rom,0.75),1), "°  |  Mín =", min(rom),
+    "°  |  Máx =", max(rom), "°\n")
+
+# Asimetría y curtosis con fallback
+if (has_e1071) {
+  cat("Asimetría =", round(e1071::skewness(rom),2),
+      "  |  Curtosis =", round(e1071::kurtosis(rom),2), "\n")
+} else {
+  cat("Asimetría =", round(skewness(rom),2),
+      "  |  Curtosis =", round(kurtosis(rom),2), "\n")
+}
+
+sw <- shapiro.test(rom)
+cat("Shapiro-Wilk: W =", round(sw$statistic,3),
+    "  P =", round(sw$p.value,4),
+    if(sw$p.value>0.05) "  → Normalidad compatible\n" else "  → NO normal\n")
+```
+
+## Solución — Gráficos
+
+```{r}
+#| fig-height: 5
+rom <- rom_rodilla
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+hist(rom, col="steelblue", border="white", breaks=8,
+     main="ROM de Rodilla (n=40)", xlab="Grados", ylab="Frecuencia")
+abline(v=mean(rom), col="darkgreen", lwd=3, lty=2)
+abline(v=median(rom), col="steelblue", lwd=2, lty=3)
+legend("topright", c(paste("Media =", round(mean(rom),1)),
+       paste("Mediana =", round(median(rom),1))),
+       col=c("darkgreen","steelblue"), lty=c(2,3), lwd=c(3,2), bty="n", cex=0.8)
+boxplot(rom, col="steelblue", main="Boxplot — ROM de Rodilla",
+        ylab="Grados", ylim=c(70,140))
+par(mfrow=c(1,1))
+```
+
+## Interpretación de los resultados
+
+::: {.callout-note}
+**ROM de rodilla post-artroplastia (n=40):**
+
+La flexión media fue de **109.7 ± 15.6 grados** (CV = 14.2%), con una mediana de **109.0 grados** (RIQ: 99.5 – 121.9). La distribución fue aproximadamente simétrica (asimetría = 0.07). El test de Shapiro-Wilk (W = 0.977, P = 0.589) indica que los datos son compatibles con una distribución Normal.
+:::
+
+::: {.callout-tip}
+**Interpretación clínica:** La muestra presenta una flexión media de rodilla adecuada para la fase post-artroplastia, con variabilidad moderada entre pacientes. La distribución simétrica y compatible con la Normal respalda el uso de métodos paramétricos (media ± DT) y de pruebas como el test t de Student para comparaciones futuras (Tema 4).
+:::
+
+## De la descripción a la inferencia — Puente al tema 2 y 3
+
+::: {.callout-important}
+**La descriptiva es el primer paso, no el último.** Describe la muestra. Para llegar a la población necesitamos la **inferencia**.
+:::
+
+**El camino completo del análisis estadístico en fisioterapia:**
+
+| Etapa | Tema | ¿Qué responde? | Herramienta |
+|:------|:----:|:---------------|:------------|
+| **Descriptiva** | T1 | ¿Cómo son mis datos? | `freq()`, gráficos, $\bar{x}$, $s$ |
+| **Probabilidad** | T2 | ¿Qué modelo siguen mis datos? | Normal, Binomial, Poisson |
+| **Estimación** | T3 | ¿Entre qué valores está el parámetro? | IC, tamaño muestral |
+| **Contraste** | T4 | ¿Es real esta diferencia? | Test t, P-valor |
+| **Asociación** | T5-T6 | ¿Hay relación entre variables? | $\chi^2$, regresión |
+
+::: {.callout-tip}
+**Ejemplo clínico — ROM de rodilla:**
+
+1. **Descriptiva (T1):** $\bar{x}=130°$, $s=12°$, $n=40$ → resumo la muestra
+2. **Probabilidad (T2):** $X \sim N(\mu, \sigma^2)$ → modelo teórico para ROM
+3. **Estimación (T3):** IC 95%: $(126.2°, 133.8°)$ → ¿dónde está $\mu$?
+4. **Contraste (T4):** ¿$\mu = 135°$? $t = -2.64$, $P = 0.012$ → no, es menor
+:::
+
+## Recapitulación — Tema 1
+
+::: {.callout-tip}
+**Resumen de conceptos clave:**
+:::
+
+| Concepto | Fórmula/Herramienta | Uso principal |
+|:---------|:-------------------|:-------------|
+| Tipos de variables | Nominal, Ordinal, Discreta, Continua | Elegir análisis correcto |
+| Tabla de frecuencias | $n_i$, $f_i$, $N_i$ | Resumir distribución |
+| Media | $\bar{x} = \frac{\sum x_i}{n}$ | Tendencia central (cuantitativas) |
+| Mediana | $Me = x_{((n+1)/2)}$ | Tendencia central (robusta) |
+| Varianza | $s^2 = \frac{\sum(x_i - \bar{x})^2}{n-1}$ | Dispersión |
+| CV | $CV = s/\bar{x} \times 100\%$ | Dispersión relativa |
+| RIQ | $Q_3 - Q_1$ | Dispersión robusta |
+| Asimetría | $g_1$ | Forma de la distribución |
+
+---
+
+::: {.reference-box}
+**Referencias**
+
+- [@altman1990] Altman, D. G. (1990). *Practical Statistics for Medical Research*. Chapman & Hall/CRC.
+- [@bioestatr2026] Femia, P. & Luque-Fernandez, M. A. (2026). *BioEstatR: Biostatistics Routines in R*. R package v1.0.0. Universidad de Granada. <https://migariane.github.io/BioEstatR>
+- [@luque2026] Luque-Fernandez, M. A. (2026). *Matemáticas para la Estadística Médica con R*. Universidad de Granada. <https://migariane.github.io/MatematicaEstadisticaMedicinaR>
+- [@rosner2015] Rosner, B. (2015). *Fundamentals of Biostatistics* (8th ed.). Cengage Learning.
+- [@stevens1946] Stevens, S. S. (1946). On the theory of scales of measurement. *Science*, 103(2684), 677–680.
+- [@tukey1977] Tukey, J. W. (1977). *Exploratory Data Analysis*. Addison-Wesley.
+:::
+---
+
+## Ejercicio Clínico — Tema I
+
+**Contexto:** Un fisioterapeuta mide la flexión de rodilla en 8 pacientes: 112°, 118°, 125°, 122°, 130°, 128°, 119°, 126°.
+
+::: {.incremental}
+1. Calcula la media, mediana y rango intercuartílico
+2. ¿Qué medida es más robusta si aparece un paciente con 155°?
+3. ¿Cómo clasificarías esta variable (tipo, escala)?
+:::
+
+::: {.callout-tip}
+**Solución completa con R**
+
+1. **Sin outlier:** $\bar{x}=122.5°$, $Me=123.5°$, $Q_1=118.8°$, $Q_3=126.5°$, $RIQ=7.8°$
+2. **Con outlier (155°):** $\bar{x}$ sube a 126.1° (arrastrada), $Me$ apenas cambia a 125° → la **mediana es robusta**
+3. Cuantitativa continua, escala de razón (el 0° es absoluto)
+
+```{r}
+#| fig-height: 5.5
+x <- c(112, 118, 125, 122, 130, 128, 119, 126)
+x_out <- c(x, 155)
+
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+
+# Panel 1: Sin outlier
+boxplot(x, main="Sin outlier (n=8)", col="steelblue", ylab="Grados", ylim=c(110,160))
+stripchart(x, method="jitter", add=TRUE, pch=19, col="darkgreen", cex=1.2)
+abline(h=mean(x), col="coral", lty=2, lwd=2.5)
+abline(h=median(x), col="darkgreen", lty=1, lwd=2.5)
+text(1, mean(x)+2, paste0("x̄=", round(mean(x),1)), col="coral", font=2)
+text(1, median(x)-3, paste0("Me=", median(x)), col="darkgreen", font=2)
+
+# Panel 2: Con outlier
+boxplot(x_out, main="Con outlier 155° (n=9)", col="coral", ylab="", ylim=c(110,160))
+stripchart(x_out, method="jitter", add=TRUE, pch=19, col="darkgreen", cex=1.2)
+abline(h=mean(x_out), col="coral", lty=2, lwd=2.5)
+abline(h=median(x_out), col="darkgreen", lty=1, lwd=2.5)
+text(1, mean(x_out)+2, paste0("x̄=", round(mean(x_out),1)), col="coral", font=2)
+text(1, median(x_out)-3, paste0("Me=", median(x_out)), col="darkgreen", font=2)
+
+mtext("La mediana resiste outliers; la media NO", side=3, line=-1.5, 
+      outer=TRUE, col="darkgreen", font=2, cex=0.9)
+par(mfrow=c(1,1))
+```
+
+**Clasificación de la variable:**
+- Tipo: **Cuantitativa** (numérica)
+- Naturaleza: **Continua** (cualquier valor en un rango)
+- Escala: **Razón** (el 0° es absoluto, permite cocientes — 130° es el doble de 65°)
+:::
+---
+
+# Código del Tema I (Parte II) — Resumen Organizado {.center}
+
+## Medidas de posición y dispersión con R base
+
+```{r}
+#| eval: false
+rom <- c(108.2, 107.5, 115.1, 112.3, 110.8, 109.5, 111.7, 113.4,
+         114.2, 106.9, 112.8, 113.1, 109.8, 111.2, 107.9, 108.5,
+         114.8, 110.2, 112.5, 113.9, 109.1, 111.4, 108.7, 110.5,
+         113.2, 112.1, 109.4, 110.9, 114.5, 111.8, 108.3, 113.7,
+         109.6, 112.7, 110.1, 113.5, 111.3, 114.1, 109.9, 112.4)
+
+n <- length(rom)                    # Tamaño muestral
+media <- mean(rom)                  # Media aritmética
+mediana <- median(rom)              # Mediana
+varianza <- var(rom)                # Varianza muestral (insesgada)
+dt <- sd(rom)                       # Desviación típica
+q1 <- quantile(rom, 0.25)          # Primer cuartil
+q3 <- quantile(rom, 0.75)          # Tercer cuartil
+riq <- IQR(rom)                     # Rango intercuartílico
+cv <- dt / media * 100              # Coeficiente de variación (%)
+
+# Asimetría y curtosis (requiere e1071)
+library(e1071)
+asimetria <- skewness(rom)          # g1 ≈ 0 → simétrica
+curtosis <- kurtosis(rom)           # g2 (exceso ≈ 0 → mesocúrtica)
+```
+
+## Con BioEstatR (una línea)
+
+```{r}
+#| eval: false
+library(BioEstatR)
+freq(rom)                           # Todos los estadísticos en una tabla
+testnormal(rom)                     # Test de Shapiro-Wilk + gráficos
+```
+
+## Visualización de forma
+
+```{r}
+#| eval: false
+# Histograma con curva normal
+hist(rom, col = "steelblue", border = "white", freq = FALSE, breaks = 12)
+curve(dnorm(x, mean(rom), sd(rom)), add = TRUE, col = "darkgreen", lwd = 2.5)
+
+# Boxplot
+boxplot(rom, col = "seagreen", horizontal = TRUE, main = "Boxplot")
+
+# Q-Q plot
+qqnorm(rom, col = "steelblue", pch = 19); qqline(rom, col = "coral", lwd = 2)
+
+# Densidad
+plot(density(rom), col = "steelblue", lwd = 2.5, main = "Densidad Kernel")
+polygon(density(rom), col = rgb(0,0,0.5,0.15), border = "steelblue")
+```

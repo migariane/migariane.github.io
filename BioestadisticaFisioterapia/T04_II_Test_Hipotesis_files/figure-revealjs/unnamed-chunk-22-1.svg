@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='468.00pt' viewBox='0 0 648.00 468.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHw0NjguMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='468.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHw0NjguMDA=)'>
+<rect x='224.00' y='17.33' width='200.00' height='30.95' style='stroke-width: 0.00; stroke: none; fill: #2C3E50;' />
+<text x='324.00' y='36.26' text-anchor='middle' style='font-size: 13.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='171.67px' lengthAdjust='spacingAndGlyphs'>PASO 1: ¿Tipo de variable?</text>
+<text x='324.00' y='66.40' text-anchor='middle' style='font-size: 10.20px;fill: #2C3E50; font-family: "Arial";' textLength='201.89px' lengthAdjust='spacingAndGlyphs'>EVA-dolor → Variable continua (escala 0-10)</text>
+<line x1='324.00' y1='63.76' x2='324.00' y2='94.71' style='stroke-width: 1.88; stroke: #2C3E50;' />
+<rect x='224.00' y='94.71' width='200.00' height='30.95' style='stroke-width: 0.75; stroke: none; fill: #34495E;' />
+<text x='324.00' y='113.66' text-anchor='middle' style='font-size: 13.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='185.84px' lengthAdjust='spacingAndGlyphs'>PASO 2: ¿Cuántas muestras?</text>
+<text x='324.00' y='138.67' text-anchor='middle' style='font-size: 10.20px;fill: #34495E; font-family: "Arial";' textLength='134.86px' lengthAdjust='spacingAndGlyphs'>Dos muestras independientes</text>
+<text x='324.00' y='150.91' text-anchor='middle' style='font-size: 10.20px;fill: #34495E; font-family: "Arial";' textLength='182.33px' lengthAdjust='spacingAndGlyphs'>(Grupo A ≠ Grupo B, pacientes distintos)</text>
+<line x1='324.00' y1='141.14' x2='324.00' y2='172.10' style='stroke-width: 1.88; stroke: #34495E;' />
+<rect x='224.00' y='172.10' width='200.00' height='30.95' style='stroke-width: 1.88; stroke: #1ABC9C; fill: #E8F8F5;' />
+<text x='324.00' y='184.96' text-anchor='middle' style='font-size: 10.80px; font-weight: bold;fill: #1ABC9C; font-family: "Arial";' textLength='174.94px' lengthAdjust='spacingAndGlyphs'>PASO 3: ¿Se cumple Normalidad?</text>
+<text x='324.00' y='197.92' text-anchor='middle' style='font-size: 10.80px; font-weight: bold;fill: #1ABC9C; font-family: "Arial";' textLength='149.83px' lengthAdjust='spacingAndGlyphs'>(Shapiro-Wilk en cada grupo)</text>
+<line x1='224.00' y1='187.57' x2='99.00' y2='264.95' style='stroke-width: 1.65; stroke: #1ABC9C;' />
+<line x1='424.00' y1='187.57' x2='549.00' y2='264.95' style='stroke-width: 1.65; stroke: #FF7F50;' />
+<rect x='49.00' y='264.95' width='100.00' height='30.95' style='stroke-width: 1.50; stroke: #27AE60; fill: #D5F5E3;' />
+<text x='99.00' y='272.06' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='8.50px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<text x='99.00' y='282.86' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='75.59px' lengthAdjust='spacingAndGlyphs'>(Shapiro P &gt; 0.05)</text>
+<text x='99.00' y='291.90' text-anchor='middle' style='font-size: 8.40px; font-family: "Arial";' textLength='62.05px' lengthAdjust='spacingAndGlyphs'>Test paramétrico</text>
+<line x1='99.00' y1='295.90' x2='99.00' y2='351.62' style='stroke-width: 1.50; stroke: #27AE60;' />
+<rect x='49.00' y='351.62' width='100.00' height='30.95' style='stroke-width: 1.50; stroke: #F39C12; fill: #FEF9E7;' />
+<text x='99.00' y='358.87' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #E67E22; font-family: "Arial";' textLength='50.03px' lengthAdjust='spacingAndGlyphs'>¿σ² iguales?</text>
+<text x='99.00' y='368.95' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #E67E22; font-family: "Arial";' textLength='24.09px' lengthAdjust='spacingAndGlyphs'>Test F</text>
+<line x1='49.00' y1='367.10' x2='14.00' y2='413.52' style='stroke-width: 1.35; stroke: #27AE60;' />
+<line x1='149.00' y1='367.10' x2='184.00' y2='413.52' style='stroke-width: 1.35; stroke: #FF7F50;' />
+<text x='9.00' y='401.61' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='7.38px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<rect x='-36.00' y='413.52' width='90.00' height='30.95' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='9.00' y='427.11' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='34.22px' lengthAdjust='spacingAndGlyphs'>t-Student</text>
+<text x='9.00' y='436.47' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='64.80px' lengthAdjust='spacingAndGlyphs'>(var.equal=TRUE)</text>
+<text x='174.00' y='400.84' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='11.69px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<rect x='144.00' y='413.52' width='90.00' height='30.95' style='stroke-width: 0.75; stroke: none; fill: #2980B9;' />
+<text x='189.00' y='427.11' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='28.03px' lengthAdjust='spacingAndGlyphs'>t-Welch</text>
+<text x='189.00' y='436.47' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='66.75px' lengthAdjust='spacingAndGlyphs'>(por defecto en R)</text>
+<rect x='499.00' y='264.95' width='100.00' height='30.95' style='stroke-width: 1.50; stroke: #FF7F50; fill: #FADBD8;' />
+<text x='549.00' y='272.06' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='13.50px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<text x='549.00' y='282.86' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='75.28px' lengthAdjust='spacingAndGlyphs'>(Shapiro P ≤ 0.05)</text>
+<text x='549.00' y='291.90' text-anchor='middle' style='font-size: 8.40px; font-family: "Arial";' textLength='73.72px' lengthAdjust='spacingAndGlyphs'>Test no paramétrico</text>
+<line x1='549.00' y1='295.90' x2='549.00' y2='351.62' style='stroke-width: 1.50; stroke: #FF7F50;' />
+<rect x='474.00' y='351.62' width='150.00' height='30.95' style='stroke-width: 0.75; stroke: none; fill: #FF7F50;' />
+<text x='549.00' y='364.92' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='70.50px' lengthAdjust='spacingAndGlyphs'>Mann-Whitney U</text>
+<text x='549.00' y='375.72' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='52.00px' lengthAdjust='spacingAndGlyphs'>(wilcox.test)</text>
+<rect x='214.00' y='23.52' width='220.00' height='37.14' style='stroke-width: 1.88; stroke: #2C3E50; stroke-dasharray: 10.00,10.00;' />
+<text x='324.00' y='45.09' text-anchor='middle' style='font-size: 8.40px; font-weight: bold;fill: #2C3E50; font-family: "Arial";' textLength='120.28px' lengthAdjust='spacingAndGlyphs'>RESULTADO DEL EJERCICIO:</text>
+<rect x='274.00' y='388.76' width='200.00' height='46.43' style='stroke-width: 1.50; stroke: #2C3E50; fill: #F7F9FC;' />
+<text x='374.00' y='403.57' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #2C3E50; font-family: "Arial";' textLength='87.42px' lengthAdjust='spacingAndGlyphs'>Para este ejercicio:</text>
+<text x='374.00' y='410.05' text-anchor='middle' style='font-size: 7.80px; font-family: "Arial";' textLength='146.25px' lengthAdjust='spacingAndGlyphs'>n_A=25, n_B=28 → Muestras moderadas.</text>
+<text x='374.00' y='419.41' text-anchor='middle' style='font-size: 7.80px; font-family: "Arial";' textLength='158.31px' lengthAdjust='spacingAndGlyphs'>Si Shapiro P &gt; 0.05 → Welch (por seguridad).</text>
+<text x='374.00' y='428.77' text-anchor='middle' style='font-size: 7.80px; font-family: "Arial";' textLength='139.52px' lengthAdjust='spacingAndGlyphs'>Si Shapiro P ≤ 0.05 → Mann-Whitney U.</text>
+<rect x='5.94' y='442.26' width='4.75' height='3.96' style='stroke-width: 0.75; stroke: #1ABC9C; fill: #E8F8F5;' />
+<rect x='5.94' y='450.18' width='4.75' height='3.96' style='stroke-width: 0.75; stroke: #F39C12; fill: #FEF9E7;' />
+<rect x='5.94' y='458.10' width='4.75' height='3.96' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='16.63' y='446.60' style='font-size: 6.60px; font-family: "Arial";' textLength='25.31px' lengthAdjust='spacingAndGlyphs'>Decisión</text>
+<text x='16.63' y='454.52' style='font-size: 6.60px; font-family: "Arial";' textLength='29.36px' lengthAdjust='spacingAndGlyphs'>Condición</text>
+<text x='16.63' y='462.44' style='font-size: 6.60px; font-family: "Arial";' textLength='26.03px' lengthAdjust='spacingAndGlyphs'>Test final</text>
+</g>
+</g>
+</svg>

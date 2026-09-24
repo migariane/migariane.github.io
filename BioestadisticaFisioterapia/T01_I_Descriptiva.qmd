@@ -1,0 +1,666 @@
+---
+title: "Estadística Descriptiva"
+subtitle: "Tema I (Parte I) — Organización, Resumen y Visualización de Datos"
+author:
+  - name: "Miguel Angel Luque-Fernández"
+    affiliation: "Dpto. Estadística e Investigación Operativa, Universidad de Granada"
+    email: "mluquefe@ugr.es"
+    url: "https://migariane.github.io"
+date: "2026"
+license: "CC BY 4.0"
+format:
+  revealjs:
+    slide-number: c/t
+    code-fold: true
+    code-copy: true
+    code-summary: "Mostrar código R"
+    fig-width: 9
+    fig-height: 5.5
+    code-overflow: wrap
+    lang: es
+execute:
+  warning: false
+  message: false
+  echo: true
+  eval: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+# Cargar BioEstatR si está disponible
+has_bioestatr <- requireNamespace("BioEstatR", quietly = TRUE)
+if (has_bioestatr) library(BioEstatR)
+
+# Cargar e1071 para asimetría/curtosis (con fallback)
+has_e1071 <- requireNamespace("e1071", quietly = TRUE)
+if (has_e1071) library(e1071)
+
+# Funciones fallback si e1071 no está disponible
+if (!has_e1071) {
+  skewness <- function(x) {
+    n <- length(x); m <- mean(x); s <- sd(x)
+    (n / ((n-1)*(n-2))) * sum(((x - m) / s)^3)
+  }
+  kurtosis <- function(x) {
+    n <- length(x); m <- mean(x); s <- sd(x)
+    ((n*(n+1)) / ((n-1)*(n-2)*(n-3))) * sum(((x - m) / s)^4) -
+      (3*(n-1)^2) / ((n-2)*(n-3))
+  }
+}
+```
+
+# Estadística Descriptiva {.center}
+
+![](logo.png){width="90px"}
+
+**Grado en Fisioterapia**
+
+**CC BY 4.0** · Miguel Angel Luque-Fernández
+
+[Miguel Angel Luque-Fernández](https://migariane.github.io) · [maluque.netlify.app](https://maluque.netlify.app)
+
+Dpto. Estadística e Investigación Operativa · Universidad de Granada
+
+## Objetivos de aprendizaje — Tema 1
+
+::: {.callout-tip}
+**Al finalizar este tema sabrás:**
+:::
+
+::: {.incremental}
+1. Clasificar cualquier variable clínica (nominal, ordinal, discreta, continua)
+2. Construir e interpretar tablas de frecuencias con $n_i$, $f_i$, $N_i$
+3. Elegir el gráfico adecuado según el tipo de variable
+4. Calcular e interpretar medidas de posición (media, mediana, moda, percentiles)
+5. Calcular e interpretar medidas de dispersión (varianza, DT, CV, RIQ)
+6. Usar `freq()` de BioEstatR para obtener todos los estadísticos en una línea
+:::
+
+## El proceso de investigación empírica
+
+::: {.incremental}
+1. **Definición** de la población objeto de estudio
+2. **Selección de la muestra** → Representatividad
+3. **Medición** → Validez y fiabilidad del instrumento
+4. **Formato** admisible para análisis estadístico
+5. **Métodos descriptivos** → Resumen de datos
+6. **Métodos inferenciales** → ¿Son correctos los supuestos? ¿Es posible un modelo?
+7. **Informe estadístico** → Evaluación de resultados
+8. **Publicación** → Nueva información sobre la población
+:::
+
+::: {.callout-warning}
+¿En cuáles de estas etapas se puede cometer error? ¿De qué tipo?
+:::
+
+## Fundamentos teóricos de la medición en fisioterapia
+
+::: {.callout-note}
+**Escala de medida (Stevens, 1946):** Clasificación de variables según las operaciones matemáticas permitidas. Determina qué estadísticos son válidos.
+
+| Escala | Operaciones | Ejemplo en Fisioterapia | Estadísticos válidos |
+|:-------|:-----------|:------------------------|:---------------------|
+| Nominal | =, ≠ | Tipo de lesión (muscular/articular/ósea) | Moda, frecuencias |
+| Ordinal | =, ≠, <, > | Escala EVA (0-10), estadio de recuperación | + Mediana, percentiles |
+| Intervalo | =, ≠, <, >, +, − | Temperatura corporal (°C) | + Media, DT |
+| Razón | =, ≠, <, >, +, −, ×, ÷ | Rango de Movimiento — ROM (grados), fuerza (kg), presión (mmHg) | + CV, todas |
+
+**Implicación práctica:** La escala EVA es ordinal, no intervalo. Estrictamente, la media de EVA no es válida (aunque en la práctica clínica se usa). La mediana y el RIQ son las medidas correctas.
+:::
+
+Referencia: Stevens, S. S. (1946). On the theory of scales of measurement. Science, 103(2684), 677-680.
+
+## Tabla de datos en bruto
+
+Los datos se organizan como **casos × variables**. Cada fila = individuo, cada columna = variable.
+
+- **Caso:** unidad de observación (paciente)
+- **Variable:** característica medida
+- **Valor perdido (missing):** dato no observado
+
+```{r}
+#| fig-height: 3.5
+par(mar=c(1,1,2,1))
+plot(NA, xlim=c(0,10), ylim=c(0,5), axes=F, xlab="", ylab="", main="Del Individuo al Dato")
+
+# Caja POBLACIÓN
+rect(0.3, 2.5, 2.5, 4.5, col=rgb(0.2,0.5,0.8,0.15), border="#1a5276", lwd=2.5)
+text(1.4, 3.8, "POBLACIÓN", font=2, cex=0.9, col="#1a5276")
+text(1.4, 3.3, "N (inaccesible)", cex=0.7, col="#1a5276")
+text(1.4, 2.9, "(inaccesible)", cex=0.6, col="grey40")
+
+# Flecha 1
+arrows(2.6, 3.5, 3.9, 3.5, lwd=2, col="darkgreen", length=0.12)
+text(3.25, 3.85, "Muestreo", cex=0.7, col="darkgreen", font=2)
+
+# Caja MUESTRA
+rect(4.0, 2.5, 6.2, 4.5, col=rgb(0.2,0.7,0.3,0.15), border="#1e6e3e", lwd=2.5)
+text(5.1, 3.8, "MUESTRA", font=2, cex=0.9, col="#1e6e3e")
+text(5.1, 3.3, paste0("n = ", 30), cex=0.7, col="#1e6e3e")
+text(5.1, 2.9, "(accesible)", cex=0.6, col="grey40")
+
+# Flecha 2
+arrows(6.3, 3.5, 7.6, 3.5, lwd=2, col="darkgreen", length=0.12)
+text(6.95, 3.85, "Medición", cex=0.7, col="darkgreen", font=2)
+
+# Caja DATOS
+rect(7.7, 2.5, 9.9, 4.5, col=rgb(0.8,0.4,0.1,0.15), border="#b03a2e", lwd=2.5)
+text(8.8, 3.8, "DATOS", font=2, cex=0.9, col="#b03a2e")
+text(8.8, 3.3, "n × p", cex=0.7, col="#b03a2e")
+text(8.8, 2.9, "(matriz)", cex=0.6, col="grey40")
+
+# Flecha hacia abajo desde DATOS
+arrows(8.8, 2.4, 8.8, 1.8, lwd=2, col="steelblue", length=0.12)
+arrows(8.8, 1.8, 3.5, 1.2, lwd=2, col="steelblue", length=0.12)
+arrows(8.8, 1.8, 7.0, 1.2, lwd=2, col="steelblue", length=0.12)
+
+# Descripción e Inferencia
+text(2.0, 1.0, "Descriptiva\n(resumir)", cex=0.7, col="#1a5276", font=2)
+text(5.5, 1.0, "Inferencia\n(extender a pob.)", cex=0.7, col="#1a5276", font=2)
+```
+
+## Clasificación de variables
+
+::: {.callout-important}
+**Regla de oro:** Antes de cualquier análisis, identifica el tipo de variable. De ello depende TODO: qué gráfico usar, qué medidas calcular, y qué test aplicar.
+:::
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Cualitativas (Categóricas)** — atributos, no números
+
+| Tipo | Característica | Ejemplos en Fisioterapia |
+|:-----|:---------------|:-------------------------|
+| **Nominal** | Sin orden | Sexo, grupo sanguíneo, tipo de lesión (muscular/articular/ósea), diagnóstico |
+| **Binaria** | Solo 2 valores (caso especial de nominal) | Fuma (sí/no), alta (sí/no), complicación post-Qx (sí/no) |
+| **Ordinal** | Con orden natural, distancia no medible | Escala EVA (0-10), estadio de recuperación (I-II-III-IV), escala Likert, grado de esguince |
+
+:::
+::: {.column width="50%"}
+
+**Cuantitativas (Numéricas)** — números con significado matemático
+
+| Tipo | Característica | Ejemplos en Fisioterapia |
+|:-----|:---------------|:-------------------------|
+| **Discreta** | Valores aislados (enteros, contables) | Nº de sesiones, nº de recaídas, nº de articulaciones afectadas |
+| **Continua** | Cualquier valor en un intervalo | Rango de Movimiento — ROM (grados), fuerza (kg), presión arterial (mmHg), IMC (kg/m²), edad (años) |
+
+:::
+:::
+
+*Pregunta: ¿Qué tipo de variable es el número de sesiones de fisioterapia recibidas? ¿Y el diagnóstico principal?*
+
+
+## Tipos de variables — Cualitativas
+
+::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| fig-height: 5
+par(mar=c(4,4,3,1))
+diag <- c(Lumbalgia=40, Cervicalgia=35, Omalgia=25)
+barplot(diag, col=c("steelblue","coral","gold"), main="Nominal: Diagnóstico",
+        ylab="Frecuencia", ylim=c(0,45))
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-height: 5
+par(mar=c(4,4,3,1))
+eva <- c(Leve=30, Moderado=45, Intenso=20, Muy_intenso=5)
+barplot(eva, col=colorRampPalette(c("lightyellow","darkred"))(4),
+        main="Ordinal: Nivel de Dolor (EVA)", ylab="Frecuencia")
+```
+:::
+:::
+
+## Tipos de variables — Cuantitativas
+
+::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| fig-height: 5
+par(mar=c(4,4,3,1))
+ses <- c(4,6,8,10,12); freq <- c(5,15,25,10,5)
+barplot(setNames(freq,ses), col="seagreen", main="Discreta: Nº Sesiones",
+        xlab="Sesiones", ylab="Frecuencia")
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-height: 5
+par(mar=c(4,4,3,1))
+set.seed(42)
+rom <- rnorm(200, 150, 20)
+hist(rom, col="steelblue", border="white", breaks=20, main="Continua: ROM (grados)",
+     xlab="Grados", ylab="Frecuencia", freq=FALSE)
+curve(dnorm(x,150,20), add=T, col="darkgreen", lwd=2)
+```
+:::
+:::
+
+## Contenido informativo y categorización
+
+::: {.callout-note}
+**Principio estadístico:** La escala de medida determina la **cantidad de información** que contiene una variable. Cada paso de categorización **pierde información irreversiblemente** — es una operación matemática no invertible.
+:::
+
+```{r}
+#| fig-height: 4
+par(mar=c(3, 1, 2, 1))
+plot(NA, xlim=c(0, 10), ylim=c(0, 4), axes=F, xlab="", ylab="",
+     main="Pérdida de Información al Categorizar")
+
+# Flecha horizontal
+arrows(0.5, 2, 9.5, 2, lwd=3, col="#2c3e50", length=0.12)
+text(5, 2.4, "MAYOR información                                     MENOR información", cex=0.8, col="#2c3e50", font=2)
+
+# Cajas para cada nivel
+cw <- 1.6; yb <- 1.2; yt <- 1.8
+cols <- c("#1a5276","#2471a3","#2e86c1","#7fb3d8","#b3d4ec")
+labels <- c("Continua", "Discreta", "Ordinal", "Nominal", "Binaria")
+examples <- c("Edad 22.2 a.", "Edad 22 a.", "Grupos edad", "Edad > 35", "Sí / No")
+for(i in 1:5){
+  xl <- 0.4 + (i-1)*1.85
+  rect(xl, yb, xl+cw, yt, col=cols[i], border="white", lwd=2)
+  text(xl+cw/2, (yb+yt)/2, labels[i], col="white", font=2, cex=0.85)
+  text(xl+cw/2, yb-0.3, examples[i], col=cols[i], font=2, cex=0.7)
+}
+# Flechas de pérdida
+for(i in 1:4){
+  xm <- 0.4 + i*1.85 - 0.12
+  arrows(xm, 2.8, xm, 2.2, lwd=1.5, col="coral", length=0.08)
+}
+text(5, 3.1, "Pérdida de información", col="coral", cex=0.7, font=3)
+
+# Nota al pie
+text(5, 0.3, "Cada flecha hacia la derecha destruye información original no recuperable", cex=0.7, col="grey40")
+```
+
+**Ejemplo clínico — Edad en fisioterapia:** 22.2 años (continua, 4 cifras significativas) → 22 años (discreta, pierde decimales) → "18-25 años" (ordinal, pierde orden individual) → "Adulto joven" (nominal, sin orden numérico) → "≥ 18" (binaria, todo reducido a sí/no). En cada paso se destruye información que ningún análisis posterior puede recuperar. **Recategorizar es fácil; recuperar la granularidad perdida es imposible.**
+
+| Nivel | Información | Operaciones válidas | Ejemplo clínico |
+|:------|:-----------|:--------------------|:----------------|
+| Continua → Discreta | Pierde precisión decimal | Se mantienen +, −, ×, ÷ | 22.2 → 22 años |
+| Discreta → Ordinal | Pierde magnitud exacta de diferencias | Se pierde ×, ÷ | Edad → Grupos etarios |
+| Ordinal → Nominal | Pierde el orden | Se pierde <, > | Grupos → Categorías |
+| Nominal → Binaria | Pierde todas las categorías salvo una | Solo =, ≠ | Categorías → Sí/No |
+
+Cada paso de categorización **pierde información irreversiblemente**.
+
+*Pregunta: En tu práctica clínica, ¿qué información se pierde cuando registras el IMC como "normal/sobrepeso/obeso" en lugar del valor numérico?*
+
+
+## Constructos, cuestionarios y escalas
+
+**Constructo:** concepto teórico no medible físicamente → se usan **cuestionarios** (ítems con escala Likert, sumativos).
+
+| Escala | Mide | Ítems | Puntos de corte |
+|--------|------|:-----:|-----------------|
+| **Barthel** | Dependencia AVD | 10 | 0-19 Total, 20-39 Grave, 40-59 Moderada, 60-85 Leve, 86-100 Independiente |
+| **Norton** | Riesgo úlceras | 14 | 1-11 Muy alto, 12-14 Moderado, 15-20 Mínimo |
+| **Zarit** | Sobrecarga cuidador | 22 | <46 No, 46-56 Moderada, >56 Intensa |
+
+**Validez:** ¿mide lo que debe? **Fiabilidad:** ¿resultados consistentes al repetir?
+
+## Notación: El símbolo sumatorio $\sum$
+
+# Organización y Resumen de Datos {.center}
+
+
+**Contexto clínico:** Un fisioterapeuta mide la flexión de rodilla en 5 pacientes tras rehabilitación. Para calcular la media necesita **sumar** todas las mediciones.
+
+::: {.framed}
+$$\sum_{i=1}^{n} x_i = x_1 + x_2 + \cdots + x_n$$
+:::
+
+El símbolo $\sum$ (sigma mayúscula) significa **"sumar todos los valores de $x$ desde $i=1$ hasta $i=n$"**.
+
+**Propiedades que usaremos constantemente:**
+
+| Propiedad | Fórmula | ¿Qué significa? |
+|:----------|:--------|:----------------|
+| Suma de constantes | $\sum_{i=1}^{n} (x_i + a) = \sum x_i + n \cdot a$ | Sumar $a$ a cada dato añade $n \times a$ al total |
+| Factor común | $\sum_{i=1}^{n} (a \cdot x_i) = a \cdot \sum x_i$ | Multiplicar cada dato por $a$ multiplica la suma por $a$ |
+
+**Ejemplo — ROM de rodilla (°):** 125, 132, 128, 135, 130
+
+```{r}
+#| fig-height: 3
+x <- c(125, 132, 128, 135, 130)
+par(mar=c(4,4,2,1))
+bp <- barplot(x, names.arg=1:5, col="steelblue", border="white",
+        main=paste0("ROM en 5 pacientes — Suma = ", sum(x), "°"),
+        xlab="Paciente i", ylab="Grados (°)", ylim=c(0,150))
+text(bp, x+5, x, font=2, cex=0.9)
+abline(h=mean(x), col="darkgreen", lwd=2.5, lty=2)
+text(5.5, mean(x)+4, paste0("Media = ", mean(x), "°"), col="darkgreen", font=2, cex=0.95)
+```
+
+$$\sum_{i=1}^{5} x_i = 125 + 132 + 128 + 135 + 130 = 650 \quad \Rightarrow \quad \bar{x} = \frac{650}{5} = 130°$$
+
+::: {.callout-note}
+**¿Por qué es importante?** La media, la varianza y prácticamente todos los estadísticos se construyen con sumatorios. Dominar $\sum$ es dominar la notación estadística. La **frecuencia relativa** $f_i = n_i/n$ es otro ejemplo de estandarización: convierte frecuencias absolutas en proporciones comparables entre grupos de distinto tamaño.
+:::
+
+## Tablas de frecuencias — Variables nominales
+
+**Grupo sanguíneo (n=500):**
+
+| Grupo | $n_i$ | $f_i$ | % |
+|-------|:-----:|:-----:|:---:|
+| A | 150 | 0.30 | 30.0 |
+| B | 75 | 0.15 | 15.0 |
+| AB | 25 | 0.05 | 5.0 |
+| O | 250 | 0.50 | 50.0 |
+| **Total** | **500** | **1.00** | **100** |
+
+**Proporción:** $p_i = n_i/n$. **Moda:** O (mayor frecuencia).
+
+::: {.callout-note}
+**Álgebra de Tablas de Frecuencias — Variables Nominales**
+
+Sea una variable con $k$ categorías. La tabla de frecuencias se define mediante tres funciones:
+
+| Magnitud | Símbolo | Definición | Propiedad fundamental |
+|:---------|:-------:|:-----------|:----------------------|
+| **Frecuencia absoluta** | $n_i$ | Nº de observaciones en categoría $i$ | $\sum_{i=1}^{k} n_i = n$ |
+| **Frecuencia relativa** | $f_i$ | $f_i = \dfrac{n_i}{n}$ | $\sum_{i=1}^{k} f_i = 1$ |
+| **Frecuencia acumulada** | $N_i$ | $N_i = \sum_{j=1}^{i} n_j$ | $N_k = n$ |
+
+:::
+
+## Comprueba tu comprensión
+
+**Ejercicio rápido:** Un fisioterapeuta mide la flexión de rodilla en 3 pacientes: 125°, 132°, 128°.
+
+1. Calcula $\sum_{i=1}^{3} x_i$
+2. ¿Cuánto vale $\bar{x}$?
+
+## Relaciones algebraicas — Tablas de frecuencias
+
+::: {.callout-note}
+**De las definiciones a las propiedades:** Una vez definidas $n_i$, $f_i$ y $N_i$, sus relaciones algebraicas permiten interpretar la estructura de los datos.
+:::
+
+- $0 \leq f_i \leq 1$ para todo $i$ (cada $f_i$ es una probabilidad empírica)
+- $f_i \times 100 = \%$ en categoría $i$
+- $N_i$ solo tiene sentido para variables **ordinales** (requiere orden)
+- La colección $\{f_1, f_2, \ldots, f_k\}$ define la **distribución empírica** de la variable
+
+## Gráficos para variables nominales
+
+```{r}
+#| fig-height: 6
+grupos <- c(A=150, B=75, AB=25, O=250)
+cols <- c("steelblue","coral","gold","seagreen")
+par(mfrow=c(1,2), mar=c(4,4,4,1))
+bp <- barplot(grupos, col=cols, main="Diagrama de Barras", ylab="Frecuencia", ylim=c(0,280))
+text(bp, grupos+8, grupos, font=2)
+pie(grupos, col=cols, main="Diagrama de Sectores",
+    labels=paste(names(grupos),"\n",grupos," (",round(grupos/500*100,0),"%)",sep=""))
+par(mfrow=c(1,1))
+```
+
+Cada sector: $\alpha_i = f_i \times 360°$. Altura de barra $\propto$ frecuencia. **Área** del sector $\propto$ frecuencia.
+
+## Tablas — Variables ordinales (Frecuencia acumulada)
+
+**Efecto de terapia acuática en fibromialgia (n=500):**
+
+| Estado | $n_i$ | $N_i$ (acum.) | % | % acum. |
+|--------|:-----:|:------------:|:---:|:------:|
+| Mucho peor | 25 | 25 | 5.0 | 5.0 |
+| Peor | 98 | 123 | 19.6 | 24.6 |
+| Igual | 159 | 282 | 31.8 | 56.4 |
+| Mejor | 147 | 429 | 29.4 | 85.8 |
+| Mucho mejor | 71 | 500 | 14.2 | 100.0 |
+
+**Álgebra de frecuencias acumuladas:**
+
+$$N_i = \sum_{j=1}^{i} n_j \quad \Rightarrow \quad \begin{cases} N_1 = n_1 \\ N_2 = n_1 + n_2 \\ \cdots \\ N_k = \sum_{j=1}^{k} n_j = n \end{cases}$$
+
+**Frecuencia relativa acumulada:** $F_i = \frac{N_i}{n} = \sum_{j=1}^{i} f_j$, con $F_k = 1$.
+
+## Elementos del intervalo — Tablas para variables continuas
+
+Sea una variable continua agrupada en $k$ intervalos. Para cada intervalo $j$ se definen:
+
+| Elemento | Símbolo | Definición |
+|:---------|:-------:|:-----------|
+| Límite inferior | $x_j^l$ | Valor mínimo del intervalo |
+| Límite superior | $x_j^u$ | Valor máximo del intervalo |
+| **Amplitud** | $\Delta x_j$ | $\Delta x_j = x_j^u - x_j^l$ |
+| **Marca de clase** | $x_j$ | $x_j = \dfrac{x_j^l + x_j^u}{2}$ |
+
+**Requisitos de los intervalos:** (1) misma amplitud $\Delta x$ (homogéneos), (2) exhaustivos (cubren todo el rango), (3) mutuamente excluyentes. Notación estándar: $(L_i, L_{i+1}]$.
+
+## Frecuencias y densidades para variables continuas
+
+Para cada intervalo $j$, las frecuencias y densidades se definen como:
+
+| Elemento | Símbolo | Definición |
+|:---------|:-------:|:-----------|
+| Frec. absoluta | $n_j$ | Observaciones en $[x_j^l, x_j^u)$ |
+| Frec. relativa | $f_j$ | $f_j = n_j / n$ |
+| **Densidad** | $\hat{f}_j$ | $\hat{f}_j = \dfrac{f_j}{\Delta x_j}$ |
+| Densidad absoluta | $\hat{n}_j$ | $\hat{n}_j = \dfrac{n_j}{\Delta x_j}$ |
+
+**Propiedad fundamental del histograma (el área ∝ frecuencia):**
+
+$$\sum_{j=1}^{k} \hat{f}_j \cdot \Delta x_j = \sum_{j=1}^{k} \frac{f_j}{\Delta x_j} \cdot \Delta x_j = \sum_{j=1}^{k} f_j = 1$$
+
+**Por tanto:** en el histograma la **altura** es densidad $\hat{f}_j$, la **base** es $\Delta x_j$, y el **área** de cada barra es $f_j$. La suma de todas las áreas es 1.
+
+
+## Tablas — Variables continuas e histograma
+
+# Visualización de Datos {.center}
+
+
+**Colesterol (mg/dL) en pacientes de fisioterapia, n=157:**
+
+| Intervalo | $n_i$ | $f_i$(%) | $F_i$(% acum) |
+|-----------|:-----:|:--------:|:------------:|
+| (101, 128] | 20 | 12.7 | 12.7 |
+| (128, 155] | 69 | 43.9 | 56.7 |
+| (155, 182] | 45 | 28.7 | 85.4 |
+| (182, 209] | 13 | 8.3 | 93.6 |
+| (209, 236] | 10 | 6.4 | 100.0 |
+
+```{r}
+set.seed(123); colest <- rnorm(157, 168, 25)
+hist(colest, breaks=seq(101,236,by=13.5), col="steelblue", border="white",
+     main="Colesterol en Pacientes de Fisioterapia (n=157)", xlab="mg/dL", ylab="Frecuencia")
+abline(v=mean(colest), col="darkgreen", lwd=3, lty=2)
+```
+
+## Guía visual: ¿qué gráfico uso?
+
+```{r}
+#| fig-height: 6
+par(mfrow=c(2,2), mar=c(4,4,3,1))
+
+# 1 variable nominal → sectores
+grupos <- c(A=150, B=75, AB=25, O=250)
+pie(grupos, col=c("steelblue","coral","gold","seagreen"),
+    main="1 Variable Nominal\n→ Diagrama de Sectores")
+set.seed(123)
+
+# 1 variable ordinal/discreta → barras
+barplot(c(25,98,159,147,71), names=c("M.Peor","Peor","Igual","Mejor","M.Mejor"),
+        col=heat.colors(5), main="1 Variable Ordinal\n→ Diagrama de Barras", ylab="Frecuencia")
+
+# 1 variable continua → histograma
+hist(rnorm(500,150,20), col="steelblue", border="white", breaks=20,
+     main="1 Variable Continua\n→ Histograma", xlab="ROM (grados)", ylab="Frecuencia")
+
+# 2 variables (continua vs categórica) → boxplot
+boxplot(rnorm(50,150,10)~rep(c("A","B"),each=25), col=c("steelblue","coral"),
+        main="1 Continua + 1 Categórica\n→ Boxplot Comparativo", ylab="ROM")
+par(mfrow=c(1,1))
+```
+
+**Regla nemotécnica:** 1 variable → su gráfico natural. 2 variables → una en cada eje. ¿Ambas categóricas? → tabla de contingencia. ¿Ambas continuas? → diagrama de dispersión.
+
+## Tipos de gráficos y elección del intervalo
+
+| Tipo de variable | Gráfico adecuado |
+|:-----------------|:-----------------|
+| Nominal | Sectores, Barras |
+| Ordinal / Discreta (pocos) | Barras, Polígono frecuencias |
+| Continua / Discreta (muchos) | **Histograma** |
+
+```{r}
+#| fig-height: 6
+par(mfrow=c(1,2), mar=c(4,4,4,1))
+hist(colest, breaks=40, col="steelblue", border="white",
+     main="Demasiados intervalos → ruido", xlab="mg/dL")
+hist(colest, breaks=12, col="steelblue", border="white",
+     main="Intervalos adecuados → forma real", xlab="mg/dL")
+par(mfrow=c(1,1))
+```
+
+**Regla:** 8-15 intervalos. Demasiados → ruido. Muy pocos → pérdida de forma.
+
+## Polígono de frecuencias y diagrama de puntos
+
+**Polígono:** unir puntos medios superiores de barras → visualiza la forma.
+
+```{r}
+#| fig-height: 6.5
+edad<-c(15,16,17,18,19,20); freq<-c(5,28,64,18,6,3)
+plot(edad, freq, type="b", pch=19, col="steelblue", lwd=3, cex=2,
+     main="Polígono de Frecuencias: Edad (n=124)", xlab="Edad", ylab="Frecuencia", ylim=c(0,70))
+grid(col="grey80"); rect(edad-0.3, 0, edad+0.3, freq, col=rgb(0,0,1,0.15), border=NA)
+```
+
+**Diagrama de puntos** (dotplot): para muestras pequeñas donde el histograma no tiene sentido.
+
+## Diagrama de tallo y hojas
+
+::: {.callout-note}
+**Diagrama de tallo y hojas (stem-and-leaf):** Representación semigráfica que conserva los datos originales. Cada número se divide en **tallo** (cifras de mayor orden) y **hoja** (última cifra). Combina las ventajas de una tabla y un histograma.
+:::
+
+**Ejemplo — Fuerza de prensión manual (kg) en 20 pacientes:**
+
+```{r}
+set.seed(789)
+fuerza <- round(rnorm(20, mean = 30, sd = 6), 0)
+cat("Datos de fuerza (kg):", sort(fuerza), "\n\n")
+stem(fuerza)
+```
+
+**Ventajas del diagrama de tallo y hojas:**
+
+- **Conserva los datos originales** (a diferencia del histograma que agrupa)
+- **Muestra la forma** de la distribución (simetría, asimetría, valores extremos)
+- **Útil para muestras pequeñas** ($n < 50$) donde el histograma pierde sentido
+- **Fácil de construir a mano** en el ámbito clínico
+
+::: {.callout-tip}
+**En fisioterapia:** Ideal para visualizar rápidamente la distribución de mediciones en un grupo pequeño de pacientes sin necesidad de software gráfico.
+:::
+
+## Pictogramas, nube de palabras y diagramas comparativos
+
+**Principios:** área ∝ frecuencia. Incluir $n$, unidades y año. Para comparar grupos, usar **frecuencia relativa (%)**.
+
+```{r}
+#| fig-height: 6
+diagnosticos <- c(rep("Lumbalgia",40), rep("Cervicalgia",35), rep("Omalgia",25),
+                  rep("Artrosis",20), rep("Esguince",18), rep("Tendinitis",12))
+freq_table <- sort(table(diagnosticos), decreasing=TRUE)
+par(mar=c(4,9,4,1))
+barplot(as.numeric(freq_table), names=names(freq_table), horiz=TRUE, las=1,
+        col=colorRampPalette(c("steelblue","coral","gold"))(6),
+        main="Diagnósticos en Fisioterapia (n=150)", xlab="Frecuencia", cex.names=0.85)
+```
+
+## Nube de palabras — Términos estadísticos en fisioterapia
+
+```{r}
+#| fig-height: 5.5
+# Nube de palabras con términos estadísticos
+terminos <- c(
+  "Media","Mediana","Moda","Varianza","Desviación","Percentil","Cuartil",
+  "Histograma","Boxplot","Dispersión","Barras","Sectores","Frecuencia",
+  "Muestra","Población","Variable","Continua","Discreta","Nominal","Ordinal",
+  "Normal","Asimetría","Curtosis","RIQ","Coeficiente","ECDF","Densidad",
+  "Fisioterapia","ROM","EVA","Diagnóstico","Rehabilitación","Dolor",
+  "Inferencia","Estimación","Contraste","P-valor","Significación"
+)
+freqs <- c(15,12,10,9,8,7,7,8,7,9,10,8,12,
+           14,14,13,11,10,11,10,
+           8,6,6,7,5,4,7,
+           5,4,5,6,5,5,
+           4,3,3,3,3)
+set.seed(123)
+par(mar=c(1,1,2,1))
+plot(NA, xlim=c(0,10), ylim=c(0,10), axes=F, xlab="", ylab="",
+     main="Términos Estadísticos en Fisioterapia Basada en la Evidencia")
+cols <- colorRampPalette(c("#1a5276","#2471a3","#2e86c1","#3498db","#85c1e9"))(length(terminos))
+for(i in seq_along(terminos)){
+  text(runif(1,0.5,9.5), runif(1,0.5,9.5), terminos[i],
+       cex=freqs[i]/5, col=cols[i], font=sample(1:2,1))
+}
+```
+---
+
+# Código del Tema I (Parte I) — Resumen Organizado {.center}
+
+## Variables y estructura de datos
+
+```{r}
+#| eval: false
+# Tipos de variables en fisioterapia
+diagnostico <- c("Lumbalgia","Cervicalgia","Omalgia")  # Nominal
+eva_dolor   <- c(3, 5, 7, 2, 8, 5)                      # Ordinal (0-10)
+n_sesiones  <- c(5, 8, 3, 12, 6, 9)                     # Discreta
+rom_hombro  <- c(145, 152, 138, 160, 148, 155)          # Continua
+
+# Tabla de frecuencias
+grupo_sanguineo <- c(rep("A",150), rep("B",75), rep("AB",25), rep("O",250))
+tabla <- table(grupo_sanguineo)
+frec_rel <- prop.table(tabla)   # frecuencias relativas
+frec_rel
+```
+
+## Medidas de posición
+
+```{r}
+#| eval: false
+x <- c(125, 132, 128, 135, 130, 126, 131, 129)
+
+# Tendencia central
+mean(x)        # Media aritmética
+median(x)      # Mediana
+# Moda (manual)
+tabla_freq <- table(x)
+moda <- as.numeric(names(tabla_freq[tabla_freq == max(tabla_freq)]))
+
+# Posición
+quantile(x, probs = c(0.25, 0.50, 0.75))  # Q1, Q2, Q3
+summary(x)     # Min, Q1, Mediana, Media, Q3, Max
+```
+
+## Visualización
+
+```{r}
+#| eval: false
+# Histograma
+hist(x, col = "steelblue", border = "white", main = "Histograma", xlab = "Valor")
+
+# Diagrama de barras
+barplot(tabla, col = c("steelblue","coral","gold","seagreen"), main = "Barras")
+
+# Diagrama de sectores
+pie(tabla, col = c("steelblue","coral","gold","seagreen"), main = "Sectores")
+
+# Boxplot comparativo
+g1 <- rnorm(50, 170, 10); g2 <- rnorm(50, 180, 15)
+boxplot(g1, g2, names = c("Grupo 1","Grupo 2"), col = c("steelblue","coral"))
+```

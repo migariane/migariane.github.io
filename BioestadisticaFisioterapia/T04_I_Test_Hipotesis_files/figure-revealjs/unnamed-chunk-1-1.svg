@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='360.00pt' viewBox='0 0 648.00 360.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwzNjAuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='360.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzNjAuMDA=)'>
+<rect x='276.00' y='10.00' width='96.00' height='23.33' style='stroke-width: 0.00; stroke: none; fill: #2C3E50;' />
+<text x='324.00' y='24.09' text-anchor='middle' style='font-size: 9.36px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='82.17px' lengthAdjust='spacingAndGlyphs'>¿Variable Normal?</text>
+<line x1='324.00' y1='33.33' x2='204.00' y2='60.00' style='stroke-width: 2.25; stroke: #27AE60;' />
+<line x1='324.00' y1='33.33' x2='444.00' y2='60.00' style='stroke-width: 2.25; stroke: #FF7F50;' />
+<text x='258.00' y='50.78' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='8.50px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<text x='390.00' y='49.89' text-anchor='middle' style='font-size: 9.00px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='13.50px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<rect x='156.00' y='60.00' width='96.00' height='23.33' style='stroke-width: 1.88; stroke: #27AE60; fill: #D5F5E3;' />
+<text x='204.00' y='73.78' text-anchor='middle' style='font-size: 8.16px; font-weight: bold;fill: #1E6E3E; font-family: "Arial";' textLength='56.58px' lengthAdjust='spacingAndGlyphs'>¿n ≥ 60? (TCL)</text>
+<line x1='204.00' y1='83.33' x2='132.00' y2='116.67' style='stroke-width: 1.88; stroke: #27AE60;' />
+<line x1='204.00' y1='83.33' x2='276.00' y2='116.67' style='stroke-width: 1.88; stroke: #E67E22;' />
+<text x='162.00' y='103.56' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='7.38px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<text x='246.00' y='102.79' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #E67E22; font-family: "Arial";' textLength='11.69px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<rect x='84.00' y='120.00' width='96.00' height='20.00' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='132.00' y='128.25' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='31.53px' lengthAdjust='spacingAndGlyphs'>t-Student</text>
+<text x='132.00' y='136.89' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='41.53px' lengthAdjust='spacingAndGlyphs'>(válido TCL)</text>
+<rect x='234.00' y='120.00' width='84.00' height='20.00' style='stroke-width: 1.88; stroke: #E67E22; fill: #FEF9E7;' />
+<text x='276.00' y='128.20' text-anchor='middle' style='font-size: 7.44px; font-weight: bold;fill: #E67E22; font-family: "Arial";' textLength='45.39px' lengthAdjust='spacingAndGlyphs'>Shapiro-Wilk</text>
+<text x='276.00' y='137.13' text-anchor='middle' style='font-size: 7.44px; font-weight: bold;fill: #E67E22; font-family: "Arial";' textLength='36.86px' lengthAdjust='spacingAndGlyphs'>¿P &gt; 0.05?</text>
+<line x1='276.00' y1='140.00' x2='234.00' y2='173.33' style='stroke-width: 1.50; stroke: #27AE60;' />
+<line x1='276.00' y1='140.00' x2='318.00' y2='173.33' style='stroke-width: 1.50; stroke: #FF7F50;' />
+<text x='252.00' y='159.95' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='6.80px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<text x='294.00' y='159.24' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='10.78px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<rect x='192.00' y='176.67' width='72.00' height='20.00' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='228.00' y='189.24' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='31.53px' lengthAdjust='spacingAndGlyphs'>t-Student</text>
+<rect x='282.00' y='176.67' width='84.00' height='20.00' style='stroke-width: 0.75; stroke: none; fill: #FF7F50;' />
+<text x='324.00' y='185.07' text-anchor='middle' style='font-size: 6.60px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='32.91px' lengthAdjust='spacingAndGlyphs'>Wilcoxon /</text>
+<text x='324.00' y='192.99' text-anchor='middle' style='font-size: 6.60px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='45.09px' lengthAdjust='spacingAndGlyphs'>Mann-Whitney</text>
+<rect x='396.00' y='60.00' width='96.00' height='23.33' style='stroke-width: 1.88; stroke: #FF7F50; fill: #FADBD8;' />
+<text x='444.00' y='73.78' text-anchor='middle' style='font-size: 8.16px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='56.58px' lengthAdjust='spacingAndGlyphs'>¿n ≥ 60? (TCL)</text>
+<line x1='444.00' y1='83.33' x2='372.00' y2='116.67' style='stroke-width: 1.88; stroke: #27AE60;' />
+<line x1='444.00' y1='83.33' x2='516.00' y2='116.67' style='stroke-width: 1.88; stroke: #FF7F50;' />
+<text x='402.00' y='103.56' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #27AE60; font-family: "Arial";' textLength='7.38px' lengthAdjust='spacingAndGlyphs'>SÍ</text>
+<text x='486.00' y='102.79' text-anchor='middle' style='font-size: 7.80px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='11.69px' lengthAdjust='spacingAndGlyphs'>NO</text>
+<rect x='324.00' y='120.00' width='96.00' height='20.00' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='372.00' y='128.25' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='31.53px' lengthAdjust='spacingAndGlyphs'>t-Student</text>
+<text x='372.00' y='136.89' text-anchor='middle' style='font-size: 7.20px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='41.53px' lengthAdjust='spacingAndGlyphs'>(válido TCL)</text>
+<rect x='468.00' y='120.00' width='96.00' height='20.00' style='stroke-width: 0.75; stroke: none; fill: #FF7F50;' />
+<text x='516.00' y='128.40' text-anchor='middle' style='font-size: 6.60px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='32.91px' lengthAdjust='spacingAndGlyphs'>Wilcoxon /</text>
+<text x='516.00' y='136.32' text-anchor='middle' style='font-size: 6.60px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='45.09px' lengthAdjust='spacingAndGlyphs'>Mann-Whitney</text>
+<rect x='42.00' y='273.33' width='72.00' height='26.67' style='stroke-width: 0.75; stroke: none; fill: #27AE60;' />
+<text x='133.20' y='288.24' style='font-size: 6.60px; font-weight: bold; font-family: "Arial";' textLength='52.69px' lengthAdjust='spacingAndGlyphs'>Test paramétrico</text>
+<rect x='222.00' y='273.33' width='72.00' height='26.67' style='stroke-width: 0.75; stroke: none; fill: #FF7F50;' />
+<text x='313.20' y='288.24' style='font-size: 6.60px; font-weight: bold; font-family: "Arial";' textLength='62.58px' lengthAdjust='spacingAndGlyphs'>Test no paramétrico</text>
+<rect x='414.00' y='273.33' width='72.00' height='26.67' style='stroke-width: 1.50; stroke: #E67E22; fill: #FEF9E7;' />
+<text x='505.20' y='288.24' style='font-size: 6.60px; font-weight: bold; font-family: "Arial";' textLength='60.88px' lengthAdjust='spacingAndGlyphs'>Verificar supuestos</text>
+</g>
+</g>
+</svg>

@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='648.00pt' height='396.00pt' viewBox='0 0 648.00 396.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA='>
+    <rect x='0.00' y='0.00' width='648.00' height='396.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpMC4wMHwyMTYuMDB8MC4wMHwzOTYuMDA='>
+    <rect x='0.00' y='0.00' width='216.00' height='396.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MC4wMHwzOTYuMDA=)'>
+<rect x='44.26' y='98.21' width='70.91' height='259.78' style='stroke-width: 0.75; fill: #3498DB;' />
+<rect x='129.35' y='65.74' width='70.91' height='292.25' style='stroke-width: 0.75; fill: #FF7F50;' />
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='79.71' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.70px' lengthAdjust='spacingAndGlyphs'>Fisio A</text>
+<text x='164.80' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='24.14px' lengthAdjust='spacingAndGlyphs'>Fisio B</text>
+</g>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MC4wMHwzOTYuMDA=)'>
+<text x='122.26' y='19.75' text-anchor='middle' style='font-size: 8.71px; font-weight: bold; font-family: "Arial";' textLength='71.72px' lengthAdjust='spacingAndGlyphs'>Datos Agregados</text>
+<text transform='translate(7.60,195.62) rotate(-90)' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='26.80px' lengthAdjust='spacingAndGlyphs'>% Éxito</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<line x1='38.02' y1='357.98' x2='38.02' y2='33.26' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='357.98' x2='33.26' y2='357.98' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='293.04' x2='33.26' y2='293.04' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='228.10' x2='33.26' y2='228.10' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='163.15' x2='33.26' y2='163.15' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='98.21' x2='33.26' y2='98.21' style='stroke-width: 0.75;' />
+<line x1='38.02' y1='33.26' x2='33.26' y2='33.26' style='stroke-width: 0.75;' />
+<text transform='translate(26.61,357.98) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='3.97px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text transform='translate(26.61,293.04) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text transform='translate(26.61,228.10) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text transform='translate(26.61,163.15) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>60</text>
+<text transform='translate(26.61,98.21) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>80</text>
+<text transform='translate(26.61,33.26) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='11.91px' lengthAdjust='spacingAndGlyphs'>100</text>
+</g>
+<defs>
+  <clipPath id='cpMzguMDJ8MjA2LjUwfDMzLjI2fDM1Ny45OA=='>
+    <rect x='38.02' y='33.26' width='168.48' height='324.72' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzguMDJ8MjA2LjUwfDMzLjI2fDM1Ny45OA==)'>
+<text x='79.71' y='83.58' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='24.27px' lengthAdjust='spacingAndGlyphs'>160/200</text>
+<text x='79.71' y='91.66' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='17.91px' lengthAdjust='spacingAndGlyphs'>(80%)</text>
+<text x='164.80' y='51.11' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='20.53px' lengthAdjust='spacingAndGlyphs'>90/100</text>
+<text x='164.80' y='59.19' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='17.91px' lengthAdjust='spacingAndGlyphs'>(90%)</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='122.26' y='389.35' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='81.56px' lengthAdjust='spacingAndGlyphs'>→ B parece mejor</text>
+</g>
+<defs>
+  <clipPath id='cpMjE2LjAwfDQzMi4wMHwwLjAwfDM5Ni4wMA=='>
+    <rect x='216.00' y='0.00' width='216.00' height='396.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMjE2LjAwfDQzMi4wMHwwLjAwfDM5Ni4wMA==)'>
+<rect x='260.26' y='43.33' width='70.91' height='314.65' style='stroke-width: 0.75; fill: #3498DB;' />
+<rect x='345.35' y='51.45' width='70.91' height='306.54' style='stroke-width: 0.75; fill: #FF7F50;' />
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='295.71' y='365.59' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.70px' lengthAdjust='spacingAndGlyphs'>Fisio A</text>
+<text x='295.71' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='27.45px' lengthAdjust='spacingAndGlyphs'>(n=160)</text>
+<text x='380.80' y='365.59' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='24.14px' lengthAdjust='spacingAndGlyphs'>Fisio B</text>
+<text x='380.80' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.06px' lengthAdjust='spacingAndGlyphs'>(n=90)</text>
+</g>
+<g clip-path='url(#cpMjE2LjAwfDQzMi4wMHwwLjAwfDM5Ni4wMA==)'>
+<text x='338.26' y='19.75' text-anchor='middle' style='font-size: 8.71px; font-weight: bold; font-family: "Arial";' textLength='57.11px' lengthAdjust='spacingAndGlyphs'>Casos LEVES</text>
+<text transform='translate(223.60,195.62) rotate(-90)' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='26.80px' lengthAdjust='spacingAndGlyphs'>% Éxito</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<line x1='254.02' y1='357.98' x2='254.02' y2='33.26' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='357.98' x2='249.26' y2='357.98' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='293.04' x2='249.26' y2='293.04' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='228.10' x2='249.26' y2='228.10' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='163.15' x2='249.26' y2='163.15' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='98.21' x2='249.26' y2='98.21' style='stroke-width: 0.75;' />
+<line x1='254.02' y1='33.26' x2='249.26' y2='33.26' style='stroke-width: 0.75;' />
+<text transform='translate(242.61,357.98) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='3.97px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text transform='translate(242.61,293.04) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text transform='translate(242.61,228.10) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text transform='translate(242.61,163.15) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>60</text>
+<text transform='translate(242.61,98.21) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>80</text>
+<text transform='translate(242.61,33.26) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='11.91px' lengthAdjust='spacingAndGlyphs'>100</text>
+</g>
+<defs>
+  <clipPath id='cpMjU0LjAyfDQyMi41MHwzMy4yNnwzNTcuOTg='>
+    <rect x='254.02' y='33.26' width='168.48' height='324.72' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMjU0LjAyfDQyMi41MHwzMy4yNnwzNTcuOTg=)'>
+<text x='295.71' y='28.71' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='24.27px' lengthAdjust='spacingAndGlyphs'>155/160</text>
+<text x='295.71' y='36.79' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='23.50px' lengthAdjust='spacingAndGlyphs'>(96.9%)</text>
+<text x='380.80' y='36.83' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='16.80px' lengthAdjust='spacingAndGlyphs'>85/90</text>
+<text x='380.80' y='44.90' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='23.50px' lengthAdjust='spacingAndGlyphs'>(94.4%)</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='338.26' y='389.35' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #3498DB; font-family: "Arial";' textLength='103.77px' lengthAdjust='spacingAndGlyphs'>→ A ligeramente mejor</text>
+</g>
+<defs>
+  <clipPath id='cpNDMyLjAwfDY0OC4wMHwwLjAwfDM5Ni4wMA=='>
+    <rect x='432.00' y='0.00' width='216.00' height='396.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDMyLjAwfDY0OC4wMHwwLjAwfDM5Ni4wMA==)'>
+<rect x='476.26' y='317.39' width='70.91' height='40.59' style='stroke-width: 0.75; fill: #3498DB;' />
+<rect x='561.35' y='195.62' width='70.91' height='162.36' style='stroke-width: 0.75; fill: #FF7F50;' />
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='511.71' y='365.59' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.70px' lengthAdjust='spacingAndGlyphs'>Fisio A</text>
+<text x='511.71' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.06px' lengthAdjust='spacingAndGlyphs'>(n=40)</text>
+<text x='596.80' y='365.59' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='24.14px' lengthAdjust='spacingAndGlyphs'>Fisio B</text>
+<text x='596.80' y='375.09' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='23.06px' lengthAdjust='spacingAndGlyphs'>(n=10)</text>
+</g>
+<g clip-path='url(#cpNDMyLjAwfDY0OC4wMHwwLjAwfDM5Ni4wMA==)'>
+<text x='554.26' y='19.75' text-anchor='middle' style='font-size: 8.71px; font-weight: bold; font-family: "Arial";' textLength='64.67px' lengthAdjust='spacingAndGlyphs'>Casos GRAVES</text>
+<text transform='translate(439.60,195.62) rotate(-90)' text-anchor='middle' style='font-size: 7.92px; font-family: "Arial";' textLength='26.80px' lengthAdjust='spacingAndGlyphs'>% Éxito</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<line x1='470.02' y1='357.98' x2='470.02' y2='33.26' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='357.98' x2='465.26' y2='357.98' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='293.04' x2='465.26' y2='293.04' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='228.10' x2='465.26' y2='228.10' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='163.15' x2='465.26' y2='163.15' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='98.21' x2='465.26' y2='98.21' style='stroke-width: 0.75;' />
+<line x1='470.02' y1='33.26' x2='465.26' y2='33.26' style='stroke-width: 0.75;' />
+<text transform='translate(458.61,357.98) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='3.97px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text transform='translate(458.61,293.04) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text transform='translate(458.61,228.10) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text transform='translate(458.61,163.15) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>60</text>
+<text transform='translate(458.61,98.21) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='7.94px' lengthAdjust='spacingAndGlyphs'>80</text>
+<text transform='translate(458.61,33.26) rotate(-90)' text-anchor='middle' style='font-size: 7.13px; font-family: "Arial";' textLength='11.91px' lengthAdjust='spacingAndGlyphs'>100</text>
+</g>
+<defs>
+  <clipPath id='cpNDcwLjAyfDYzOC41MHwzMy4yNnwzNTcuOTg='>
+    <rect x='470.02' y='33.26' width='168.48' height='324.72' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDcwLjAyfDYzOC41MHwzMy4yNnwzNTcuOTg=)'>
+<text x='511.71' y='302.77' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='13.06px' lengthAdjust='spacingAndGlyphs'>5/40</text>
+<text x='511.71' y='310.85' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='23.50px' lengthAdjust='spacingAndGlyphs'>(12.5%)</text>
+<text x='596.80' y='181.00' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='13.06px' lengthAdjust='spacingAndGlyphs'>5/10</text>
+<text x='596.80' y='189.08' text-anchor='middle' style='font-size: 6.73px; font-weight: bold; font-family: "Arial";' textLength='23.50px' lengthAdjust='spacingAndGlyphs'>(50.0%)</text>
+</g>
+<g clip-path='url(#cpMC4wMHw2NDguMDB8MC4wMHwzOTYuMDA=)'>
+<text x='554.26' y='389.35' text-anchor='middle' style='font-size: 9.60px; font-weight: bold;fill: #FF7F50; font-family: "Arial";' textLength='139.14px' lengthAdjust='spacingAndGlyphs'>→ B mejor, pero solo 10 casos</text>
+</g>
+</g>
+</svg>

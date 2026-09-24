@@ -1,0 +1,16 @@
+.quarto/
+.DS_Store
+__pycache__/
+figure/
+*.tex
+*.log
+*.aux
+*.knit.md
+_site/
+site_libs/
+videos/
+notebooklm_txt/
+
+/.quarto/
+**/*.quarto_ipynb
+_files/

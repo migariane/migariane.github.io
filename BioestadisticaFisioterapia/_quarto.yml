@@ -1,0 +1,144 @@
+project:
+  type: website
+  render:
+    - index.qmd
+    - T01_I_Descriptiva.qmd
+    - T01_II_Descriptiva.qmd
+    - T02_I_Probabilidad.qmd
+    - T02_II_Probabilidad.qmd
+    - T03_Estimacion_IC.qmd
+    - T04_I_Test_Hipotesis.qmd
+    - T04_II_Test_Hipotesis.qmd
+    - T05_ChiCuadrado.qmd
+    - T06_RegresionCorr.qmd
+
+exclude:
+  - gh-pages-content
+
+website:
+  title: "Bioestadística para Fisioterapia"
+  site-url: https://migariane.github.io/BioestadisticaFisioterapia
+  repo-url: https://github.com/migariane/BioestadisticaFisioterapia
+  search: true
+  page-navigation: true
+  navbar:
+    title: "Bioestadística — Grado en Fisioterapia"
+    logo: logo.png
+    logo-alt: "UGR"
+    pinned: true
+    collapse: true
+    left:
+      - text: "Inicio"
+        href: index.qmd
+      - text: "T01: Descriptiva (I)"
+        href: T01_I_Descriptiva.qmd
+      - text: "T01: Descriptiva (II)"
+        href: T01_II_Descriptiva.qmd
+      - text: "T02: Probabilidad (I)"
+        href: T02_I_Probabilidad.qmd
+      - text: "T02: Probabilidad (II)"
+        href: T02_II_Probabilidad.qmd
+      - text: "T03: Estimación"
+        href: T03_Estimacion_IC.qmd
+      - text: "T04: Test Hipótesis (I)"
+        href: T04_I_Test_Hipotesis.qmd
+      - text: "T04: Test Hipótesis (II)"
+        href: T04_II_Test_Hipotesis.qmd
+      - text: "T05: Chi-Cuadrado"
+        href: T05_ChiCuadrado.qmd
+      - text: "T06: Regresión"
+        href: T06_RegresionCorr.qmd
+    right:
+      - icon: github
+        href: https://github.com/migariane
+        aria-label: GitHub
+      - icon: globe
+        href: https://migariane.github.io
+        aria-label: Website
+  page-footer:
+    border: true
+    left: |
+      <span style="opacity:0.7">© 2026 Miguel Angel Luque-Fernández · CC BY 4.0</span>
+    center: |
+      <span style="opacity:0.7"><a href="https://migariane.github.io/MatematicaEstadisticaMedicinaR">Libro de referencia</a></span>
+    right: |
+      <span style="opacity:0.7"><a href="https://www.ugr.es">UGR</a> · <a href="https://migariane.github.io">migariane</a></span>
+
+bibliography: references.bib
+knitr:
+  opts_chunk:
+    dev: "svglite"
+citeproc: true
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
+
+format:
+  revealjs:
+    theme: [default, madrid-theme.scss]
+    transition: convex
+    transition-speed: fast
+    slide-number: c/t
+    preview-links: auto
+    navigation-mode: linear
+    toc: true
+    toc-depth: 2
+    logo: logo.png
+    footer: |
+      <span style="font-size:0.5em">Bioestadística · Grado en Fisioterapia · UGR</span>
+    code-fold: true
+    code-summary: "Mostrar el código R"
+    code-copy: true
+    code-overflow: scroll
+    code-line-numbers: false
+    fig-align: center
+    fig-width: 8
+    fig-height: 5
+    fig-format: svg
+    fig-dpi: 300
+    out-width: 100%
+    lang: es
+    width: 1366
+    height: 768
+    margin: 0.08
+    auto-stretch: false
+    center: true
+    history: false
+    html-math-method: mathjax
+    include-in-header:
+      text: |
+        <script>
+        MathJax = {
+          tex: {
+            macros: {
+              E: "\\mathbb{E}",
+              Var: ["\\operatorname{Var}"],
+              Cov: ["\\operatorname{Cov}"],
+              Corr: ["\\operatorname{Corr}"],
+              P: "\\mathbb{P}",
+              bbeta: "\\boldsymbol{\\beta}",
+              bmu: "\\boldsymbol{\\mu}",
+              btheta: "\\boldsymbol{\\theta}",
+              bX: "\\mathbf{X}",
+              reals: "\\mathbb{R}",
+              indep: "\\perp\\!\\!\\!\\perp",
+              SE: ["\\operatorname{SE}"],
+              SD: ["\\operatorname{SD}"],
+              I: "\\mathbb{I}",
+              Pr: ["\\operatorname{Pr}"],
+              NNT: ["\\operatorname{NNT}"],
+              AIC: ["\\operatorname{AIC}"],
+              BIC: ["\\operatorname{BIC}"],
+              MSE: ["\\operatorname{MSE}"],
+              OR: ["\\operatorname{OR}"],
+              RR: ["\\operatorname{RR}"],
+              DR: ["\\operatorname{DR}"],
+              VIF: ["\\operatorname{VIF}"]
+            }
+          }
+        };
+        </script>
+
+execute:
+  warning: false
+  message: false
+  echo: true
+  eval: true

@@ -1,0 +1,744 @@
+---
+title: "Contraste de Hipótesis"
+subtitle: "Tema IV (Parte I) — Fundamentos, Tests para Una Muestra y Normalidad"
+author:
+  - name: "Miguel Angel Luque-Fernández"
+    affiliation: "Dpto. Estadística e Investigación Operativa, Universidad de Granada"
+    email: "mluquefe@ugr.es"
+    url: "https://migariane.github.io"
+date: "2026"
+license: "CC BY 4.0"
+format:
+  revealjs:
+    slide-number: c/t
+    code-fold: true
+    code-summary: "Mostrar código R"
+    code-copy: true
+    code-overflow: wrap
+    fig-align: center
+    fig-width: 9
+    fig-height: 5.2
+    lang: es
+execute:
+  warning: false
+  message: false
+  echo: true
+  eval: true
+---
+
+# Contraste de Hipótesis {.center}
+
+![](logo.png){width="90px"}
+
+**Grado en Fisioterapia**
+
+**CC BY 4.0** · Miguel Angel Luque-Fernández
+
+[Miguel Angel Luque-Fernández](https://migariane.github.io) · [maluque.netlify.app](https://maluque.netlify.app)
+
+Dpto. Estadística e Investigación Operativa · Universidad de Granada
+
+## Objetivos de aprendizaje — Tema 4
+
+::: {.callout-tip}
+**Al finalizar este tema sabrás:**
+:::
+
+::: {.incremental}
+1. Formular $H_0$ y $H_1$ para cualquier problema clínico
+2. Distinguir Error Tipo I ($\alpha$) de Error Tipo II ($\beta$) y entender la potencia
+3. Interpretar correctamente un P-valor (¡no es la probabilidad de $H_0$!)
+4. Aplicar el test t para una muestra, dos muestras independientes y pareadas
+5. Decidir entre test paramétrico y no paramétrico según los datos
+6. Usar `testt()`, `testp()`, `testmcnemar()` y `testwx()` de BioEstatR
+:::
+
+## ¿Por Qué Necesito los Tests de Hipótesis como Fisioterapeuta?
+
+::: {.columns}
+::: {.column width="50%"}
+
+**En tu práctica clínica diaria:**
+
+- ¿Es mejor la terapia manual que el ejercicio para la cervicalgia?
+- ¿Reduce significativamente el dolor mi protocolo de tratamiento?
+- ¿Hay diferencias reales entre dos grupos de pacientes?
+
+**El P-valor responde:** ¿son estos resultados probablemente debidos al azar?
+
+:::
+
+::: {.column width="50%"}
+
+**En tu lectura crítica de artículos:**
+
+- "El tratamiento mostró eficacia (P = 0.03)" → ¿es fiable?
+- "No hubo diferencias significativas (P = 0.12)" → ¿seguro que no hay efecto, o la muestra era pequeña?
+- "El IC 95% fue (−0.5, 8.2)" → ¿es clínicamente relevante?
+
+:::
+:::
+
+**"Lo que la estadística nos dice no es si un efecto existe, sino cuán sorprendentes son los datos si asumimos que no existe."** — Ronald Fisher [@fisher1925]
+
+
+
+
+# Marco Conceptual {.center}
+
+![](logo.png){width="90px"}
+
+**Grado en Fisioterapia**
+
+CC BY 4.0 — Miguel Angel Luque-Fernández
+
+## Mapa conceptual — El universo de los tests de hipótesis
+
+Antes de sumergirnos en fórmulas, visualicemos el **esquema completo** que guía la elección del test adecuado:
+
+### ¿Qué queremos comparar?
+
+| Situación | Diseño | Test paramétrico | No paramétrico |
+|:----------|:-------|:-----------------|:--------------------|
+| **Una muestra** vs referencia | $\bar{x}$ vs $\mu_0$ | **t-Student** (1 m) | Wilcoxon signed-rank |
+| **Dos muestras independientes** | Grupo A vs B | **t-Student / Welch** | Mann-Whitney $U$ |
+| **Dos muestras pareadas** | Antes vs después | **t pareado** | Wilcoxon paired |
+| **Más de 2 muestras** | 3+ grupos | ANOVA | Kruskal-Wallis |
+
+### Homogeneidad de varianzas — ¿Student o Welch?
+
+::: {.columns}
+::: {.column width="50%"}
+$$H_0: \sigma_1^2 = \sigma_2^2 \quad H_1: \sigma_1^2 \neq \sigma_2^2$$
+
+- $P > 0.05$ → varianzas iguales → **t-Student**
+- $P \leq 0.05$ → varianzas distintas → **t-Welch**
+:::
+::: {.column width="50%"}
+::: {.callout-tip}
+**Regla práctica:** ante la duda, **usa siempre Welch**. Tiene potencia casi idéntica a Student cuando las varianzas son iguales, y es válido cuando no lo son.
+:::
+:::
+:::
+
+### ¿Bilateral o unilateral?
+
+| | Bilateral | Unilateral |
+|:--|:----------|:-----------|
+| $H_1$ | $\mu_1 \neq \mu_2$ | $\mu_1 > \mu_2$ |
+| $\alpha$ | Repartido en 2 colas | Concentrado en 1 cola |
+| **Regla** | Usar por defecto | Solo con justificación previa |
+
+### Métodos computacionales — Bootstrap
+
+Cuando los supuestos no se cumplen y $n$ es pequeño, el **bootstrap** (Efron, 1979) remuestrea los datos con reemplazo $B$ veces para construir la distribución empírica del estadístico sin asumir Normalidad.
+
+## Árbol de decisión clínico — ¿qué test uso?
+
+```{r}
+#| fig-height: 5
+#| fig-alt: "Árbol de decisión clínico para elegir el test estadístico adecuado. Empieza preguntando si la variable es Normal. Si es Normal, pregunta si n≥60. Si no es Normal, también pregunta si n≥60. Las ramas llevan a t-Student, Shapiro-Wilk o tests no paramétricos."
+par(mar=c(0,0,0,0), bg=NA)
+plot(NA, xlim=c(0,10), ylim=c(0,10), axes=F, xlab="", ylab="")
+
+# ── Nodo raíz ──
+rect(4.2, 9.4, 5.8, 10.1, col="#2c3e50", border=NA, lwd=0)
+text(5, 9.75, "¿Variable Normal?", cex=0.78, font=2, col="white")
+
+# Ramas principales con gradiente
+segments(5, 9.4, 3, 8.6, lwd=3, col="#27ae60")
+segments(5, 9.4, 7, 8.6, lwd=3, col="coral")
+text(3.9, 9.0, "SÍ", cex=0.75, font=2, col="#27ae60")
+text(6.1, 9.0, "NO", cex=0.75, font=2, col="coral")
+
+# ── Rama SÍ ──
+rect(2.2, 7.9, 3.8, 8.6, col="#d5f5e3", border="#27ae60", lwd=2.5)
+text(3, 8.25, "¿n ≥ 60? (TCL)", cex=0.68, font=2, col="#1e6e3e")
+segments(3, 7.9, 1.8, 6.9, lwd=2.5, col="#27ae60")
+segments(3, 7.9, 4.2, 6.9, lwd=2.5, col="#e67e22")
+text(2.3, 7.4, "SÍ", cex=0.65, font=2, col="#27ae60")
+text(3.7, 7.4, "NO", cex=0.65, font=2, col="#e67e22")
+
+# Hoja: t-Student (válido TCL)
+rect(1.0, 6.2, 2.6, 6.8, col="#27ae60", border=NA)
+text(1.8, 6.5, "t-Student\n(válido TCL)", cex=0.6, font=2, col="white")
+
+# Nodo intermedio: Shapiro
+rect(3.5, 6.2, 4.9, 6.8, col="#fef9e7", border="#e67e22", lwd=2.5)
+text(4.2, 6.5, "Shapiro-Wilk\n¿P > 0.05?", cex=0.62, font=2, col="#e67e22")
+segments(4.2, 6.2, 3.5, 5.2, lwd=2, col="#27ae60")
+segments(4.2, 6.2, 4.9, 5.2, lwd=2, col="coral")
+text(3.8, 5.7, "SÍ", cex=0.6, font=2, col="#27ae60")
+text(4.5, 5.7, "NO", cex=0.6, font=2, col="coral")
+
+# Hojas Shapiro
+rect(2.8, 4.5, 4.0, 5.1, col="#27ae60", border=NA)
+text(3.4, 4.8, "t-Student", cex=0.6, font=2, col="white")
+rect(4.3, 4.5, 5.7, 5.1, col="coral", border=NA)
+text(5.0, 4.8, "Wilcoxon /\nMann-Whitney", cex=0.55, font=2, col="white")
+
+# ── Rama NO ──
+rect(6.2, 7.9, 7.8, 8.6, col="#fadbd8", border="coral", lwd=2.5)
+text(7, 8.25, "¿n ≥ 60? (TCL)", cex=0.68, font=2, col="coral")
+segments(7, 7.9, 5.8, 6.9, lwd=2.5, col="#27ae60")
+segments(7, 7.9, 8.2, 6.9, lwd=2.5, col="coral")
+text(6.3, 7.4, "SÍ", cex=0.65, font=2, col="#27ae60")
+text(7.7, 7.4, "NO", cex=0.65, font=2, col="coral")
+
+# Hojas rama NO
+rect(5.0, 6.2, 6.6, 6.8, col="#27ae60", border=NA)
+text(5.8, 6.5, "t-Student\n(válido TCL)", cex=0.6, font=2, col="white")
+rect(7.4, 6.2, 9.0, 6.8, col="coral", border=NA)
+text(8.2, 6.5, "Wilcoxon /\nMann-Whitney", cex=0.55, font=2, col="white")
+
+# ── Leyenda ──
+rect(0.3, 1.4, 1.5, 2.2, col="#27ae60", border=NA)
+text(1.7, 1.8, "Test paramétrico", cex=0.55, pos=4, font=2)
+rect(3.3, 1.4, 4.5, 2.2, col="coral", border=NA)
+text(4.7, 1.8, "Test no paramétrico", cex=0.55, pos=4, font=2)
+rect(6.5, 1.4, 7.7, 2.2, col="#fef9e7", border="#e67e22", lwd=2)
+text(7.9, 1.8, "Verificar supuestos", cex=0.55, pos=4, font=2)
+```
+
+::: {.callout-tip}
+**Regla nemotécnica:** Normal + n ≥ 60 → t-Student directo. Normal + n < 60 → verificar Shapiro. No Normal + n ≥ 60 → t-Student (TCL). No Normal + n < 60 → no paramétrico.
+:::
+
+## ¿Por Qué $n \geq 60$? — Justificación del Teorema Central del Límite
+
+::: {.callout-important}
+El **Teorema Central del Límite** (Tema 3) establece que para cualquier variable con media $\mu$ y varianza $\sigma^2$ finitas:
+
+$$\frac{\bar{X} - \mu}{\sigma / \sqrt{n}} \xrightarrow{\mathcal{D}} N(0,1) \quad \text{cuando} \quad n \to \infty$$
+:::
+
+**¿Qué significa esto en la práctica?** La distribución de $\bar{X}$ se aproxima a una Normal **sin importar la forma de los datos originales**. La velocidad de convergencia depende de la asimetría de la distribución subyacente:
+
+```{r}
+#| fig-height: 5.5
+par(mfrow=c(2,3), mar=c(3,3,3,1))
+set.seed(123)
+ns <- c(5, 15, 30, 60, 100, 200)
+for(i in 1:length(ns)){
+  n <- ns[i]
+  medias <- replicate(5000, mean(rexp(n, rate=1)))  # exponencial (muy asimétrica)
+  hist(medias, col="#d4e6f1", border="white", freq=FALSE, breaks=30,
+       main=paste0("n = ", n), xlab=expression(bar(x)), cex.main=1.1)
+  curve(dnorm(x, mean=1, sd=1/sqrt(n)), add=T, col="coral", lwd=2)
+  if(i==1) legend("topright", c("Dist. muestral", "Normal teórica"),
+                  col=c("#d4e6f1","coral"), lwd=c(NA,2), pch=c(15,NA), bty="n", cex=0.7)
+}
+par(mfrow=c(1,1))
+```
+
+**¿Por qué exactamente 60?** No es un número mágico, sino un **punto de convergencia empírico**:
+
+| $n$ | Calidad de la aproximación Normal | ¿Test t válido? |
+|:---:|:----------------------------------|:----------------|
+| $n < 15$ | Mala (sesgo visible) | Solo si datos ≈ Normales |
+| $15 \leq n < 30$ | Aceptable para datos simétricos | Verificar Shapiro-Wilk |
+| $30 \leq n < 60$ | Buena para la mayoría de casos | t-Student razonable |
+| **$n \geq 60$** | **Excelente (independiente de la distribución)** | **t-Student válido sin verificar Normalidad** |
+
+::: {.callout-tip}
+**En fisioterapia:** si tienes 60 o más pacientes, el TCL te protege. No necesitas preocuparte por si los datos de ROM, fuerza o dolor son Normales — la media muestral ya lo es. Con menos de 60, verifica siempre la normalidad con Shapiro-Wilk y Q-Q plot.
+:::
+
+## ¿Qué es un Contraste de Hipótesis? — Analogía Judicial
+
+::: {.columns}
+::: {.column width="50%"}
+
+**El contraste de hipótesis es como un juicio:**
+
+- **$H_0$:** "El acusado es **inocente**" (presunción de inocencia)
+- **$H_1$:** "El acusado es **culpable**"
+
+La carga de la prueba recae sobre quien acusa. Se necesita **evidencia suficiente** para rechazar $H_0$. "No culpable" no es "inocente".
+
+:::
+
+::: {.column width="50%"}
+
+**En estadística aplicada a Fisioterapia:**
+
+- **$H_0$:** "La terapia no tiene efecto" (lo asumido)
+- **$H_1$:** "La terapia sí tiene efecto" (lo que se investiga)
+
+**No rechazar $H_0 \neq$ probar $H_0$.** Solo significa que los datos no aportan evidencia suficiente para declarar un efecto.
+
+:::
+:::
+
+## La lógica del contraste — Visualización intuitiva
+
+**Pregunta clave:** ¿Es la diferencia observada lo suficientemente grande como para no deberse al azar?
+
+```{r}
+#| fig-height: 5
+set.seed(123)
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+# Escenario A: Diferencia pequeña (ruido)
+curve(dnorm(x, 0, 1), -4, 6, lwd=3, col="steelblue", ylab="Densidad",
+      main="Caso A: Diferencia NO significativa", xlab="Efecto observado")
+abline(v=0, lwd=2, col="grey40"); abline(v=0.5, lwd=3, col="darkgreen")
+text(0.5, 0.35, "Diferencia", col="darkgreen", pos=4, font=2)
+text(2, 0.28, "Pequeña → probablemente azar\n→ NO rechazar H0", col="darkgreen", cex=0.9)
+# Escenario B: Diferencia grande (señal)
+curve(dnorm(x, 0, 1), -4, 6, lwd=3, col="steelblue", ylab="",
+      main="Caso B: Diferencia SIGNIFICATIVA", xlab="Efecto observado")
+abline(v=0, lwd=2, col="grey40"); abline(v=3, lwd=3, col="darkgreen")
+text(3, 0.35, "Diferencia", col="darkgreen", pos=4, font=2)
+text(2, 0.28, "Grande → improbable por azar\n→ RECHAZAR H0", col="darkgreen", cex=0.9)
+par(mfrow=c(1,1))
+```
+
+**Regla intuitiva:** Si la diferencia observada es tan grande que sería muy raro verla solo por azar ($P < 0.05$), concluimos que hay un efecto real.
+
+## Hipótesis nula y alternativa — Definiciones formales
+
+::: {.callout-note}
+Procedimiento de **Inferencia Estadistica** para tomar una **decisión** sobre un parámetro poblacional usando información **muestral**.
+:::
+
+- **$H_0$ (Nula):** lo asumido cierto. Igualdad, homogeneidad. Especifica distribución conocida.
+- **$H_1$ (Alternativa):** negación de $H_0$. Diferencia, asociación. No especifica distribución.
+
+**Ejemplos:** $H_0: \mu = \mu_0$, $H_0: p = p_0$, $H_0: \mu_1 = \mu_2$, $H_0: p_1 = p_2$
+
+## Del estadístico muestral al estadístico de contraste — Conexión t3→t4
+
+::: {.callout-note}
+**En Tema 3 aprendiste** que los estadísticos muestrales tienen su propia distribución:
+
+$$\bar{X} \sim N\left(\mu, \frac{\sigma}{\sqrt{n}}\right) \qquad \text{(distribución de la media muestral)}$$
+
+**En Tema 4 añadimos $H_0$:** si suponemos $H_0: \mu = \mu_0$ cierta, entonces:
+
+$$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \quad \xrightarrow{H_0} \quad T = \frac{\bar{X} - \mu_0}{s/\sqrt{n}} \sim t_{n-1}$$
+
+**El estadístico de contraste $T$ es simplemente el estadístico muestral $\bar{X}$ estandarizado bajo $H_0$.**
+:::
+
+**¿Por qué funciona?** Bajo $H_0$, $T$ tiene una distribución **conocida** ($t_{n-1}$). Si el $T$ observado es un valor muy extremo de esa distribución conocida → los datos contradicen $H_0$ → rechazamos $H_0$.
+
+## Desarrollo teórico — Test para $\mu$
+
+::: {.incremental}
+- $X \sim N(\mu, \sigma)$ → distribución de la variable original
+- $\bar{x} \sim N(\mu, \sigma/\sqrt{n})$ → distribución de la media muestral
+- $t_{\text{exp}} = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} \sim t_{n-1}$ → estadístico de contraste bajo $H_0$
+:::
+
+**Ejemplo — METs/semana (n=12):** $\bar{x}=189.76$, $s=62.02$
+
+```{r}
+n<-12; xbar<-189.76; s<-62.02
+cat("Caso a (mu0=200): t =", round((xbar-200)/(s/sqrt(n)),3),
+    "P =", round(2*pt(-abs((xbar-200)/(s/sqrt(n))),11),4),
+    "\nCaso b (mu0=230): t =", round((xbar-230)/(s/sqrt(n)),3),
+    "P =", round(2*pt(-abs((xbar-230)/(s/sqrt(n))),11),4))
+```
+
+## El estadístico de contraste — Visualización del concepto
+
+**Misma idea que en T3, pero ahora bajo $H_0$:**
+
+```{r}
+#| fig-height: 5
+par(mfrow=c(1,3), mar=c(4,4,3,1))
+
+# Panel 1: Distribución de X (datos originales)
+curve(dnorm(x, 130, 5), 115, 145, lwd=3, col="steelblue",
+      main="1. Distribución de X", xlab="Flexión (°)", ylab="f(x)")
+abline(v=130, col="darkgreen", lwd=2); text(135, 0.07, "μ₀=130", col="darkgreen", font=2)
+
+# Panel 2: Distribución de la media muestral (T3)
+curve(dnorm(x, 130, 5/sqrt(6)), 124, 136, lwd=3, col="darkgreen",
+      main="2. Dist. de X̄ (Tema 3)", xlab="Media muestral", ylab="f(x̄)")
+abline(v=130, col="darkgreen", lwd=2); text(131, 0.9, "μ=130", col="darkgreen", font=2)
+
+# Panel 3: Estadístico de contraste T (T4 — estandarizado bajo H₀)
+curve(dt(x, 5), -4, 4, lwd=3, col="seagreen",
+      main="3. Estadístico T (Tema 4)", xlab="t = (x̄-μ₀)/(s/√n)", ylab="f(t)")
+abline(v=0, col="darkgreen", lwd=2); text(1, 0.3, "0 (H₀ cierta)", col="darkgreen", font=2)
+# Marcar región de rechazo
+t_crit <- qt(0.975, 5)
+abline(v=c(-t_crit, t_crit), col="grey40", lty=2, lwd=2)
+text(3, 0.05, "Rechazo", col="darkgreen", cex=0.8)
+text(-3, 0.05, "Rechazo", col="darkgreen", cex=0.8)
+
+par(mfrow=c(1,1))
+```
+
+**Paso 1 (T3):** $\bar{X}$ es una VA con distribución conocida.
+**Paso 2 (T4):** Estandarizamos bajo $H_0$ → $T \sim t_{n-1}$. Si $|T|$ es grande → rechazamos $H_0$.
+
+## Errores tipo i ($\alpha$) y tipo ii ($\beta$) — Visualización
+
+```{r}
+#| fig-height: 5
+#| fig-alt: "Visualización de los errores Tipo I (alfa) y Tipo II (beta) con dos distribuciones normales solapadas. La distribución bajo H0 en azul (centrada en 0) y bajo H1 en verde (centrada en 3). El área azul a la derecha de la línea crítica vertical es alfa (error Tipo I), el área verde a la izquierda es beta (error Tipo II), y el área verde a la derecha es la potencia (1-beta)."
+# Visualización de errores con dos distribuciones
+par(mar=c(4,4,3,1))
+x <- seq(-4, 8, 0.01)
+y_H0 <- dnorm(x, 0, 1)     # Distribución bajo H0
+y_H1 <- dnorm(x, 3, 1)     # Distribución bajo H1 (efecto real)
+plot(x, y_H0, type="l", lwd=3, col="steelblue", ylab="Densidad",
+     main=expression(paste("Errores Tipo I (", alpha, ") y Tipo II (", beta, ")")),
+     ylim=c(0,0.45), xlab="Estadístico de contraste")
+lines(x, y_H1, lwd=3, col="seagreen")
+t_crit <- qnorm(0.975)  # 1.96
+abline(v=t_crit, col="grey40", lty=2, lwd=2)
+# α — cola derecha bajo H0
+xf <- seq(t_crit, 8, 0.01); yf <- dnorm(xf, 0, 1)
+polygon(c(xf, rev(xf)), c(yf, rep(0,length(yf))), col=rgb(0,0,1,0.25), border=NA)
+text(3.2, 0.04, expression(alpha/2), col="steelblue", cex=1.3, font=2)
+# β — bajo H1 a la izquierda de t_crit
+xf <- seq(-4, t_crit, 0.01); yf <- dnorm(xf, 3, 1)
+polygon(c(xf, rev(xf)), c(yf, rep(0,length(yf))), col=rgb(0,0.5,0.3,0.2), border=NA)
+text(0.8, 0.08, expression(beta), col="darkgreen", cex=1.3, font=2)
+# Potencia (1-β)
+xf <- seq(t_crit, 8, 0.01); yf <- dnorm(xf, 3, 1)
+polygon(c(xf, rev(xf)), c(yf, rep(0,length(yf))), col=rgb(0,0.8,0,0.2), border=NA)
+text(4.8, 0.04, "1-β", col="darkgreen", cex=1.2, font=2)
+legend("topleft", c(expression(H[0]), expression(H[1])), col=c("steelblue","seagreen"), lwd=3, bty="n")
+```
+
+| | $H_0$ cierta | $H_0$ falsa |
+|---|---|---|
+| **Aceptar $H_0$** | ✓ $(1-\alpha)$ | Error II ($\beta$) |
+| **Rechazar $H_0$** | Error I ($\alpha$) | ✓ Potencia ($1-\beta$) |
+
+- $\alpha$ fijado por el investigador (típicamente 0.05). No depende de $n$.
+- $\beta$ desconocido. Depende de $n$, $\alpha$, y magnitud del efecto real.
+- **Para reducir ambos errores:** aumentar $n$.
+
+::: {.callout-note}
+**Definiciones formales (Neyman-Pearson, 1933)**
+
+Sea $T$ el estadístico de contraste y $\mathcal{R}$ la región de rechazo:
+
+$$\alpha = P(\text{Rechazar } H_0 \mid H_0 \text{ cierta}) = P(T \in \mathcal{R} \mid H_0)$$
+
+$$\beta = P(\text{No rechazar } H_0 \mid H_0 \text{ falsa}) = P(T \notin \mathcal{R} \mid H_1)$$
+
+$$\text{Potencia} = 1 - \beta = P(\text{Rechazar } H_0 \mid H_1 \text{ cierta}) = P(T \in \mathcal{R} \mid H_1)$$
+
+**Relación fundamental:** $\alpha$ y $\beta$ están inversamente relacionados. Para un $n$ fijo, reducir $\alpha$ aumenta $\beta$. La única forma de reducir ambos simultáneamente es aumentar $n$.
+:::
+
+*Si un estudio con n=10 no rechaza $H_0$, ¿podemos concluir que el tratamiento no funciona? ¿Por qué?*
+
+## Ejemplo de cálculo del p-valor desde la tabla t de Student
+
+**Caso:** $t_{\text{exp}} = 2.40$ con gl = 10. Obtener P sin ordenador.
+
+En la fila gl=10 de la tabla t-Student:
+$t_{0.05;10} = 2.228 < 2.40 < t_{0.02;10} = 2.764$
+
+Por tanto: **$0.02 < P < 0.05$** → Significativo (P < 0.05)
+
+**Más ejemplos con gl=10:**
+
+| $t_{\text{exp}}$ | Acotación | Valor P | Decision ($\alpha=0.05$) |
+|:---:|:---|:---|:---|
+| 2.40 | $t_{0.05}=2.228 < 2.40 < t_{0.02}=2.764$ | $0.02 < P < 0.05$ | Rechazar $H_0$ |
+| 1.21 | $t_{0.30}=1.093 < 1.21 < t_{0.20}=1.372$ | $0.20 < P < 0.30$ | Aceptar $H_0$ (NS) |
+| 2.11 | $t_{0.10}=1.812 < 2.11 < t_{0.05}=2.228$ | $0.05 < P < 0.10$ | Aceptar $H_0$ (Indicios) |
+| 6.33 | $t_{0.001}=4.587 < 6.33$ | $P < 0.001$ | Rechazar $H_0$ |
+| 0.55 | $0.55 < t_{0.50}=0.700$ | $P > 0.50$ | Aceptar $H_0$ (NS) |
+
+**Con ordenador:** siempre se obtiene P exacta con 3 decimales (o $P < 0.001$).
+
+## Valor p — ¿cómo de sorpresivos son los datos?
+
+**P = probabilidad de observar unos datos tan o más extremos que los nuestros, si $H_0$ fuera cierta.**
+
+::: {.columns}
+::: {.column width="55%"}
+
+```{r}
+#| fig-height: 4.5
+# Visualización del P-valor
+curve(dt(x, 11), -4, 4, lwd=3, col="steelblue", ylab="Densidad",
+      main="P-valor visualizado — t(11), texp = 2.25")
+abline(v=c(-2.25, 2.25), col="darkgreen", lwd=2, lty=2)
+# Área del P-valor (dos colas)
+xr <- seq(2.25, 4, 0.01); yr <- dt(xr, 11)
+polygon(c(xr, rev(xr)), c(yr, rep(0,length(yr))), col=rgb(0,0.5,0.3,0.3), border=NA)
+xl <- seq(-4, -2.25, 0.01); yl <- dt(xl, 11)
+polygon(c(xl, rev(xl)), c(yl, rep(0,length(yl))), col=rgb(0,0.5,0.3,0.3), border=NA)
+text(0, 0.2, "P = área verde", font=2, cex=1.2)
+text(2.8, 0.03, paste0("P = ", round(2*pt(-2.25,11),4)), col="darkgreen", font=2)
+```
+
+:::
+
+::: {.column width="45%"}
+
+**Interpretación intuitiva:**
+
+| P | ¿Qué significa? |
+|---|-----------------|
+| **P = 0.58** | Muy probable bajo $H_0$ → **NO** rechazar |
+| **P = 0.03** | Poco probable bajo $H_0$ → **Rechazar** |
+| **P = 0.001** | Muy improbable → **Fuerte evidencia** |
+
+**P NO es** la probabilidad de que $H_0$ sea cierta. **P ES** la probabilidad de los datos si $H_0$ fuera cierta.
+
+:::
+:::
+
+*Un P=0.051 y un P=0.049, ¿son realmente diferentes en su interpretación clínica?*
+
+```{r}
+x<-c(125,132,128,135,130,126); t<-(mean(x)-130)/(sd(x)/sqrt(6))
+cat("t =", round(t,3), "→ P(t) =", round(2*pt(-abs(t),5),4),
+    "\nP(z aprox) =", round(2*pnorm(-abs(t)),4))
+```
+
+## Bilateral vs unilateral
+
+| | Bilateral | Unilateral |
+|---|---|---|
+| $H_1$ | $\mu \neq \mu_0$ | $\mu > \mu_0$ (o $<$) |
+| $\alpha$ | 2 colas | 1 cola |
+| Potencia | Menor | Mayor |
+
+::: {.callout-note}
+Elegir unilateral **antes** de ver los datos. Elegirlo después = p-hacking.
+:::
+
+## Normalidad — ¿cómo verificarla antes del test?
+
+**Antes de aplicar un test t, debemos verificar la normalidad de la variable (o usar el TCL con $n \geq 60$).**
+
+**Métodos gráficos:** histograma con curva Normal, diagrama de cajas, Q-Q plot.
+
+**Tests formales:**
+- **Shapiro-Wilk:** la mejor opción para muestras pequeñas y moderadas
+- **Kolmogorov-Smirnov:** solo para muestras grandes (aproximado)
+- **D\'Agostino:** se puede calcular a mano
+
+**H0 en tests de normalidad:** "La variable tiene distribución Normal"
+
+```{r}
+#| eval: false
+datos <- c(125,132,128,135,130,126,156, 140, 138, 142, 130, 128)
+# Shapiro-Wilk (R base)
+shapiro.test(datos)  # P > 0.05 → normalidad asumible
+# BioEstatR: test + Q-Q plot en un solo paso
+library(BioEstatR); testnormal(datos)
+```
+
+::: {.callout-warning}
+**Cuidado con muestras pequeñas:** con $n$ pequeño, los tests de normalidad tienen poca potencia. Tienden a NO rechazar $H_{0}$ aunque los datos no sean normales. Complementar SIEMPRE con gráficos.
+:::
+
+## Test para una media (t-Student)
+
+$$t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}} \sim t_{n-1}$$
+
+**Ejemplo:** Flexión rodilla en 6 pacientes: 125°,132°,128°,135°,130°,126°. ¿$\mu = 130°$?
+
+```{r}
+x <- c(125,132,128,135,130,126)
+t.test(x, mu = 130)
+# BioEstatR: testt(m = mean(x), s = sd(x), n = length(x), m0 = 130)
+
+
+# Visualización
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+# Histograma con IC
+hist(x, col="steelblue", border="white", main="Flexión rodilla (n=6)", 
+     xlab="Grados", freq=FALSE)
+abline(v=130, col="darkgreen", lwd=2, lty=2)
+abline(v=mean(x), col="coral", lwd=2)
+curve(dnorm(x, mean(x), sd(x)), add=TRUE, col="seagreen", lwd=2)
+legend("topright", c("H0: μ=130","x̄","Normal"), col=c("darkgreen","coral","seagreen"),
+       lty=c(2,1,1), lwd=2, bty="n", cex=0.75)
+# Distribución t con estadístico
+curve(dt(x, 5), -4, 4, lwd=3, col="steelblue",
+      main=paste0("t(5): P=", round(t.test(x,mu=130)$p.value,3)),
+      xlab="t", ylab="Densidad")
+abline(v=c(-qt(0.975,5), qt(0.975,5)), col="grey", lty=3)
+abline(v=t.test(x,mu=130)$statistic, col="darkgreen", lwd=2.5)
+par(mfrow=c(1,1))
+
+```
+
+**Salida:** $t=-0.43$, gl=5, $P=0.683$ → No significativo. IC 95%: (125.4°, 133.3°).
+
+## Test para una proporción — Ejemplo detallado
+
+**Contexto:** Prevalencia de tabaquismo en estudiantes. En 2012 era del 22%. En 2013: n=287, x=48 fumadores. ¿Ha cambiado?
+
+**Paso 1 — Hipótesis:** $H_0: p = 0.22$ vs $H_1: p \neq 0.22$
+
+**Paso 2 — Condiciones:** $np_0 = 287 \times 0.22 = 63.14 > 5$ ✓; $nq_0 = 287 \times 0.78 = 223.86 > 5$ ✓
+
+**Paso 3 — Estadístico:** $z = \frac{x - np_0 + 0.5}{\sqrt{np_0q_0}} = \frac{48 - 63.14 + 0.5}{\sqrt{287 \times 0.22 \times 0.78}} = -2.09$
+
+**Paso 4 — P-valor:** $0.03 < P < 0.04$ → **Rechazamos H0** ($P < 0.05$)
+
+```{r}
+x<-48; n<-287; p0<-0.22
+z<-(x - n*p0 + 0.5)/sqrt(n*p0*(1-p0))
+P<-2*pnorm(-abs(z))
+cat("z =", round(z,3), "P =", round(P,4))
+```
+
+**Conclusión:** La prevalencia ha cambiado significativamente. IC 95% Wilson: (12.7%, 21.7%). El 22% de 2012 no está en el IC → confirmación visual.
+
+**Si los datos hubieran sido x=34, n=200:** $z=-1.62$, $0.10 < P < 0.11$ → NO significativo (indicios).
+
+## Test para una proporción
+
+$$Z = \frac{\hat{p} - p_0}{\sqrt{p_0(1-p_0)/n}} \sim N(0,1)$$
+
+::: {.callout-note}
+**Corrección de continuidad:** Para muestras pequeñas, se aplica la corrección de Yates: $Z = \frac{|x - np_0| - 0.5}{\sqrt{np_0(1-p_0)}}$. La decisión de usarla depende del contexto clínico y del tamaño muestral.
+:::
+
+**Ejemplo:** 47 de 50 muestras COVID positivas ($\hat{p}=0.94$). $H_0: p = 0.95$.
+
+```{r}
+x<-47; n<-50; p0<-0.95
+z<-(x/n-p0)/sqrt(p0*(1-p0)/n)
+cat("z =", round(z,3), "P =", round(2*pnorm(-abs(z)),4),
+    "\nNo significativo: 94% no difiere de 95% (P = 0.745)")
+```
+
+## Interpretación de la salida de `testt()` en BioEstatR
+
+**Ejemplo: `testt(m = 129.33, s = 3.78, n = 6, m0 = 130)`**
+
+```
+t-Test con una muestra
+n = 6.000, media = 129.330, d.t. = 3.780, sem = 1.543
+95%-IC(μ) = (125.363, 133.297)
+texp = 0.434, gl = 5
+p = 0.682 (bilateral H1: μ ≠ μ0) / 0.341 (unilateral H1: μ < μ0)
+95%-IC(μ-μ0) = (-4.637, 3.297)
+```
+
+**Cómo leer la salida:**
+- **t y P:** texp = 0.434, P = 0.682 > 0.05 → NO rechazar H0
+- **IC 95%:** (125.4, 133.3) contiene 130 → compatible con H0
+- **Efecto bruto:** IC 95% (−4.64, 3.30) incluye 0 → no significativo
+
+::: {.callout-tip}
+**Para el estudiante:** `testt()` integra test + IC + normalidad en una salida. Si P > 0.05 y el IC contiene a μ₀ → no hay evidencia para rechazar H0.
+:::
+
+## BioEstatR — `testt` para una muestra
+
+```{r}
+#| eval: false
+library(BioEstatR)
+# Media (con estadísticos resumidos)
+testt(m = 129.33, s = 3.78, n = 6, m0 = 130)
+
+# Proporción (con x y n)
+testt(x = 47, n = 50, p0 = 0.95)
+```
+
+**Salida de `testt`:** Muestra automáticamente: estadístico, gl, P-valor, IC 95%, estimación del efecto bruto, y test de normalidad (Shapiro-Wilk) para medias.
+---
+
+---
+
+## Ejercicio Clínico — Tema IV (Parte I)
+
+**Contexto:** Flexión rodilla en 6 pacientes: 125°, 132°, 128°, 135°, 130°, 126°. Referencia: 130°.
+
+1. Formula $H_0$ y $H_1$
+2. Interpreta: $t=-0.43$, $gl=5$, $P=0.683$, IC 95% [125.4°, 133.3°]
+3. ¿Conclusión clínica?
+
+::: {.callout-tip}
+**Solución**
+
+1. $H_0: \mu = 130°$ vs $H_1: \mu \neq 130°$ (bilateral)
+2. $P = 0.683 > 0.05$ → NO rechazar $H_0$. El IC contiene 130°
+3. Sin evidencia suficiente de cambio en la flexión media
+
+```{r}
+#| fig-height: 5
+x <- c(125,132,128,135,130,126)
+tt <- t.test(x, mu=130)
+
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+# Panel 1: Datos vs referencia
+stripchart(x, method="jitter", pch=19, col="steelblue", cex=1.5,
+           xlim=c(122,138), main="Flexión vs H0: μ=130°", xlab="Grados (°)")
+abline(v=130, col="darkgreen", lwd=2, lty=2)
+points(mean(x), 1.2, pch=19, col="darkgreen", cex=2)
+text(mean(x), 1.35, paste0("x̄=", round(mean(x),1)), col="darkgreen", font=2, pos=3)
+# Panel 2: Distribución t
+curve(dt(x, 5), -4, 4, lwd=3, col="steelblue",
+      main=paste0("t(5): P=", round(tt$p.value,3)), xlab="t", ylab="Densidad")
+abline(v=c(-qt(0.975,5), qt(0.975,5)), col="grey", lty=3)
+abline(v=tt$statistic, col="darkgreen", lwd=2)
+text(tt$statistic, 0.35, paste0("t=", round(tt$statistic,2)), col="darkgreen", font=2, pos=4)
+par(mfrow=c(1,1))
+
+cat("t =", round(tt$statistic,2), "gl =", tt$parameter, "P =", round(tt$p.value,4))
+```
+:::
+---
+
+# Código del Tema IV (Parte I) — Resumen Organizado {.center}
+
+## Test para una media (t-Student)
+
+```{r}
+#| eval: false
+# Test t para una muestra
+x <- c(125, 132, 128, 135, 130, 126)
+t.test(x, mu = 130)                       # H₀: μ = 130
+
+# Con BioEstatR (datos resumidos)
+library(BioEstatR)
+testt(m = mean(x), s = sd(x), n = length(x), m0 = 130)
+```
+
+## Test para una proporción
+
+```{r}
+#| eval: false
+# Test z para una proporción
+x <- 48; n <- 287; p0 <- 0.22
+p_hat <- x / n
+z <- (p_hat - p0) / sqrt(p0 * (1 - p0) / n)
+P <- 2 * pnorm(-abs(z))
+cat("z =", round(z, 3), "P =", round(P, 4))
+
+# Con BioEstatR
+library(BioEstatR)
+testp(x = 47, n = 50, p0 = 0.95)
+```
+
+## Verificación de normalidad
+
+```{r}
+#| eval: false
+# Test de Shapiro-Wilk
+datos <- c(125, 132, 128, 135, 130, 126)
+shapiro.test(datos)                       # P > 0.05 → normalidad asumible
+
+# Con BioEstatR (test + gráficos)
+library(BioEstatR)
+testnormal(datos)
+```
+
+## Cálculo manual del P-valor
+
+```{r}
+#| eval: false
+# P-valor a partir de t observado
+t_exp <- 2.40; gl <- 10
+P <- 2 * pt(-abs(t_exp), gl)              # P bilateral = 0.037
+cat("P =", round(P, 4))
+```
